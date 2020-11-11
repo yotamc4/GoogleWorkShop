@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import {DefaultButton, Spinner, SpinnerSize} from "@fluentui/react";
 
 function App() {
   return (
@@ -18,6 +19,8 @@ function App() {
         >
           Ofekkkkkkkk
         </a>
+        <DefaultButton text="Standard" />
+        <Spinner size={SpinnerSize.large} />
       </header>
     </div>
   );
