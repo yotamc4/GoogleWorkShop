@@ -1,29 +1,19 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import {DefaultButton, Spinner, SpinnerSize} from "@fluentui/react";
+import React from 'react'; // importing FunctionComponent
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Ofekkkkkkkk
-        </a>
-        <DefaultButton text="Standard" />
-        <Spinner size={SpinnerSize.large} />
-      </header>
-    </div>
-  );
+type CardProps = {
+  title: string,
+  paragraph: string
 }
 
-export default App;
+export const Card: React.FunctionComponent<CardProps> = ({ title, paragraph }) => {
+    
+    return (<aside>
+  <h2>{ title }</h2>
+  <p>
+    { paragraph }
+  </p>
+</aside>)
+
+}
+
+const el = <Card title="Welcome!" paragraph="To this example" />
