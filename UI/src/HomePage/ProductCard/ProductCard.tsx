@@ -63,13 +63,13 @@ export const ProductCard: React.FunctionComponent<ProductCardProps> = ({
         height={200}
         />
       </Card.Section>
-      <Card.Section>
+      <Card.Section horizontalAlign="center">
         <Text variant="large" styles={nameOfProductTextStyles}>
           {nameOfProduct}
         </Text>
         <Text styles={descriptionTextStyles}>{description}</Text>
       </Card.Section>
-      <Card.Section tokens={agendaCardSectionTokens}>
+      <Card.Section horizontalAlign="center" tokens={agendaCardSectionTokens}>
         <Text variant="mediumPlus" styles={priceTextStyles}>
           Max Price: {maxPrice}₪
         </Text>
@@ -77,9 +77,6 @@ export const ProductCard: React.FunctionComponent<ProductCardProps> = ({
           Expiration Date: {expirationDate}
         </Text>
       </Card.Section>
-      <Card.Item grow={1}>
-        <span />
-      </Card.Item>
       <Card.Section horizontalAlign="center" horizontal tokens={attendantsCardSectionTokens}>
         <Text variant="small" styles={amoutTextStyles}>
           {potenialSuplliersCounter} Potential Suplliers
