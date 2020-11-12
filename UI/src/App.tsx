@@ -7,10 +7,12 @@ import ButtonAppBar from './LoginBar';
 
 function App() {
   return (
-    <div>
+    <Stack>
+      <Stack horizontalAlign="center">
       <ButtonAppBar/>
+      </Stack>
       <Home/>
-    </div>
+    </Stack>
   );
 }
 

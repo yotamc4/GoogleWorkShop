@@ -31,7 +31,7 @@ export default function ButtonAppBar() {
   const StackItemStyles: IStackItemStyles = {
     root: {
         position:"absolute",
-        marginLeft:"43rem",
+        marginLeft:"34rem",
         marginTop:"-3rem",
         zIndex:300,
     },
@@ -46,7 +46,7 @@ export default function ButtonAppBar() {
                 height={140}
                 />
         </StackItem>
-      <AppBar style={{zIndex:1,marginLeft:"12rem",width:"75rem",height:"2.8rem",background:theme.palette.blueDark}} position="static">
+      <AppBar style={{zIndex:1,marginLeft:"2rem",width:"75rem",height:"2.8rem",background:theme.palette.blueDark}} position="static">
         <Toolbar>
           <Typography style={{marginBottom:"1rem",marginRight:"15rem"}} variant="h6" className={classes.title}>
             Hello Guest!
