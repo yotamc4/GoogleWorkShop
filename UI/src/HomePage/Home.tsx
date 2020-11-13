@@ -78,7 +78,7 @@ export const Home: React.FunctionComponent = () => {
 const test = <ProductCard 
 image="https://bstore.bezeq.co.il/media/20696/740-2-blue.jpg"
 category="computers"
-nameOfProduct = "Lenovo ThinkPad T480"
+nameOfProduct = "Lenovo ThinkPad T4800"
 maxPrice = {4000}
 creationDate = "11/11/2020"
 expirationDate = "11/13/2020"
