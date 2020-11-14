@@ -13,7 +13,7 @@ import {
   TextField,
   Image,
 } from "@fluentui/react";
-import { CategoriesMap } from "../Model/Categories";
+import { CategoriesMap } from "../HomePage/Model/Categories";
 
 export const NewGroupBuyingForm: React.FunctionComponent = () => {
   const [formInputs, setFormInputs] = React.useReducer<
