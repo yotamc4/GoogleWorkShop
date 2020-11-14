@@ -1,17 +1,18 @@
-import { Stack } from '@fluentui/react';
-import React from 'react';
-import './App.css';
-import { Home } from './HomePage/Home';
-import ButtonAppBar from './LoginBar';
+import { initializeIcons, Stack } from "@fluentui/react";
+import React from "react";
+import "./App.css";
+import { Home } from "./HomePage/Home";
+import ButtonAppBar from "./LoginBar";
 
+initializeIcons();
 
 function App() {
   return (
     <Stack>
       <Stack horizontalAlign="center">
-      <ButtonAppBar/>
+        <ButtonAppBar />
       </Stack>
-      <Home/>
+      <Home />
     </Stack>
   );
 }
