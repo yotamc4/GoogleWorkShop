@@ -70,6 +70,7 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
       </Text>
       <Separator styles={{ root: { width: "15%" } }} />
       <Stack tokens={NewGroupBuyingFormStyles.verticalGapStackTokens}>
+        <TextField label="Product's name" styles={{ root: { width: "14%" } }} />
         <Dropdown
           id={categoryProp}
           onChange={onDropdownChange}
