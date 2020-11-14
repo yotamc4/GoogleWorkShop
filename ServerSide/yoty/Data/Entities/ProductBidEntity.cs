@@ -8,7 +8,7 @@ namespace Yoty.Data.Entities
     public class ProductBidEntity
     {
         [Key]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         public string Name { get; set; }
 
@@ -22,12 +22,16 @@ namespace Yoty.Data.Entities
 
         public DateTime ExpirationDate { get; set; }
 
-        List<Uri> ProductImages {get;set;}
+        public Uri ProductImage {get;set;}
 
         public string Description { get; set; }
 
         public int PotenialSuplliersCounter { get; set; }
 
         public int UnitsCounter { get; set; }
+
+        public List<SellerOfferEntity> CurrentOffers { get; set; }
+
+        public List<ParticipancyEntity> CurrentParticipancies { get; set; }
     }
 }

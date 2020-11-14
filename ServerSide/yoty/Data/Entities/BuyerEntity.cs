@@ -12,9 +12,10 @@ namespace Yoty.Data.Entities
 
         public FacebookAccountEntity FacebookAccount { get; set; }
 
-        public BuyerAccountDetailsEntity BuyerAccountDeatails { get;set;}
+        public BuyerAccountDetailsEntity BuyerAccountDetails { get;set;}
 
-        public List<KeyValuePair<ProductBidEntity, int>> CurrentBidsAndItemsCount { get; set; }
+        public List<ProductBidEntity> CurrentBidsAndItemsCount { get; set; }
 
+        public List<ParticipancyEntity> CurrentParticipancies { get; set; }
     }
 }
