@@ -3,17 +3,25 @@ import React from "react";
 import "./App.css";
 import { Home } from "./HomePage/Home";
 import ButtonAppBar from "./LoginBar";
+import { Route } from "react-router-dom";
+import { NewGroupBuyingForm } from "./NewGroupBuyingForm/NewGroupBuyingForm";
 
 initializeIcons();
 
 function App() {
   return (
-    <Stack>
+    <>
       <Stack horizontalAlign="center">
         <ButtonAppBar />
       </Stack>
-      <Home />
-    </Stack>
+
+      <Route exact path="/">
+        <Home />
+      </Route>
+      <Route path="/createNewGroup">
+        <NewGroupBuyingForm />
+      </Route>
+    </>
   );
 }
 
