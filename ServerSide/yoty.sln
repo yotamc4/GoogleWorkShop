@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "yoty", "yoty\yoty.csproj", "{2096EFDB-354F-44C2-AF42-41676D7654D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "yoty", "yoty\yoty.csproj", "{2096EFDB-354F-44C2-AF42-41676D7654D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YotyDataModel", "YotyDataModel\YotyDataModel.csproj", "{C55A9A67-7839-4079-A460-BC6A618613A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{2096EFDB-354F-44C2-AF42-41676D7654D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2096EFDB-354F-44C2-AF42-41676D7654D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2096EFDB-354F-44C2-AF42-41676D7654D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C55A9A67-7839-4079-A460-BC6A618613A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C55A9A67-7839-4079-A460-BC6A618613A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C55A9A67-7839-4079-A460-BC6A618613A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C55A9A67-7839-4079-A460-BC6A618613A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
