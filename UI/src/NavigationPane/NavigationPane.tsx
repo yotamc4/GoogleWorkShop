@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Nav, INavLinkGroup } from "office-ui-fabric-react/lib/Nav";
 import { INavLink } from "@fluentui/react";
-import { Categories } from "../Model/Categories";
+import { CategoriesMap } from "../Model/Categories";
 
 function createINavLinkFromString(name: string): INavLink {
   return {
@@ -31,6 +31,9 @@ function navLinkGroups(map: Map<string, string[]>): INavLinkGroup[] {
 
 export const NavigationPane: React.FunctionComponent = () => {
   return (
-    <Nav ariaLabel="Nav with nested links" groups={navLinkGroups(Categories)} />
+    <Nav
+      ariaLabel="Nav with nested links"
+      groups={navLinkGroups(CategoriesMap)}
+    />
   );
 };

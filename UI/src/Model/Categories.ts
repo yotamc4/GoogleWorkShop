@@ -1,31 +1,36 @@
-export const Categories: Map<string, string[]> = new Map();
+export const CategoriesMap: Map<string, string[]> = new Map();
 
-Categories.set("Electorincs", [
+CategoriesMap.set("Electorincs", [
   "Cell Phones",
   "Headphones",
   "Television",
   "Media Streamer",
 ]);
 
-Categories.set("Computers", ["Computers", "Laptops", "Monitors", "Tablets"]);
+CategoriesMap.set("Computers", ["Computers", "Laptops", "Monitors", "Tablets"]);
 
-Categories.set("Transportations", [
+CategoriesMap.set("Transportations", [
   "Bicycle",
   "Electronic scooters",
   "Electric bicycle",
   "Segway",
 ]);
 
-Categories.set("ElectorincsB", [
+CategoriesMap.set("ElectorincsB", [
   "Cell Phones",
   "Headphones",
   "Television",
   "Media Streamer",
 ]);
 
-Categories.set("ComputersB", ["Computers", "Laptops", "Monitors", "Tablets"]);
+CategoriesMap.set("ComputersB", [
+  "Computers",
+  "Laptops",
+  "Monitors",
+  "Tablets",
+]);
 
-Categories.set("TransportationsB", [
+CategoriesMap.set("TransportationsB", [
   "Bicycle",
   "Electronic scooters",
   "Electric bicycle",
