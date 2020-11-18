@@ -59,7 +59,7 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
   }
 
   return (
-    <React.Fragment>
+    <Stack horizontalAlign={"center"}>
       <Text
         block={true}
         className="Bold"
@@ -68,9 +68,15 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
       >
         New suggestion for Group buying
       </Text>
-      <Separator styles={{ root: { width: "15%" } }} />
-      <Stack tokens={NewGroupBuyingFormStyles.verticalGapStackTokens}>
-        <TextField label="Product's name" styles={{ root: { width: "14%" } }} />
+      <Stack
+        styles={{ root: { width: "40%" } }}
+        tokens={NewGroupBuyingFormStyles.verticalGapStackTokens}
+      >
+        <Separator styles={{ root: { width: "100%" } }} />
+        <TextField
+          label="Product's name"
+          styles={{ root: { width: NewGroupBuyingFormStyles.inputWidth } }}
+        />
         <Dropdown
           id={categoryProp}
           onChange={onDropdownChange}
@@ -100,7 +106,7 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
         <TextField
           label="Maximum price"
           onGetErrorMessage={() => "Only numbers allowd"}
-          styles={{ root: { width: "14%" } }}
+          styles={{ root: { width: NewGroupBuyingFormStyles.inputWidth } }}
           suffix="₪"
         />
         <DatePicker
@@ -109,13 +115,13 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           strings={DayPickerStrings}
           placeholder="Select a date..."
           ariaLabel="Select a date"
-          styles={{ root: { width: "14%" } }}
+          styles={{ root: { width: NewGroupBuyingFormStyles.inputWidth } }}
         />
         <TextField
           label="Description"
           multiline
           autoAdjustHeight
-          styles={{ root: { width: "14%" } }}
+          styles={{ root: { width: NewGroupBuyingFormStyles.inputWidth } }}
         />
         <Label>{"Upload an image for reference only"}</Label>
         <input
@@ -124,18 +130,23 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           id="contained-button-file"
           name="image"
           type="file"
-          style={{ width: "14%" }}
+          style={{ width: NewGroupBuyingFormStyles.inputWidth }}
         />
-        <Image
-          src={formInputs.userImage}
-          id="target"
-          width={300}
-          height={300}
+        {formInputs?.userImage && (
+          <Image
+            src={formInputs.userImage}
+            id="target"
+            width={"30rem"}
+            height={"25rem"}
+          />
+        )}
+        <Separator
+          styles={{ root: { width: NewGroupBuyingFormStyles.inputWidth } }}
         />
-        <Separator styles={{ root: { width: "15%" } }} />
         <Stack
           horizontal
           tokens={NewGroupBuyingFormStyles.horizontalGapStackTokens}
+          styles={{ root: { margin: "auto" } }}
         >
           <DefaultButton
             text="Cancel"
@@ -153,7 +164,7 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           />
         </Stack>
       </Stack>
-    </React.Fragment>
+    </Stack>
   );
 };
 

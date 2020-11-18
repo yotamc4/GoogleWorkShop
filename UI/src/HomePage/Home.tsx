@@ -29,7 +29,7 @@ export const Home: React.FunctionComponent = () => {
         tokens={genericGapStackTokens(500)}
       >
         <DefaultButton
-          text={"Create new group buy"}
+          text={"Create a new group-buy"}
           href={"/createNewGroup"}
           iconProps={{
             iconName: "Add",
