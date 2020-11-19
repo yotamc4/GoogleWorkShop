@@ -5,31 +5,58 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using YOTY.Service.WebApi.PublicDataSchemas;
 using YOTY.Service.Managers;
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using AutoMapper;
+using CoreCodeCamp.Data;
+using CoreCodeCamp.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 namespace YOTY.Service.WebApi.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class ProductsController
+    public class ProductsController: ControllerBase
     {
-        private IBuyersManager buyersManager;
-        public BuyersController(IBuyersManager buyersManager)
+        private IProductsBidsManager productsBidsManager;
+
+        public ProductsController(IProductsBidsManager productsBidsManager)
         {
-            this.buyersManager = buyersManager;
+            this.productsBidsManager = productsBidsManager;
         }
 
-        [HttpGet]
-        [Route("Buyers")]
-        public async Task<IList<Buyer>> GetBuyers([FromBody] IList<string> buyersIds)
+        [HttpPost]
+        [Route("NewBid")]
+        public async Task<ActionResult<string>> PostNewBid(ProductBid productBid)
         {
-            return await buyersManager.GetBuyers(buyersIds);
+            try
+            {
+                var newBidId = await this.productsBidsManager.CreateNewBid(productBid).ConfigureAwait(false); ;
+                return Ok(newBidId);
+            }
+            catch (Exception e)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
         }
 
-        [HttpGet]
-        [Route("BuyersOfProductBid/{bidId}")]
-        public async Task<IList<Buyer>> GetBuyers([FromQuery] string bidId)
+        [HttpPost]
+        [Route("BuyersOfProductBid/{bidId}/PostBuyer/{buyerId}")]
+        public async Task<ActionResult<string>> PostNewBuyerToBid(BuyerJoinToBidRequest buyerJoinToBidRequest)
         {
-            return await buyersManager.GetBuyers(bidId);
+            try
+            {
+                var newBidId = await this.productsBidsManager.CreateNewBid(productBid).ConfigureAwait(false); ;
+                return Ok(newBidId);
+            }
+            catch (Exception e)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
+            }
         }
     }
 }
