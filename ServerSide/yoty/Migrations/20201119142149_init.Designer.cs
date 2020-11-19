@@ -10,7 +10,7 @@ using Yoty.Data;
 namespace yoty.Migrations
 {
     [DbContext(typeof(YotyContext))]
-    [Migration("20201114183051_init")]
+    [Migration("20201119142149_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,25 +70,22 @@ namespace yoty.Migrations
 
             modelBuilder.Entity("Yoty.Data.Entities.ParticipancyEntity", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
                     b.Property<string>("BidId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("BuyerId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("BidId1")
                         .HasColumnType("int");
 
-                    b.Property<string>("BuyerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
                     b.Property<int>("NumOfUnits")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("BidId", "BuyerId");
 
                     b.HasIndex("BidId1");
 
@@ -103,9 +100,6 @@ namespace yoty.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
-
-                    b.Property<string>("BuyerEntityId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Category")
                         .HasColumnType("nvarchar(max)");
@@ -139,8 +133,6 @@ namespace yoty.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BuyerEntityId");
-
                     b.ToTable("Bids");
                 });
 
@@ -167,15 +159,16 @@ namespace yoty.Migrations
 
             modelBuilder.Entity("Yoty.Data.Entities.SellerOfferEntity", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
                     b.Property<string>("BidId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SellerId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("BidId1")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<int>("MinimumUnits")
@@ -190,13 +183,10 @@ namespace yoty.Migrations
                     b.Property<DateTime>("PublishedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("SellerId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("SellerId1")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("BidId", "SellerId");
 
                     b.HasIndex("BidId1");
 
@@ -239,13 +229,6 @@ namespace yoty.Migrations
                     b.Navigation("Buyer");
                 });
 
-            modelBuilder.Entity("Yoty.Data.Entities.ProductBidEntity", b =>
-                {
-                    b.HasOne("Yoty.Data.Entities.BuyerEntity", null)
-                        .WithMany("CurrentBidsAndItemsCount")
-                        .HasForeignKey("BuyerEntityId");
-                });
-
             modelBuilder.Entity("Yoty.Data.Entities.SellerOfferEntity", b =>
                 {
                     b.HasOne("Yoty.Data.Entities.ProductBidEntity", "Bid")
@@ -267,8 +250,6 @@ namespace yoty.Migrations
 
             modelBuilder.Entity("Yoty.Data.Entities.BuyerEntity", b =>
                 {
-                    b.Navigation("CurrentBidsAndItemsCount");
-
                     b.Navigation("CurrentParticipancies");
                 });
 

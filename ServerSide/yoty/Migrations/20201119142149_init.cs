@@ -8,6 +8,28 @@ namespace yoty.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Bids",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OwnerId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MaxPrice = table.Column<double>(type: "float", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ProductImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PotenialSuplliersCounter = table.Column<int>(type: "int", nullable: false),
+                    UnitsCounter = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bids", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BuyerAccountDetailsEntity",
                 columns: table => new
                 {
@@ -73,71 +95,13 @@ namespace yoty.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Bids",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OwnerId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MaxPrice = table.Column<double>(type: "float", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProductImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PotenialSuplliersCounter = table.Column<int>(type: "int", nullable: false),
-                    UnitsCounter = table.Column<int>(type: "int", nullable: false),
-                    BuyerEntityId = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Bids", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Bids_Buyers_BuyerEntityId",
-                        column: x => x.BuyerEntityId,
-                        principalTable: "Buyers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ParticipancyEntity",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BidId1 = table.Column<int>(type: "int", nullable: false),
-                    BidId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BuyerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    NumOfUnits = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ParticipancyEntity", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ParticipancyEntity_Bids_BidId1",
-                        column: x => x.BidId1,
-                        principalTable: "Bids",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ParticipancyEntity_Buyers_BuyerId",
-                        column: x => x.BuyerId,
-                        principalTable: "Buyers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "SellerOfferEntity",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BidId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    SellerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     BidId1 = table.Column<int>(type: "int", nullable: false),
-                    BidId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SellerId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SellerId1 = table.Column<int>(type: "int", nullable: false),
                     PublishedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MinimumUnits = table.Column<int>(type: "int", nullable: false),
@@ -146,7 +110,7 @@ namespace yoty.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SellerOfferEntity", x => x.Id);
+                    table.PrimaryKey("PK_SellerOfferEntity", x => new { x.BidId, x.SellerId });
                     table.ForeignKey(
                         name: "FK_SellerOfferEntity_Bids_BidId1",
                         column: x => x.BidId1,
@@ -161,10 +125,32 @@ namespace yoty.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Bids_BuyerEntityId",
-                table: "Bids",
-                column: "BuyerEntityId");
+            migrationBuilder.CreateTable(
+                name: "ParticipancyEntity",
+                columns: table => new
+                {
+                    BidId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    BuyerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    BidId1 = table.Column<int>(type: "int", nullable: false),
+                    NumOfUnits = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ParticipancyEntity", x => new { x.BidId, x.BuyerId });
+                    table.ForeignKey(
+                        name: "FK_ParticipancyEntity_Bids_BidId1",
+                        column: x => x.BidId1,
+                        principalTable: "Bids",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ParticipancyEntity_Buyers_BuyerId",
+                        column: x => x.BuyerId,
+                        principalTable: "Buyers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Buyers_BuyerAccountDetailsId",
@@ -206,13 +192,13 @@ namespace yoty.Migrations
                 name: "SellerOfferEntity");
 
             migrationBuilder.DropTable(
+                name: "Buyers");
+
+            migrationBuilder.DropTable(
                 name: "Bids");
 
             migrationBuilder.DropTable(
                 name: "Sellers");
-
-            migrationBuilder.DropTable(
-                name: "Buyers");
 
             migrationBuilder.DropTable(
                 name: "BuyerAccountDetailsEntity");

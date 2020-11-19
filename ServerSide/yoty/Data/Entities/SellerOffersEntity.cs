@@ -4,7 +4,6 @@ namespace Yoty.Data.Entities
 {
     public class SellerOfferEntity
     {
-        [Key]
         public int Id { get; set; }
 
         [Required]

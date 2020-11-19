@@ -14,5 +14,11 @@ namespace Yoty.Data
             optionsBuilder.UseSqlServer(
                 "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData");
         }
+        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<SellerOfferEntity>().HasKey(o => new { o.BidId, o.SellerId });
+            modelBuilder.Entity<ParticipancyEntity>().HasKey(p => new { p.BidId, p.BuyerId });
+        }
     }
 }

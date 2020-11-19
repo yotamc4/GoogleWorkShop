@@ -4,8 +4,6 @@ namespace Yoty.Data.Entities
 {
     public class ParticipancyEntity
     {
-
-        [Key]
         public int Id { get; set; }
 
         [Required]

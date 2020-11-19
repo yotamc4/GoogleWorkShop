@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using YOTY.Service.Managers;
 
-namespace YOTY.Service.Managers
+namespace yoty.Managers
 {
-    public interface IProductsBidsManager
+    public class ProductsBidsManager : IProductsBidsManager
     {
     }
 }

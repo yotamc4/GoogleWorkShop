@@ -14,8 +14,6 @@ namespace Yoty.Data.Entities
 
         public BuyerAccountDetailsEntity BuyerAccountDetails { get;set;}
 
-        public List<ProductBidEntity> CurrentBidsAndItemsCount { get; set; }
-
         public List<ParticipancyEntity> CurrentParticipancies { get; set; }
     }
 }
