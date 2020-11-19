@@ -14,6 +14,7 @@ import {
   Image,
 } from "@fluentui/react";
 import { CategoriesMap } from "../HomePage/Model/Categories";
+import { v4 as uuidv4 } from 'uuid';
 
 export const NewGroupBuyingForm: React.FunctionComponent = () => {
   const [formInputs, setFormInputs] = React.useReducer<
@@ -154,6 +155,7 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
             allowDisabledFocus
             //disabled={disabled}
             // checked={checked}
+            href={"/"}
           />
           <PrimaryButton
             text="Send"
@@ -161,6 +163,7 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
             allowDisabledFocus
             //disabled={disabled}
             //checked={checked}
+            href={`/products/${uuidv4()}`}
           />
         </Stack>
       </Stack>

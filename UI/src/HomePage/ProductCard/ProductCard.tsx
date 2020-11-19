@@ -11,8 +11,11 @@ import {
   Image,
   ITheme,
 } from 'office-ui-fabric-react';
+import { useHistory } from "react-router-dom";
+
 
 type ProductCardProps = {
+  productId: string,
   image: string,
   category: string,
   nameOfProduct: string,
@@ -27,6 +30,7 @@ type ProductCardProps = {
 const theme: ITheme =  getTheme();
 
 export const ProductCard: React.FunctionComponent<ProductCardProps> = ({ 
+  productId,
   image,
   category,
   nameOfProduct,
@@ -38,6 +42,7 @@ export const ProductCard: React.FunctionComponent<ProductCardProps> = ({
   unitsCounter
  }) => {
   
+  const history = useHistory();
   const cardTokens: ICardTokens = { childrenMargin: 12 };
   const agendaCardSectionTokens: ICardSectionTokens = { childrenGap: 0 };
   const attendantsCardSectionTokens: ICardSectionTokens = { childrenGap: 6 };
@@ -45,11 +50,14 @@ export const ProductCard: React.FunctionComponent<ProductCardProps> = ({
     src:image,
     imageFit: ImageFit.contain,
   };
+const changeHistory = () => {history.push(`/products/${productId}`)};
+
   initializeIcons();
     return ( 
     <Card
       tokens={cardTokens}
       styles={cardStyles}
+      onClick = {changeHistory}
     >
       <Circle/>
       <Card.Section
