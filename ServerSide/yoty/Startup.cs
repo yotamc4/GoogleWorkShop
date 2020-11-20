@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using YOTY.Service.WebApi.Middlewares;
 
 namespace yoty
 {
@@ -26,6 +27,7 @@ namespace yoty
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddCorrelationIdOptions();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,6 +48,8 @@ namespace yoty
             {
                 endpoints.MapControllers();
             });
+
+            app.UseMiddleware<CorrelationIdMiddleware>();
         }
     }
 }

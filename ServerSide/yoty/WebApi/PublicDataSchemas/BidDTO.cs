@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace YOTY.Service.WebApi.PublicDataSchemas
 {
     // data structure represents product bit with crud
-    public class ProductBid
+    public class Bid
     {
         string Id { get; set; }
 
@@ -15,6 +15,8 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
         string OwnerId { get; set; }
 
         string Category { get; set; }
+
+        string SubCategory { get; set; }
 
         double MaxPrice { get; set; }
 
@@ -29,7 +31,6 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
         int PotenialSuplliersCounter { get; set; }
 
         int UnitsCounter { get; set; }
-
 
     }
 }

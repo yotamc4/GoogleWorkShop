@@ -22,24 +22,17 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpGet]
         [Route("Buyers")]
-        public async Task<IActionResult<IList<Buyer>>> GetBuyers([FromBody] IList<string> buyersIds)
+        public async Task<ActionResult<IList<Buyer>>> GetBuyers([FromBody] IList<string> buyersIds)
         {
             try
             {
                 var result = await buyersManager.GetBuyers(buyersIds);
                 return Ok(result);
             }
-            catch
+            catch (Exception e)
             {
-                return BadRequestResult();
+                return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
-        }
-
-        [HttpGet]
-        [Route("BuyersOfProductBid/{bidId}")]
-        public async Task<IList<Buyer>> GetProductBidBuyers(string bidId)
-        {
-            return await buyersManager.GetBuyers(bidId);
         }
     }
 }
