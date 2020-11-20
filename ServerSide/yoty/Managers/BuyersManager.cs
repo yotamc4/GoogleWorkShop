@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using YOTY.Service.Managers;
 using YOTY.Service.WebApi.PublicDataSchemas;
 
-namespace yoty.Managers
+namespace YOTY.Service.Managers
 {
     public class BuyersManager : IBuyersManager
     {

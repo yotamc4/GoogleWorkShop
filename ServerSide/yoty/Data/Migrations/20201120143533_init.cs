@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace yoty.Migrations
+namespace YOTY.Service.Data.Migrations
 {
     public partial class init : Migration
     {

@@ -3,15 +3,16 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Yoty.Data;
 
-namespace yoty.Migrations
+namespace YOTY.Service.Data.Migrations
 {
     [DbContext(typeof(YotyContext))]
-    partial class YotyContextModelSnapshot : ModelSnapshot
+    [Migration("20201120143533_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,7 +20,7 @@ namespace yoty.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.0");
 
-            modelBuilder.Entity("Yoty.Data.Entities.BuyerAccountDetailsEntity", b =>
+            modelBuilder.Entity("YOTY.Service.Data.Entities.BuyerAccountDetailsEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -31,7 +32,7 @@ namespace yoty.Migrations
                     b.ToTable("BuyerAccountDetailsEntity");
                 });
 
-            modelBuilder.Entity("Yoty.Data.Entities.BuyerEntity", b =>
+            modelBuilder.Entity("YOTY.Service.Data.Entities.BuyerEntity", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -54,7 +55,7 @@ namespace yoty.Migrations
                     b.ToTable("Buyers");
                 });
 
-            modelBuilder.Entity("Yoty.Data.Entities.FacebookAccountEntity", b =>
+            modelBuilder.Entity("YOTY.Service.Data.Entities.FacebookAccountEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -66,7 +67,7 @@ namespace yoty.Migrations
                     b.ToTable("FacebookAccountEntity");
                 });
 
-            modelBuilder.Entity("Yoty.Data.Entities.ParticipancyEntity", b =>
+            modelBuilder.Entity("YOTY.Service.Data.Entities.ParticipancyEntity", b =>
                 {
                     b.Property<string>("BidId")
                         .HasColumnType("nvarchar(450)");
@@ -92,7 +93,7 @@ namespace yoty.Migrations
                     b.ToTable("ParticipancyEntity");
                 });
 
-            modelBuilder.Entity("Yoty.Data.Entities.ProductBidEntity", b =>
+            modelBuilder.Entity("YOTY.Service.Data.Entities.ProductBidEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -134,7 +135,7 @@ namespace yoty.Migrations
                     b.ToTable("Bids");
                 });
 
-            modelBuilder.Entity("Yoty.Data.Entities.SellerEntity", b =>
+            modelBuilder.Entity("YOTY.Service.Data.Entities.SellerEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -155,7 +156,7 @@ namespace yoty.Migrations
                     b.ToTable("Sellers");
                 });
 
-            modelBuilder.Entity("Yoty.Data.Entities.SellerOfferEntity", b =>
+            modelBuilder.Entity("YOTY.Service.Data.Entities.SellerOfferEntity", b =>
                 {
                     b.Property<string>("BidId")
                         .HasColumnType("nvarchar(450)");
@@ -193,13 +194,13 @@ namespace yoty.Migrations
                     b.ToTable("SellerOfferEntity");
                 });
 
-            modelBuilder.Entity("Yoty.Data.Entities.BuyerEntity", b =>
+            modelBuilder.Entity("YOTY.Service.Data.Entities.BuyerEntity", b =>
                 {
-                    b.HasOne("Yoty.Data.Entities.BuyerAccountDetailsEntity", "BuyerAccountDetails")
+                    b.HasOne("YOTY.Service.Data.Entities.BuyerAccountDetailsEntity", "BuyerAccountDetails")
                         .WithMany()
                         .HasForeignKey("BuyerAccountDetailsId");
 
-                    b.HasOne("Yoty.Data.Entities.FacebookAccountEntity", "FacebookAccount")
+                    b.HasOne("YOTY.Service.Data.Entities.FacebookAccountEntity", "FacebookAccount")
                         .WithMany()
                         .HasForeignKey("FacebookAccountId");
 
@@ -208,15 +209,15 @@ namespace yoty.Migrations
                     b.Navigation("FacebookAccount");
                 });
 
-            modelBuilder.Entity("Yoty.Data.Entities.ParticipancyEntity", b =>
+            modelBuilder.Entity("YOTY.Service.Data.Entities.ParticipancyEntity", b =>
                 {
-                    b.HasOne("Yoty.Data.Entities.ProductBidEntity", "Bid")
+                    b.HasOne("YOTY.Service.Data.Entities.ProductBidEntity", "Bid")
                         .WithMany("CurrentParticipancies")
                         .HasForeignKey("BidId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Yoty.Data.Entities.BuyerEntity", "Buyer")
+                    b.HasOne("YOTY.Service.Data.Entities.BuyerEntity", "Buyer")
                         .WithMany("CurrentParticipancies")
                         .HasForeignKey("BuyerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -227,15 +228,15 @@ namespace yoty.Migrations
                     b.Navigation("Buyer");
                 });
 
-            modelBuilder.Entity("Yoty.Data.Entities.SellerOfferEntity", b =>
+            modelBuilder.Entity("YOTY.Service.Data.Entities.SellerOfferEntity", b =>
                 {
-                    b.HasOne("Yoty.Data.Entities.ProductBidEntity", "Bid")
+                    b.HasOne("YOTY.Service.Data.Entities.ProductBidEntity", "Bid")
                         .WithMany("CurrentOffers")
                         .HasForeignKey("BidId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Yoty.Data.Entities.SellerEntity", "Seller")
+                    b.HasOne("YOTY.Service.Data.Entities.SellerEntity", "Seller")
                         .WithMany("CurrentOffers")
                         .HasForeignKey("SellerId1")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -246,19 +247,19 @@ namespace yoty.Migrations
                     b.Navigation("Seller");
                 });
 
-            modelBuilder.Entity("Yoty.Data.Entities.BuyerEntity", b =>
+            modelBuilder.Entity("YOTY.Service.Data.Entities.BuyerEntity", b =>
                 {
                     b.Navigation("CurrentParticipancies");
                 });
 
-            modelBuilder.Entity("Yoty.Data.Entities.ProductBidEntity", b =>
+            modelBuilder.Entity("YOTY.Service.Data.Entities.ProductBidEntity", b =>
                 {
                     b.Navigation("CurrentOffers");
 
                     b.Navigation("CurrentParticipancies");
                 });
 
-            modelBuilder.Entity("Yoty.Data.Entities.SellerEntity", b =>
+            modelBuilder.Entity("YOTY.Service.Data.Entities.SellerEntity", b =>
                 {
                     b.Navigation("CurrentOffers");
                 });

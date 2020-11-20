@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using YOTY.Service.Managers;
 
-namespace yoty.Managers
+namespace YOTY.Service.Managers
 {
     public class SellersManager : ISellersManager
     {

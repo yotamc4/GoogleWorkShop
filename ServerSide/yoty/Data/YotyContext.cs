@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Yoty.Data.Entities;
+using YOTY.Service.Data.Entities;
 
-namespace Yoty.Data
+namespace YOTY.Service.Data
 {
     public class YotyContext : DbContext
     {

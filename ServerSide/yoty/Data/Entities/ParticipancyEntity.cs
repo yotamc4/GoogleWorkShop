@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-namespace Yoty.Data.Entities
+
+namespace YOTY.Service.Data.Entities
 {
     public class ParticipancyEntity
     {
