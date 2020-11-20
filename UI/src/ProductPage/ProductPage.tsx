@@ -9,12 +9,14 @@ import {
   Stack,
   Text,
 } from "@fluentui/react";
+import { SuppliersList } from "./SupplierList";
 
 export const ProductPage: React.FunctionComponent = () => {
   return (
     <Stack>
       <Stack
         horizontal
+        horizontalAlign="center"
         tokens={{
           childrenGap: "2rem",
           padding: 10,
@@ -73,6 +75,9 @@ export const ProductPage: React.FunctionComponent = () => {
           />
         </Stack>
       </Stack>
+      <Stack horizontal horizontalAlign="center">
+        <SuppliersList/>
+      </Stack> 
     </Stack>
   );
 };

@@ -5,6 +5,7 @@ import {
   SearchBox,
   ISearchBoxStyles,
   DefaultButton,
+  IStackStyles,
 } from "@fluentui/react";
 import { ProductCard } from "./ProductCard/ProductCard";
 import { NavigationPane } from "./NavigationPane/NavigationPane";
@@ -19,13 +20,14 @@ export const Home: React.FunctionComponent = () => {
     padding: 20,
     childrenGap: 20,
   };
-  const searchBoxStyles: Partial<ISearchBoxStyles> = { root: { width: 400 } };
+  const searchBoxStyles: Partial<ISearchBoxStyles> = { root: { height:"2.6rem",width: '35rem', marginRight:'13rem'} };
+
   return (
     <Stack tokens={verticalGapStackTokens}>
       <Stack
         horizontal
         horizontalAlign="center"
-        tokens={genericGapStackTokens(500)}
+        tokens={genericGapStackTokens(120)}
       >
         <DefaultButton
           text={"Create a new group-buy"}
@@ -38,7 +40,6 @@ export const Home: React.FunctionComponent = () => {
         <SearchBox
           styles={searchBoxStyles}
           placeholder="Search"
-          underlined={true}
         />
       </Stack>
       <Stack
