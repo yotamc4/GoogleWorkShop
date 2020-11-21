@@ -10,6 +10,5 @@ namespace YOTY.Service.Managers
     {
         Task<IList<Buyer>> GetBuyers(IList<string> buyersIds);
         Task<IList<Buyer>> GetBuyers(string productBidId);
-
     }
 }
