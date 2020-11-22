@@ -7,6 +7,8 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 {
     public class BidBuyerJoinRequest
     {
-        public int Items { get; set; }
+        string buyerId { get; }
+        string productBidId { get; }
+        public int Items { get; }
     }
 }

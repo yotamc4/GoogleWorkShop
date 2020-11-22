@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace YOTY.Service.WebApi.PublicDataSchemas
 {
-    public class Buyer
+    public class BuyerDTO: BaseDTO
     {
         string Id { get; set; }
 
@@ -14,7 +14,6 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
         FacebookAccount FacebookAccount { get; set; }
 
         BuyerAccountDeatails BuyerAccountDeatails { get;set;}
-     
-
+    
     }
 }

@@ -22,7 +22,7 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpGet]
         [Route("Buyers")]
-        public async Task<ActionResult<IList<Buyer>>> GetBuyers([FromBody] IList<string> buyersIds)
+        public async Task<ActionResult<IList<BuyerDTO>>> GetBuyers([FromBody] IList<string> buyersIds)
         {
             try
             {

@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using YOTY.Service.WebApi.Middlewares;
+using YOTY.Service.Managers;
 
 namespace yoty
 {
@@ -28,6 +29,7 @@ namespace yoty
         {
             services.AddControllers();
             services.AddCorrelationIdOptions();
+            services.AddManagers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

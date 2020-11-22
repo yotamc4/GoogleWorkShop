@@ -10,7 +10,7 @@ namespace YOTY.Service.WebApi.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class SellersController: ControllerBase
+    public class SuppliersController: ControllerBase
     {
     }
 }

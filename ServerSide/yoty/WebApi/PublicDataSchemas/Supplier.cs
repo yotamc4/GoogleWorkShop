@@ -2,7 +2,7 @@
 
 namespace YOTY.Service.WebApi.PublicDataSchemas
 {
-    public class Seller
+    public class Supplier
     {
         string Id { get; set; }
 

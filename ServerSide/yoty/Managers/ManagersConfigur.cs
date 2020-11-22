@@ -1,10 +1,15 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
 namespace YOTY.Service.Managers
 {
-    public class ManagersConfigur()
-    {
+    using Microsoft.Extensions.DependencyInjection;
+    using YOTY.Service.Managers.Bids;
 
+    public static class ManagersConfigur
+    {
+        public static IServiceCollection AddManagers(this IServiceCollection services)
+        {
+            return services.AddScoped<IBidsManager, StamBidManager>();
+        }
     }
 }

@@ -8,12 +8,12 @@ namespace YOTY.Service.Managers.Buyers
 {
     public class StamBuyerManager : IBuyersManager
     {
-        public Task<IList<Buyer>> GetBuyers(IList<string> buyersIds)
+        public Task<IList<BuyerDTO>> GetBuyers(IList<string> buyersIds)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IList<Buyer>> GetBuyers(string productBidId)
+        public Task<IList<BuyerDTO>> GetBuyers(string productBidId)
         {
             throw new NotImplementedException();
         }

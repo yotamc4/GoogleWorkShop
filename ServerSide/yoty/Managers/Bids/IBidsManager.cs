@@ -8,15 +8,26 @@ namespace YOTY.Service.Managers.Bids
 {
     public interface IBidsManager
     {
-        Task<string> CreateNewBid(Bid productBid);
+        // create bid
+        Task<Response<BidDTO>> CreateNewBid(NewBidRequst productBid);
 
-        Task AddBuyerToBid(string productBidId, string buyerId, BidBuyerJoinRequest bidBuyerJoinRequest);
+        // get bid details
+        Task<Response<BidDTO>> GetBid(string bidId);
+        Task<IList<BuyerDTO>> GetBidBuyers(string bidId);
+        Task<IList<BuyerDTO>> GetBidSuplliers(string bidId);
 
-        Task AddSellerOfferToBid(SellerOffer sellerOffer);
+        // modify bid
+        Task<Response<BuyerDTO>> AddBuyer(BidBuyerJoinRequest bidBuyerJoinRequest);
+        Task<Response> DeleteBuyer(string bidId, string buyerId);
 
-        Task GetBids();
+        Task<Response<SupplierProposalDTO>> AddSupplierProposal(SupplierProposalRequest supplierProposal);
+        Task<Response> DeleteSupplierProposal(string bidId, string ProposalId);
 
-        Task<IList<Buyer>> GetBuyers(string productBidId);
+
+
+        Task<IList<BidDTO>> GetBids();
+
+
 
     }
 }

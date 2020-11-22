@@ -8,8 +8,8 @@ namespace YOTY.Service.Managers
 {
     public interface IBuyersManager
     {
-        Task<IList<Buyer>> GetBuyers(IList<string> buyersIds);
-        Task<IList<Buyer>> GetBuyers(string productBidId);
+        Task<IList<BuyerDTO>> GetBuyers(IList<string> buyersIds);
+        Task<IList<BuyerDTO>> GetBuyers(string productBidId);
 
     }
 }

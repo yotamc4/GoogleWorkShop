@@ -1,4 +1,5 @@
-﻿//using AutoMapper;
+﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -14,11 +15,19 @@ namespace YOTY.Service.WebApi.Controllers
     [Route("api/v1/[controller]")]
     public class BidsController: ControllerBase
     {
-        private IBidsManager productsBidsManager;
+        private IBidsManager bidsManager;
 
-        public BidsController(IBidsManager productsBidsManager)
+        public BidsController(IBidsManager bidsManager)
         {
-            this.productsBidsManager = productsBidsManager;
+            this.bidsManager = bidsManager;
+        }
+
+        [HttpGet]
+        [Route("{Category}")]
+        public async Task<ActionResult<IList<BidDTO>>> GetBids([FromQuery] BidsFilters bidsFilters)
+        {
+            var str = "2";
+            return this.Ok(str);
         }
 
         [HttpGet]
@@ -30,11 +39,11 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpPost]
         [Route("NewBid")]
-        public async Task<ActionResult<string>> PostNewBid(Bid bid)
+        public async Task<ActionResult<string>> PostNewBid(NewBidRequst bid)
         {
             try
             {
-                var newBidId = await this.productsBidsManager.CreateNewBid(bid).ConfigureAwait(false); ;
+                var newBidId = await this.bidsManager.CreateNewBid(bid).ConfigureAwait(false); ;
                 return Ok(newBidId);
             }
             catch (Exception e)
@@ -45,18 +54,18 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpGet]
         [Route("{bidId}/Buyers")]
-        public async Task<IList<Buyer>> GetProductBidBuyers(string bidId)
+        public async Task<IList<BuyerDTO>> GetProductBidBuyers(string bidId)
         {
-            return await productsBidsManager.GetBuyers(bidId);
+            return await bidsManager.GetBuyers(bidId);
         }
-
+        /*
         [HttpPost]
         [Route("{bidId}/Buyers/{buyerId}")]
         public async Task<ActionResult<string>> PostNewBuyerToBid(string productBidId, string buyerId, BidBuyerJoinRequest bidBuyerJoinRequest)
         {
             try
             {
-                await this.productsBidsManager.AddBuyerToBid(productBidId, buyerId, bidBuyerJoinRequest).ConfigureAwait(false);
+                await this.bidsManager.AddBuyerToBid(productBidId, buyerId, bidBuyerJoinRequest).ConfigureAwait(false);
                 return Ok(8); // checking
             }
 
@@ -65,6 +74,6 @@ namespace YOTY.Service.WebApi.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Inner Failure");
             }
         }
-
+        */
     }
 }
