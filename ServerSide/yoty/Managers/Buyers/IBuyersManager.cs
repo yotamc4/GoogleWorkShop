@@ -9,5 +9,6 @@ namespace YOTY.Service.Managers.Buyers
     public interface IBuyersManager
     {
         Task<IList<BuyerDTO>> GetBuyers(IList<string> buyersIds);
+        Task<IList<BuyerDTO>> GetBuyers(string productBidId);
     }
 }
