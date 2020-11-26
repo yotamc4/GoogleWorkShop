@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace YOTY.Service.Data.Migrations
+namespace YOTY.Service.Migrations
 {
     public partial class init : Migration
     {
@@ -11,8 +11,7 @@ namespace YOTY.Service.Data.Migrations
                 name: "Bids",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OwnerId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -33,8 +32,7 @@ namespace YOTY.Service.Data.Migrations
                 name: "BuyerAccountDetailsEntity",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -45,8 +43,7 @@ namespace YOTY.Service.Data.Migrations
                 name: "FacebookAccountEntity",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -57,8 +54,7 @@ namespace YOTY.Service.Data.Migrations
                 name: "Sellers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Rating = table.Column<double>(type: "float", nullable: false),
                     ReviewsCounter = table.Column<int>(type: "int", nullable: false)
@@ -74,8 +70,8 @@ namespace YOTY.Service.Data.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FacebookAccountId = table.Column<int>(type: "int", nullable: true),
-                    BuyerAccountDetailsId = table.Column<int>(type: "int", nullable: true)
+                    FacebookAccountId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    BuyerAccountDetailsId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -100,9 +96,7 @@ namespace YOTY.Service.Data.Migrations
                 {
                     BidId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     SellerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    BidId1 = table.Column<int>(type: "int", nullable: false),
-                    SellerId1 = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PublishedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MinimumUnits = table.Column<int>(type: "int", nullable: false),
                     OfferedPrice = table.Column<double>(type: "float", nullable: false),
@@ -112,14 +106,14 @@ namespace YOTY.Service.Data.Migrations
                 {
                     table.PrimaryKey("PK_SellerOfferEntity", x => new { x.BidId, x.SellerId });
                     table.ForeignKey(
-                        name: "FK_SellerOfferEntity_Bids_BidId1",
-                        column: x => x.BidId1,
+                        name: "FK_SellerOfferEntity_Bids_BidId",
+                        column: x => x.BidId,
                         principalTable: "Bids",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SellerOfferEntity_Sellers_SellerId1",
-                        column: x => x.SellerId1,
+                        name: "FK_SellerOfferEntity_Sellers_SellerId",
+                        column: x => x.SellerId,
                         principalTable: "Sellers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -131,16 +125,15 @@ namespace YOTY.Service.Data.Migrations
                 {
                     BidId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     BuyerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    BidId1 = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NumOfUnits = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ParticipancyEntity", x => new { x.BidId, x.BuyerId });
                     table.ForeignKey(
-                        name: "FK_ParticipancyEntity_Bids_BidId1",
-                        column: x => x.BidId1,
+                        name: "FK_ParticipancyEntity_Bids_BidId",
+                        column: x => x.BidId,
                         principalTable: "Bids",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -163,24 +156,14 @@ namespace YOTY.Service.Data.Migrations
                 column: "FacebookAccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ParticipancyEntity_BidId1",
-                table: "ParticipancyEntity",
-                column: "BidId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ParticipancyEntity_BuyerId",
                 table: "ParticipancyEntity",
                 column: "BuyerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SellerOfferEntity_BidId1",
+                name: "IX_SellerOfferEntity_SellerId",
                 table: "SellerOfferEntity",
-                column: "BidId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SellerOfferEntity_SellerId1",
-                table: "SellerOfferEntity",
-                column: "SellerId1");
+                column: "SellerId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
