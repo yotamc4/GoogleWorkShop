@@ -6,4 +6,5 @@ export interface ProductDetails {
   groupExpirationDate: string;
   imageUrl: string;
   description: string;
+  mockId: number;
 }
