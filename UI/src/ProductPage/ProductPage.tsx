@@ -1,19 +1,35 @@
 import React from "react";
 import * as Styles from "./ProductPageStyles";
+import * as mockProducts from "../Modal/MockProducts";
 import {
   DefaultButton,
   FontIcon,
-  Icon,
   Image,
   Separator,
   Stack,
   Text,
 } from "@fluentui/react";
 import { SuppliersSection } from "./SupplierSection";
+import { ProductDetails } from "../Modal/ProductDeatils";
+import { GroupDetails } from "../Modal/GroupDetails";
+import { useParams } from "react-router-dom";
 
-export const ProductPage: React.FunctionComponent = () => {
+export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
+  mockProductId
+) => {
+  const { id } = useParams<{ id: string }>();
+  const [productDetails, setProductDetails] = React.useState<ProductDetails>(
+    getMockProduct(id)
+  );
+
+  const [groupDetails, setGroupDetails] = React.useState<GroupDetails>({
+    numberOfParticipants: 170,
+    groupExpirationDate: "",
+  });
+
+
   return (
-    <Stack>
+    <Stack horizontalAlign={"center"}>
       <Stack
         horizontal
         horizontalAlign="center"
@@ -23,7 +39,7 @@ export const ProductPage: React.FunctionComponent = () => {
         }}
       >
         <Image
-          src="https://bstore.bezeq.co.il/media/20696/740-2-blue.jpg"
+          src={productDetails.imageUrl}
           height="30rem"
           width="30rem"
         ></Image>
@@ -38,19 +54,20 @@ export const ProductPage: React.FunctionComponent = () => {
             styles={Styles.headerStyle}
             variant="xLargePlus"
           >
-            Lenovo ThinkPad T4800
+            {productDetails.name}
           </Text>
           <Separator />
-          <Text>Maximum Acceptable Price: 140₪</Text>
-          <Text>Group's expiration date: {new Date().toString()}</Text>
-          <Text variant="large">Description </Text>
+          <Text styles={Styles.subHeaderStyle}>
+            Maximum Acceptable Price: {productDetails.maximumAcceptablePrice}₪
+          </Text>
+          <Text styles={Styles.subHeaderStyle}>
+            Group's expiration date: {productDetails.groupExpirationDate}
+          </Text>
+          <Text styles={Styles.subHeaderStyle} variant="large">
+            Description
+          </Text>
           <Text styles={Styles.descriptionStyle}>
-            This example shows how components that used to be styled using CSS
-            can be styled using JS styling. (Look at the bottom of the code to
-            see the equivalent SCSS.) The preferred method is JS styling for
-            several reasons: type safety for styling, more predictable behavior,
-            and clear feedback via typing when component changes affect existing
-            styling code.
+            {productDetails.description}
           </Text>
           <Separator />
           <Stack horizontal verticalAlign="center">
@@ -58,7 +75,10 @@ export const ProductPage: React.FunctionComponent = () => {
               iconName="AddGroup"
               className={Styles.classNames.greenYellow}
             />
-            <Text>170 pepole have joined to the group so far</Text>
+            <Text>
+              {groupDetails.numberOfParticipants} pepole have joined to the
+              group so far
+            </Text>
           </Stack>
           <DefaultButton
             text="Join The Group"
@@ -76,8 +96,35 @@ export const ProductPage: React.FunctionComponent = () => {
         </Stack>
       </Stack>
       <Stack horizontal horizontalAlign="center">
+        <SuppliersList />
+      </Stack>
         <SuppliersSection/>
       </Stack> 
     </Stack>
   );
 };
+
+function getMockProduct(id: string | undefined): ProductDetails {
+  switch (id) {
+    case "1":
+      return mockProducts.AirPodsProProduct;
+    case "2":
+      return mockProducts.AppleWatchSeries6GPSProduct;
+    case "3":
+      return mockProducts.GooglePixelProduct;
+    case "4":
+      return mockProducts.InokimMini2WhiteProduct;
+    case "5":
+      return mockProducts.LenovoThinkPadProduct;
+    case "6":
+      return mockProducts.MicrosoftSurfacePro7Product;
+    case "7":
+      return mockProducts.PowerbeatsProRedProduct;
+    case "8":
+      return mockProducts.SamsungUN70TU6980FXZAProduct;
+    case "9":
+      return mockProducts.SonyPlaystation5DigitalProduct;
+    default:
+      return mockProducts.XiaomiMiBoxProduct;
+  }
+}

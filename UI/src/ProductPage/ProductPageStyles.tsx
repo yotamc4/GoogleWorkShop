@@ -12,6 +12,10 @@ export const headerStyle: ITextStyles = {
   root: { fontWeight: FontWeights.regular },
 };
 
+export const subHeaderStyle: ITextStyles = {
+  root: { fontWeight: FontWeights.semibold },
+};
+
 export const descriptionStyle: ITextStyles = {
   root: { maxWidth: "35rem" },
 };
