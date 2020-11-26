@@ -1,5 +1,6 @@
 import React from "react";
 import * as Styles from "./ProductPageStyles";
+import * as mockProducts from "../Modal/MockProducts";
 import {
   DefaultButton,
   FontIcon,
@@ -11,12 +12,11 @@ import {
 } from "@fluentui/react";
 import { SuppliersList } from "./SupplierList";
 import { ProductDetails } from "../Modal/ProductDeatils";
-import { LenovoThinkPadProduct } from "../Modal/MockProducts";
 import { GroupDetails } from "../Modal/GroupDetails";
 
 export const ProductPage: React.FunctionComponent = () => {
   const [productDetails, setProductDetails] = React.useState<ProductDetails>(
-    LenovoThinkPadProduct
+    mockProducts.XiaomiMiBoxProduct
   );
 
   const [groupDetails, setGroupDetails] = React.useState<GroupDetails>({
