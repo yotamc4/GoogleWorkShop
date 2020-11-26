@@ -5,7 +5,7 @@ namespace YOTY.Service.Managers
     using Microsoft.Extensions.DependencyInjection;
     using YOTY.Service.Managers.Bids;
 
-    public static class ManagersConfigur
+    public static class ManagersConfigurer
     {
         public static IServiceCollection AddManagers(this IServiceCollection services)
         {
