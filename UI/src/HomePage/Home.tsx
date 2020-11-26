@@ -1,4 +1,5 @@
 import React from "react"; // importing FunctionComponent
+import * as mockProducts from "../Modal/MockProducts";
 import {
   IStackTokens,
   Stack,
@@ -19,7 +20,9 @@ export const Home: React.FunctionComponent = () => {
     padding: 20,
     childrenGap: 20,
   };
-  const searchBoxStyles: Partial<ISearchBoxStyles> = { root: { height:"2.6rem",width: '35rem', marginRight:'13rem'} };
+  const searchBoxStyles: Partial<ISearchBoxStyles> = {
+    root: { height: "2.6rem", width: "35rem", marginRight: "13rem" },
+  };
 
   return (
     <Stack tokens={verticalGapStackTokens}>
@@ -37,10 +40,7 @@ export const Home: React.FunctionComponent = () => {
             styles: { root: { color: "darkgrey" } },
           }}
         ></DefaultButton>
-        <SearchBox
-          styles={searchBoxStyles}
-          placeholder="Search"
-        />
+        <SearchBox styles={searchBoxStyles} placeholder="Search" />
       </Stack>
       <Stack
         horizontal
@@ -52,37 +52,22 @@ export const Home: React.FunctionComponent = () => {
         </Stack>
         <Stack tokens={genericGapStackTokens(20)}>
           <Stack horizontal tokens={genericGapStackTokens(20)}>
-            {test}
-            {test}
-            {test}
+            <ProductCard {...mockProducts.AirPodsProProduct} />
+            <ProductCard {...mockProducts.AppleWatchSeries6GPSProduct} />
+            <ProductCard {...mockProducts.GooglePixelProduct} />
           </Stack>
           <Stack horizontal tokens={genericGapStackTokens(20)}>
-            {test}
-            {test}
-            {test}
+            <ProductCard {...mockProducts.InokimMini2WhiteProduct} />
+            <ProductCard {...mockProducts.LenovoThinkPadProduct} />
+            <ProductCard {...mockProducts.MicrosoftSurfacePro7Product} />
           </Stack>
           <Stack horizontal tokens={genericGapStackTokens(20)}>
-            {test}
-            {test}
-            {test}
+            <ProductCard {...mockProducts.PowerbeatsProRedProduct} />
+            <ProductCard {...mockProducts.SamsungUN70TU6980FXZAProduct} />
+            <ProductCard {...mockProducts.SonyPlaystation5DigitalProduct} />
           </Stack>
         </Stack>
       </Stack>
     </Stack>
   );
 };
-
-const test = (
-  <ProductCard
-    productId="eiuw23jh3kjhfkjhfk3jh3kj3hkj3fkj3hk3jh33"
-    image="https://bstore.bezeq.co.il/media/20696/740-2-blue.jpg"
-    category="computers"
-    nameOfProduct="Lenovo ThinkPad T4800"
-    maxPrice={4000}
-    creationDate="11/11/2020"
-    expirationDate="11/13/2020"
-    description="Lenovo ThinkPad T480 is a Windows 10 laptop with a 14.00-inch display that has a resolution of 1920x1080 pixels."
-    potenialSuplliersCounter={3}
-    unitsCounter={95}
-  />
-);

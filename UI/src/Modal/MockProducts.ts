@@ -1,6 +1,7 @@
 import { ProductDetails } from "./ProductDeatils";
 
 export const SonyPlaystation5DigitalProduct: ProductDetails = {
+  mockId: 9,
   name: "Sony Playstation 5 Digital Edition",
   category: "Electronics",
   subCategory: "Consoles",
@@ -16,6 +17,7 @@ export const SonyPlaystation5DigitalProduct: ProductDetails = {
 };
 
 export const AirPodsProProduct: ProductDetails = {
+  mockId: 1,
   name: "AirPods Pro",
   category: "Electronics",
   subCategory: "Headphones",
@@ -28,6 +30,7 @@ export const AirPodsProProduct: ProductDetails = {
 };
 
 export const GooglePixelProduct: ProductDetails = {
+  mockId: 3,
   name: "Google Pixel 5 5G 128GB",
   category: "Electronics",
   subCategory: "Cell Phones",
@@ -59,6 +62,7 @@ export const GooglePixelProduct: ProductDetails = {
 };
 
 export const SamsungUN70TU6980FXZAProduct: ProductDetails = {
+  mockId: 8,
   name: "Samsung - 70' Class 6 Series LED 4K UHD Smart Tizen TV",
   category: "Electronics",
   subCategory: "Television",
@@ -71,6 +75,7 @@ export const SamsungUN70TU6980FXZAProduct: ProductDetails = {
 };
 
 export const MicrosoftSurfacePro7Product: ProductDetails = {
+  mockId: 6,
   name: "Microsoft - Surface Pro 7 - 12.3'",
   category: "Computers",
   subCategory: "Tablets",
@@ -83,6 +88,7 @@ export const MicrosoftSurfacePro7Product: ProductDetails = {
 };
 
 export const InokimMini2WhiteProduct: ProductDetails = {
+  mockId: 4,
   name: "Inokim Mini 2 - White",
   category: "Transportations",
   subCategory: "Electronic scooters",
@@ -104,6 +110,7 @@ Material:	Aluminum 6061 T6
 };
 
 export const AppleWatchSeries6GPSProduct: ProductDetails = {
+  mockId: 2,
   name: "Apple Watch Series 6 (GPS)",
   category: "Computers",
   subCategory: "Cell Phones",
@@ -116,6 +123,7 @@ export const AppleWatchSeries6GPSProduct: ProductDetails = {
 };
 
 export const LenovoThinkPadProduct: ProductDetails = {
+  mockId: 5,
   name: "Lenovo ThinkPad T480",
   category: "Computers",
   subCategory: "Laptops",
@@ -128,6 +136,7 @@ export const LenovoThinkPadProduct: ProductDetails = {
 };
 
 export const PowerbeatsProRedProduct: ProductDetails = {
+  mockId: 7,
   name: "Powerbeats Pro -Lava Red",
   category: "Electronics",
   subCategory: "Headphones",
@@ -140,6 +149,7 @@ export const PowerbeatsProRedProduct: ProductDetails = {
 };
 
 export const XiaomiMiBoxProduct: ProductDetails = {
+  mockId: 9,
   name: "Xiaomi Mi TV Box S",
   category: "Electronics",
   subCategory: "Media Streamer",

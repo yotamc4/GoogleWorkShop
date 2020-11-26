@@ -4,7 +4,6 @@ import * as mockProducts from "../Modal/MockProducts";
 import {
   DefaultButton,
   FontIcon,
-  Icon,
   Image,
   Separator,
   Stack,
@@ -13,10 +12,14 @@ import {
 import { SuppliersList } from "./SupplierList";
 import { ProductDetails } from "../Modal/ProductDeatils";
 import { GroupDetails } from "../Modal/GroupDetails";
+import { useParams } from "react-router-dom";
 
-export const ProductPage: React.FunctionComponent = () => {
+export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
+  mockProductId
+) => {
+  const { id } = useParams<{ id: string }>();
   const [productDetails, setProductDetails] = React.useState<ProductDetails>(
-    mockProducts.XiaomiMiBoxProduct
+    getMockProduct(id)
   );
 
   const [groupDetails, setGroupDetails] = React.useState<GroupDetails>({
@@ -97,3 +100,28 @@ export const ProductPage: React.FunctionComponent = () => {
     </Stack>
   );
 };
+
+function getMockProduct(id: string | undefined): ProductDetails {
+  switch (id) {
+    case "1":
+      return mockProducts.AirPodsProProduct;
+    case "2":
+      return mockProducts.AppleWatchSeries6GPSProduct;
+    case "3":
+      return mockProducts.GooglePixelProduct;
+    case "4":
+      return mockProducts.InokimMini2WhiteProduct;
+    case "5":
+      return mockProducts.LenovoThinkPadProduct;
+    case "6":
+      return mockProducts.MicrosoftSurfacePro7Product;
+    case "7":
+      return mockProducts.PowerbeatsProRedProduct;
+    case "8":
+      return mockProducts.SamsungUN70TU6980FXZAProduct;
+    case "9":
+      return mockProducts.SonyPlaystation5DigitalProduct;
+    default:
+      return mockProducts.XiaomiMiBoxProduct;
+  }
+}
