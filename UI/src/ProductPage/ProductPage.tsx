@@ -9,7 +9,7 @@ import {
   Stack,
   Text,
 } from "@fluentui/react";
-import { SuppliersList } from "./SupplierList";
+import { SuppliersSection } from "./SupplierSection";
 
 export const ProductPage: React.FunctionComponent = () => {
   return (
@@ -76,7 +76,7 @@ export const ProductPage: React.FunctionComponent = () => {
         </Stack>
       </Stack>
       <Stack horizontal horizontalAlign="center">
-        <SuppliersList/>
+        <SuppliersSection/>
       </Stack> 
     </Stack>
   );
