@@ -10,8 +10,20 @@ import {
   Text,
 } from "@fluentui/react";
 import { SuppliersList } from "./SupplierList";
+import { ProductDetails } from "../Modal/ProductDeatils";
+import { LenovoThinkPadProduct } from "../Modal/MockProducts";
+import { GroupDetails } from "../Modal/GroupDetails";
 
 export const ProductPage: React.FunctionComponent = () => {
+  const [productDetails, setProductDetails] = React.useState<ProductDetails>(
+    LenovoThinkPadProduct
+  );
+
+  const [groupDetails, setGroupDetails] = React.useState<GroupDetails>({
+    numberOfParticipants: 170,
+    groupExpirationDate: "",
+  });
+
   return (
     <Stack horizontalAlign={"center"}>
       <Stack
@@ -23,7 +35,7 @@ export const ProductPage: React.FunctionComponent = () => {
         }}
       >
         <Image
-          src="https://bstore.bezeq.co.il/media/20696/740-2-blue.jpg"
+          src={productDetails.imageUrl}
           height="30rem"
           width="30rem"
         ></Image>
@@ -38,25 +50,20 @@ export const ProductPage: React.FunctionComponent = () => {
             styles={Styles.headerStyle}
             variant="xLargePlus"
           >
-            Lenovo ThinkPad T4800
+            {productDetails.name}
           </Text>
           <Separator />
           <Text styles={Styles.subHeaderStyle}>
-            Maximum Acceptable Price: 140₪
+            Maximum Acceptable Price: {productDetails.maximumAcceptablePrice}₪
           </Text>
           <Text styles={Styles.subHeaderStyle}>
-            Group's expiration date: {new Date().toString()}
+            Group's expiration date: {productDetails.groupExpirationDate}
           </Text>
           <Text styles={Styles.subHeaderStyle} variant="large">
-            Description{" "}
+            Description
           </Text>
           <Text styles={Styles.descriptionStyle}>
-            This example shows how components that used to be styled using CSS
-            can be styled using JS styling. (Look at the bottom of the code to
-            see the equivalent SCSS.) The preferred method is JS styling for
-            several reasons: type safety for styling, more predictable behavior,
-            and clear feedback via typing when component changes affect existing
-            styling code.
+            {productDetails.description}
           </Text>
           <Separator />
           <Stack horizontal verticalAlign="center">
@@ -64,7 +71,10 @@ export const ProductPage: React.FunctionComponent = () => {
               iconName="AddGroup"
               className={Styles.classNames.greenYellow}
             />
-            <Text>170 pepole have joined to the group so far</Text>
+            <Text>
+              {groupDetails.numberOfParticipants} pepole have joined to the
+              group so far
+            </Text>
           </Stack>
           <DefaultButton
             text="Join The Group"
@@ -82,8 +92,8 @@ export const ProductPage: React.FunctionComponent = () => {
         </Stack>
       </Stack>
       <Stack horizontal horizontalAlign="center">
-        <SuppliersList/>
-      </Stack> 
+        <SuppliersList />
+      </Stack>
     </Stack>
   );
 };
