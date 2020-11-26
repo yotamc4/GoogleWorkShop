@@ -9,7 +9,6 @@ import {
 import { ProductCard } from "./ProductCard/ProductCard";
 import { NavigationPane } from "./NavigationPane/NavigationPane";
 
-
 export const Home: React.FunctionComponent = () => {
   const genericGapStackTokens: (gap: number) => IStackTokens = (gap) => ({
     childrenGap: gap,
@@ -29,10 +28,11 @@ export const Home: React.FunctionComponent = () => {
       >
         <DefaultButton
           text={"Create a new group-buy"}
+          primary
           href={"/createNewGroup"}
           iconProps={{
             iconName: "Add",
-            styles: { root: { color: "deepskyblue" } },
+            styles: { root: { color: "darkgrey" } },
           }}
         ></DefaultButton>
         <SearchBox
@@ -73,7 +73,7 @@ export const Home: React.FunctionComponent = () => {
 
 const test = (
   <ProductCard
-    productId = "eiuw23jh3kjhfkjhfk3jh3kj3hkj3fkj3hk3jh33"
+    productId="eiuw23jh3kjhfkjhfk3jh3kj3hkj3fkj3hk3jh33"
     image="https://bstore.bezeq.co.il/media/20696/740-2-blue.jpg"
     category="computers"
     nameOfProduct="Lenovo ThinkPad T4800"

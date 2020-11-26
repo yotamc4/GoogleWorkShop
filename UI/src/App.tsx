@@ -5,6 +5,8 @@ import { Home } from "./HomePage/Home";
 import ButtonAppBar from "./LoginBar";
 import { Route, Switch } from "react-router-dom";
 import { NewGroupBuyingForm } from "./NewGroupBuyingForm/NewGroupBuyingForm";
+import { ProductPage } from "./ProductPage/ProductPage";
+import { UserProfile } from "./UserProfile/UserProfile";
 
 initializeIcons();
 
@@ -15,9 +17,18 @@ function App() {
         <ButtonAppBar />
       </Stack>
       <Switch>
-        <Route exact path="/"><Home/> </Route>
-        <Route path="/createNewGroup"><NewGroupBuyingForm /></Route>
-        <Route path="/products/:id"><NewGroupBuyingForm /></Route>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route path="/createNewGroup">
+          <NewGroupBuyingForm />
+        </Route>
+        <Route path="/products/:id">
+          <ProductPage />
+        </Route>
+        <Route path="/user/:user">
+          <UserProfile />
+        </Route>
       </Switch>
     </>
   );
