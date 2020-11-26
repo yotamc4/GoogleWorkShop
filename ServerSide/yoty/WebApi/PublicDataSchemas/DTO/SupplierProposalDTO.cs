@@ -5,21 +5,23 @@ using System.Threading.Tasks;
 
 namespace YOTY.Service.WebApi.PublicDataSchemas
 {
-    public class SellerOffer
+    public class SupplierProposalDTO: BaseDTO
     {
         string BidId { get; set; }
 
-        string OfferId { get; set; }
+        string SupplierName { get; set; }
 
-        string SellerId { get; set; }
+        string ProposalId { get; set; }
+
+        string SupplierId { get; set; }
 
         DateTime PublishedTime { get; set; }
 
         int MinimumUnits { get; set; }
 
-        double OfferedPrice { get; set; }
+        double ProposedPrice { get; set; }
 
-        string OfferDescription { get; set; }
+        string Description { get; set; }
 
     }
 }

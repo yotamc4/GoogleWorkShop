@@ -4,16 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using YOTY.Service.WebApi.PublicDataSchemas;
 
-namespace YOTY.Service.Managers
+namespace YOTY.Service.Managers.Buyers
 {
-    public class BuyersManager : IBuyersManager
+    public class StamBuyerManager : IBuyersManager
     {
-        public Task<IList<Buyer>> GetBuyers(IList<string> buyersIds)
+        public Task<IList<BuyerDTO>> GetBuyers(IList<string> buyersIds)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IList<Buyer>> GetBuyers(string productBidId)
+        public Task<IList<BuyerDTO>> GetBuyers(string productBidId)
         {
             throw new NotImplementedException();
         }

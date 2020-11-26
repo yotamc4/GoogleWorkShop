@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace YOTY.Service.Managers
+namespace YOTY.Service.WebApi.Controllers
 {
-    public interface ISellersManager
+    public class AdminController
     {
     }
 }
