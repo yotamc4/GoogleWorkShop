@@ -21,27 +21,11 @@ export const Home: React.FunctionComponent = () => {
     childrenGap: 20,
   };
   const searchBoxStyles: Partial<ISearchBoxStyles> = {
-    root: { height: "2.6rem", width: "35rem", marginRight: "13rem" },
+    root: { height: "2.6rem", width: "25rem", alignSelf: "flex-end" },
   };
 
   return (
     <Stack tokens={verticalGapStackTokens}>
-      <Stack
-        horizontal
-        horizontalAlign="center"
-        tokens={genericGapStackTokens(120)}
-      >
-        <DefaultButton
-          text={"Create a new group-buy"}
-          primary
-          href={"/createNewGroup"}
-          iconProps={{
-            iconName: "Add",
-            styles: { root: { color: "darkgrey" } },
-          }}
-        ></DefaultButton>
-        <SearchBox styles={searchBoxStyles} placeholder="Search" />
-      </Stack>
       <Stack
         horizontal
         horizontalAlign="center"
@@ -51,6 +35,29 @@ export const Home: React.FunctionComponent = () => {
           <NavigationPane />
         </Stack>
         <Stack tokens={genericGapStackTokens(20)}>
+          <Stack
+            horizontal
+            horizontalAlign="center"
+            tokens={genericGapStackTokens(120)}
+          >
+            <DefaultButton
+              text={"Create a new group-buy"}
+              primary
+              href={"/createNewGroup"}
+              iconProps={{
+                iconName: "Add",
+                styles: { root: { color: "darkgrey" } },
+              }}
+              styles={{
+                root: { borderRadius: 25, height: "2.5rem" },
+                textContainer: { padding: "1rem", fontSize: "1.5rem" },
+              }}
+            ></DefaultButton>
+            <SearchBox
+              styles={searchBoxStyles}
+              placeholder="Search for product group"
+            />
+          </Stack>
           <Stack horizontal tokens={genericGapStackTokens(20)}>
             <ProductCard {...mockProducts.AirPodsProProduct} />
             <ProductCard {...mockProducts.AppleWatchSeries6GPSProduct} />
