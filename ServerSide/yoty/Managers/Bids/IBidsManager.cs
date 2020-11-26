@@ -23,11 +23,13 @@ namespace YOTY.Service.Managers.Bids
         Task<Response<SupplierProposalDTO>> AddSupplierProposal(SupplierProposalRequest supplierProposal);
         Task<Response> DeleteSupplierProposal(string bidId, string ProposalId);
 
+        Task<Response<BidDTO>> EditBid(EditBidRequest editBidRequest);
 
+        // delete bid 
+        Task<Response> DeleteBid(string bidId);
 
-        Task<IList<BidDTO>> GetBids();
-
-
+        // get bids
+        Task<IList<BidDTO>> GetBids(BidsFilters bidsFilters);
 
     }
 }

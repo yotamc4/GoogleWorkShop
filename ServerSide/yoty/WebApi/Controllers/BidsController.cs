@@ -56,7 +56,7 @@ namespace YOTY.Service.WebApi.Controllers
         [Route("{bidId}/Buyers")]
         public async Task<IList<BuyerDTO>> GetProductBidBuyers(string bidId)
         {
-            return await bidsManager.GetBuyers(bidId);
+            return await bidsManager.GetBidBuyers(bidId);
         }
         /*
         [HttpPost]

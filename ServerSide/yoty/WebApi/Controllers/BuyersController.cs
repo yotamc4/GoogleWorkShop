@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using YOTY.Service.WebApi.PublicDataSchemas;
-using YOTY.Service.Managers;
+using YOTY.Service.Managers.Buyers;
 
 namespace YOTY.Service.WebApi.Controllers
 {

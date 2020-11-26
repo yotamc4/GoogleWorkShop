@@ -9,12 +9,12 @@ namespace YOTY.Service.Managers.Bids
 
     public class StamBidManager : IBidsManager
     {
-        public Task<Response> AddBuyerToBid(BidBuyerJoinRequest bidBuyerJoinRequest)
+        public Task<Response<BuyerDTO>> AddBuyer(BidBuyerJoinRequest bidBuyerJoinRequest)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Response<SupplierProposalDTO>> AddSupplierProposalDTOToBid(SupplierProposalRequest sellerOffer)
+        public Task<Response<SupplierProposalDTO>> AddSupplierProposal(SupplierProposalRequest supplierProposal)
         {
             throw new NotImplementedException();
         }
@@ -24,7 +24,32 @@ namespace YOTY.Service.Managers.Bids
             throw new NotImplementedException();
         }
 
+        public Task<Response> DeleteBid(string bidId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Response> DeleteBuyer(string bidId, string buyerId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Response> DeleteSupplierProposal(string bidId, string ProposalId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Response<BidDTO>> EditBid(EditBidRequest editBidRequest)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Response<BidDTO>> GetBid(string bidId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<BuyerDTO>> GetBidBuyers(string bidId)
         {
             throw new NotImplementedException();
         }
@@ -34,7 +59,12 @@ namespace YOTY.Service.Managers.Bids
             throw new NotImplementedException();
         }
 
-        public Task<IList<BuyerDTO>> GetBuyers(string productBidId)
+        public Task<IList<BidDTO>> GetBids(BidsFilters bidsFilters)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<BuyerDTO>> GetBidSuplliers(string bidId)
         {
             throw new NotImplementedException();
         }
