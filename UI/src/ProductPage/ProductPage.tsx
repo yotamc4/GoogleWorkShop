@@ -9,7 +9,7 @@ import {
   Stack,
   Text,
 } from "@fluentui/react";
-import { SuppliersList } from "./SupplierList";
+import { SuppliersSection } from "./SupplierSection";
 import { ProductDetails } from "../Modal/ProductDeatils";
 import { GroupDetails } from "../Modal/GroupDetails";
 import { useParams } from "react-router-dom";
@@ -26,6 +26,7 @@ export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
     numberOfParticipants: 170,
     groupExpirationDate: "",
   });
+
 
   return (
     <Stack horizontalAlign={"center"}>
@@ -97,6 +98,8 @@ export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
       <Stack horizontal horizontalAlign="center">
         <SuppliersList />
       </Stack>
+        <SuppliersSection/>
+      </Stack> 
     </Stack>
   );
 };
