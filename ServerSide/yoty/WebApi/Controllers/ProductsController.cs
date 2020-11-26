@@ -13,7 +13,7 @@ namespace YOTY.Service.WebApi.Controllers
     public class ProductsController
     {
         private IBuyersManager buyersManager;
-        public BuyersController(IBuyersManager buyersManager)
+        public void BuyersController(IBuyersManager buyersManager)
         {
             this.buyersManager = buyersManager;
         }

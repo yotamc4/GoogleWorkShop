@@ -27,9 +27,9 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpGet]
         [Route("BuyersOfProductBid/{bidId}")]
-        public async Task<IList<Buyer>> GetBuyers([FromQuery] string bidId)
+        public async Task<IList<Buyer>> GetBuyers([FromQuery] string buyerId)
         {
-            return await buyersManager.GetBuyers(buyersIds);
+            return await buyersManager.GetBuyers(buyerId);
         }
     }
 }

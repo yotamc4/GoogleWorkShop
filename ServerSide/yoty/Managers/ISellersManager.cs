@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace YOTY.Service.Managers
 {
-    public class ISellersManager
+    public interface ISellersManager
     {
     }
 }
