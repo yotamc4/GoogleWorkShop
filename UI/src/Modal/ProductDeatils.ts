@@ -3,7 +3,7 @@ export interface ProductDetails {
   category: string;
   subCategory: string;
   maximumAcceptablePrice: number;
-  groupExpirationDate: Date;
+  groupExpirationDate: string;
   imageUrl: string;
   description: string;
 }
