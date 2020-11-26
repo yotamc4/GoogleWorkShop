@@ -13,7 +13,7 @@ import { SuppliersList } from "./SupplierList";
 
 export const ProductPage: React.FunctionComponent = () => {
   return (
-    <Stack>
+    <Stack horizontalAlign={"center"}>
       <Stack
         horizontal
         horizontalAlign="center"
@@ -41,9 +41,15 @@ export const ProductPage: React.FunctionComponent = () => {
             Lenovo ThinkPad T4800
           </Text>
           <Separator />
-          <Text>Maximum Acceptable Price: 140₪</Text>
-          <Text>Group's expiration date: {new Date().toString()}</Text>
-          <Text variant="large">Description </Text>
+          <Text styles={Styles.subHeaderStyle}>
+            Maximum Acceptable Price: 140₪
+          </Text>
+          <Text styles={Styles.subHeaderStyle}>
+            Group's expiration date: {new Date().toString()}
+          </Text>
+          <Text styles={Styles.subHeaderStyle} variant="large">
+            Description{" "}
+          </Text>
           <Text styles={Styles.descriptionStyle}>
             This example shows how components that used to be styled using CSS
             can be styled using JS styling. (Look at the bottom of the code to
