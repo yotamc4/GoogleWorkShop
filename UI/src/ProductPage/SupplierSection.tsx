@@ -15,12 +15,8 @@ import {
   DefaultButton,
   TextField,
 } from "@fluentui/react";
-import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import { NewProposalForm } from "./NewProposalForm";
 export interface ISuppliersListItem {
   key: number;
@@ -33,6 +29,10 @@ export interface ISuppliersListItem {
 
 export interface ISuppliersListState {
   items: ISuppliersListItem[];
+}
+
+export interface ISuppliersSectionProps {
+  requestedItems: number;
 }
 
 const classNames = mergeStyleSets({
@@ -48,15 +48,18 @@ export let _allItems: ISuppliersListItem[] = [];
 
 export let _columns: IColumn[] = [];
 
-for (let i = 0; i < 3; i++) {
+for (let i = 0; i < 300; i += 100) {
   _allItems.push({
     key: i,
     name: "KSP computers and cellular",
     Price: 10000,
-    MinimumUnits: i + 3,
+    MinimumUnits: 170 + i,
     Date: Date(),
     ProgressBar: (
-      <ProgressIndicator label="70 units to complete" percentComplete={0.4} />
+      <ProgressIndicator
+        label="70 units to complete"
+        percentComplete={170 / (170 + i)}
+      />
     ),
   });
 }
@@ -116,7 +119,9 @@ export const detailsListStyles: Partial<IDetailsColumnStyles> = {
   root: { textAlign: "right" },
 };
 
-export const SuppliersSection: React.FunctionComponent = () => {
+export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> = ({
+  requestedItems,
+}) => {
   const [open, setOpen] = React.useState(false);
   const [listItems, setListItems] = React.useState<ISuppliersListItem[]>(
     _allItems
@@ -141,7 +146,10 @@ export const SuppliersSection: React.FunctionComponent = () => {
       MinimumUnits: minimumUnits,
       Date: Date(),
       ProgressBar: (
-        <ProgressIndicator label="70 units to complete" percentComplete={0.1} />
+        <ProgressIndicator
+          label="70 units to complete"
+          percentComplete={requestedItems / minimumUnits}
+        />
       ),
     };
     setOpen(false);

@@ -7,9 +7,27 @@ import {
   ISearchBoxStyles,
   DefaultButton,
   IStackStyles,
+  IImageProps,
+  ImageFit,
+  StackItem,
+   Image
 } from "@fluentui/react";
 import { ProductCard } from "./ProductCard/ProductCard";
 import { NavigationPane } from "./NavigationPane/NavigationPane";
+
+const StacStyles2: IStackStyles = {
+  root: {
+    height: "20rem",
+    marginLeft:"31rem",
+    marginBottom:"-0.3rem"
+  },
+};
+
+const imagePropsSubLogo: IImageProps = {
+  src: "/Images/subLogo2.PNG",
+  imageFit: ImageFit.cover,
+};
+
 
 export const Home: React.FunctionComponent = () => {
   const genericGapStackTokens: (gap: number) => IStackTokens = (gap) => ({
@@ -17,7 +35,6 @@ export const Home: React.FunctionComponent = () => {
   });
 
   const verticalGapStackTokens: IStackTokens = {
-    padding: 20,
     childrenGap: 20,
   };
   const searchBoxStyles: Partial<ISearchBoxStyles> = {
@@ -26,6 +43,9 @@ export const Home: React.FunctionComponent = () => {
 
   return (
     <Stack tokens={verticalGapStackTokens}>
+      <StackItem styles={StacStyles2}>
+        <Image {...imagePropsSubLogo} width={1130} height={300} />
+      </StackItem>
       <Stack
         horizontal
         horizontalAlign="center"

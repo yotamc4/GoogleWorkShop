@@ -18,8 +18,9 @@ import {
   Label,
   CommandBarButton,
   IStackStyles,
+  IImageStyles,
 } from "@fluentui/react";
-import IconButton from "@material-ui/core/IconButton";
+import { useHistory } from "react-router";
 
 const theme: ITheme = getTheme();
 const useStyles = makeStyles((theme) => ({
@@ -29,19 +30,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const serachFilterGapStackTokens: IStackTokens = {
-  padding: 10,
-};
-
 const imagePropsLogo: IImageProps = {
   src: "/Images/logo.PNG",
   imageFit: ImageFit.contain,
 };
 
-const imagePropsSubLogo: IImageProps = {
-  src: "/Images/subLogo2.PNG",
-  imageFit: ImageFit.cover,
-};
+
+
 
 const StacStyles: IStackStyles = {
   root: {
@@ -50,43 +45,42 @@ const StacStyles: IStackStyles = {
   },
 };
 
-const StacStyles3: IStackStyles = {
+const StacStyles2: IStackStyles = {
   root: {
     paddingTop: "3rem",
   },
 };
 
-const StacStyles2: IStackStyles = {
+const StackItemStyles: IStackItemStyles = {
   root: {
-    height: "20rem",
+    width:"7rem",
+    marginLeft: "28rem",
+    marginTop: "-3rem",
+    ":hover":{cursor: "pointer"}
   },
 };
-export default function ButtonAppBar() {
-  const classes = useStyles();
 
-  const StackItemStyles: IStackItemStyles = {
-    root: {
-      marginLeft: "28rem",
-      marginTop: "-3rem",
-    },
+
+export default function ButtonAppBar() {
+  const history = useHistory();
+  const changeHistory = () => {
+    //history.push(`/products/${productDetails.name.replace(/\s/g, "")}`);
+    history.push(`/`);
   };
 
   return (
-    <Stack tokens={serachFilterGapStackTokens} styles={StacStyles3}>
+    <Stack styles={StacStyles2}>
       <StackItem styles={StackItemStyles}>
-        <Image {...imagePropsLogo} width={200} height={140} />
+        <Image {...imagePropsLogo} width={200} height={140} onClick={changeHistory}/>
       </StackItem>
       <Stack>
-        <Separator theme={theme} styles={{ content: { width: "67rem" } }} />
+        <Separator theme={theme} styles={{ content: { width: "69rem" } }} />
         <Stack horizontal horizontalAlign="space-between" styles={StacStyles}>
           <Label>Hello Guest!</Label>
           <CommandBarButton text="Login" disabled={false} checked={false} />
         </Stack>
         <Separator styles={{ root: { width: "100%" } }} />
       </Stack>
-      <StackItem styles={StacStyles2}>
-        <Image {...imagePropsSubLogo} width={1150} height={300} />
-      </StackItem>
     </Stack>
   );
 }

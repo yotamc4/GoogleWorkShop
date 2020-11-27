@@ -68,13 +68,13 @@ export const ProductCard: React.FunctionComponent<ProductDetails> = (
         tokens={attendantsCardSectionTokens}
       >
         <Text variant="small" styles={amoutTextStyles}>
-          {17} Potential Suplliers
+          {17} Suplliers proposals
         </Text>
         <Text variant="small" styles={amoutTextStyles}>
           |
         </Text>
         <Text variant="small" styles={amoutTextStyles}>
-          {118} Units counter
+          {118} Requested items
         </Text>
       </Card.Section>
     </Card>

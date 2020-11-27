@@ -9,7 +9,7 @@ import {
   Stack,
   Text,
 } from "@fluentui/react";
-import { SuppliersSection } from "./SupplierSection";
+import { SuppliersSection , ISuppliersSectionProps} from "./SupplierSection";
 import { ProductDetails } from "../Modal/ProductDeatils";
 import { GroupDetails } from "../Modal/GroupDetails";
 import { useParams } from "react-router-dom";
@@ -96,7 +96,7 @@ export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
         </Stack>
       </Stack>
       <Stack horizontal horizontalAlign="center">
-      <SuppliersSection/>
+      <SuppliersSection requestedItems={groupDetails.numberOfParticipants}/>
       </Stack>
     </Stack>
   );
