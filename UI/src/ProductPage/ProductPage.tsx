@@ -96,10 +96,8 @@ export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
         </Stack>
       </Stack>
       <Stack horizontal horizontalAlign="center">
-        <SuppliersList />
+      <SuppliersSection/>
       </Stack>
-        <SuppliersSection/>
-      </Stack> 
     </Stack>
   );
 };
