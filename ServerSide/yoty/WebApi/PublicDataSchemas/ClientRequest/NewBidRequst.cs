@@ -7,14 +7,14 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 {
     public class NewBidRequst
     {
-        string Name { get; }
-        string OwnerId { get; }
-        string Category { get;  }
-        string SubCategory { get; }
-        double MaxPrice { get; }
-        DateTime ExpirationDate { get; set; }
+        public string Name { get; }
+        public string OwnerId { get; }
+        public string Category { get;  }
+        public string SubCategory { get; }
+        public double MaxPrice { get; }
+        public DateTime ExpirationDate { get; set; }
         // TODO: restrict the description size
-        string Description { get; set; }
-        List<Uri> ProductImages { get; set; }
+        public string Description { get; set; }
+        public Uri ProductImage { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace YOTY.Service.Managers
     {
         public static IServiceCollection AddManagers(this IServiceCollection services)
         {
-            return services.AddScoped<IBidsManager, BidManager>();
+            return services.AddScoped<IBidsManager, BidsManager>();
         }
     }
 }

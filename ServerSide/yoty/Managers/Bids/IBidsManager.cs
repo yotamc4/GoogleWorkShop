@@ -21,7 +21,7 @@ namespace YOTY.Service.Managers.Bids
         Task<Response> DeleteBuyer(string bidId, string buyerId);
 
         Task<Response<SupplierProposalDTO>> AddSupplierProposal(SupplierProposalRequest supplierProposal);
-        Task<Response> DeleteSupplierProposal(string bidId, string ProposalId);
+        Task<Response> DeleteSupplierProposal(string bidId, string supplierId);
 
         Task<Response<BidDTO>> EditBid(EditBidRequest editBidRequest);
 

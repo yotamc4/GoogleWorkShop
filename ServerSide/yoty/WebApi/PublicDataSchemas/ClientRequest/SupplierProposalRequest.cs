@@ -7,10 +7,11 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 {
     public class SupplierProposalRequest
     {
-        string SupplierId { get; }
-        DateTime PublishedTime { get; }
-        int MinimumUnits { get; }
-        double ProposedPrice { get; }
-        string Description { get; }
+        public string BidId { get; }
+        public string SupplierId { get; }
+        public DateTime PublishedTime { get; }
+        public int MinimumUnits { get; }
+        public double ProposedPrice { get; }
+        public string Description { get; }
     }
 }

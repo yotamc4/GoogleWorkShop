@@ -16,6 +16,8 @@ namespace YOTY.Service.Data.Entities
 
         public string Category { get; set; }
 
+        public string SubCategory { get; set; }
+
         public double MaxPrice { get; set; }
 
         public DateTime CreationDate { get; set; }
