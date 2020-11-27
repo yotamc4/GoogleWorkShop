@@ -56,7 +56,7 @@ export const ProductCard: React.FunctionComponent<ProductDetails> = (
       </Card.Section>
       <Card.Section horizontalAlign="center" tokens={agendaCardSectionTokens}>
         <Text variant="mediumPlus" styles={priceTextStyles}>
-          Max Price: {productDetails.maximumAcceptablePrice}₪
+          Max Acceptable Price: {productDetails.maximumAcceptablePrice}₪
         </Text>
         <Text variant="small" styles={descriptionTextStyles}>
           Expiration Date: {productDetails.groupExpirationDate}

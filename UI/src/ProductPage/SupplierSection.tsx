@@ -11,9 +11,6 @@ import {
   mergeStyleSets,
   SelectionMode,
   ProgressIndicator,
-  PrimaryButton,
-  DefaultButton,
-  TextField,
 } from "@fluentui/react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -57,7 +54,11 @@ for (let i = 0; i < 300; i += 100) {
     Date: Date(),
     ProgressBar: (
       <ProgressIndicator
-        label="70 units to complete"
+      label={
+        (170 + i) - 170 > 0
+          ? `${(170 + i) - 170} units to complete`
+          : "Complete"
+      }
         percentComplete={170 / (170 + i)}
       />
     ),
@@ -146,8 +147,13 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
       MinimumUnits: minimumUnits,
       Date: Date(),
       ProgressBar: (
+        //TODO: how to present the minimumUnits-requestedItems avoid injection
         <ProgressIndicator
-          label="70 units to complete"
+          label={
+            minimumUnits - requestedItems > 0
+              ? `${minimumUnits - requestedItems} units to complete`
+              : "Complete"
+          }
           percentComplete={requestedItems / minimumUnits}
         />
       ),

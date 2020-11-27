@@ -7,6 +7,7 @@ import { Route, Switch } from "react-router-dom";
 import { NewGroupBuyingForm } from "./NewGroupBuyingForm/NewGroupBuyingForm";
 import { ProductPage } from "./ProductPage/ProductPage";
 import { UserProfile } from "./UserProfile/UserProfile";
+import { SuppliersSurvey } from "./ProductPage/SupplierSurvey";
 
 initializeIcons();
 
@@ -28,6 +29,9 @@ function App() {
         </Route>
         <Route path="/user/:user">
           <UserProfile />
+        </Route>
+        <Route path="/survey">
+          <SuppliersSurvey supliersNames={["ofek", "ksp", "kobi", "apple", "microsoft"]}/>
         </Route>
       </Switch>
     </>
