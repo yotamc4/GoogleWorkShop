@@ -5,13 +5,32 @@ namespace YOTY.Service.Managers.Bids
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using YOTY.Service.Data;
+    using YOTY.Service.Data.Entities;
     using YOTY.Service.WebApi.PublicDataSchemas;
 
-    public class StamBidManager : IBidsManager
+    public class BidManager : IBidsManager
     {
-        public Task<Response<BuyerDTO>> AddBuyer(BidBuyerJoinRequest bidBuyerJoinRequest)
+        private static YotyContext _context = new YotyContext();
+
+        public async Task<Response<BuyerDTO>> AddBuyer(BidBuyerJoinRequest bidBuyerJoinRequest)
         {
-            throw new NotImplementedException();
+            var items = bidBuyerJoinRequest.Items;
+            var buyerId = bidBuyerJoinRequest.buyerId;
+            var bidId = bidBuyerJoinRequest.productBidId;
+            var buyer = await _context.Buyers.FindAsync(buyerId).ConfigureAwait(false);
+            var bid = await _context.Bids.FindAsync(bidId).ConfigureAwait(false);
+            var participancy = new ParticipancyEntity() { BidId = bidId, Bid = bid, Buyer = buyer, BuyerId = buyerId, NumOfUnits = items };
+            buyer.CurrentParticipancies.Add(participancy);
+            bid.CurrentParticipancies.Add(participancy);
+            using(var new_context = new YotyContext())
+            {
+                new_context.Buyers.Update(buyer);
+                new_context.Bids.Update(bid);
+                await new_context.SaveChangesAsync().ConfigureAwait(false);
+            }
+            BuyerDTO dto = new BuyerDTO() { Id = buyerId, BuyerAccountDeatails = null, FacebookAccount = null, Name = buyer.Name };
+            return new Response<BuyerDTO>();
         }
 
         public Task<Response<SupplierProposalDTO>> AddSupplierProposal(SupplierProposalRequest supplierProposal)

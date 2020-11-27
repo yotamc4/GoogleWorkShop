@@ -6,7 +6,7 @@ using YOTY.Service.WebApi.PublicDataSchemas;
 
 namespace YOTY.Service.Managers.Buyers
 {
-    public class StamBuyerManager : IBuyersManager
+    public class BuyerManager : IBuyersManager
     {
         public Task<IList<BuyerDTO>> GetBuyers(IList<string> buyersIds)
         {
