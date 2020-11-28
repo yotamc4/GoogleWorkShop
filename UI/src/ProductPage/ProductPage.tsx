@@ -9,7 +9,7 @@ import {
   Stack,
   Text,
 } from "@fluentui/react";
-import { SuppliersSection , ISuppliersSectionProps} from "./SupplierSection";
+import { SuppliersSection, ISuppliersSectionProps } from "./SupplierSection";
 import { ProductDetails } from "../Modal/ProductDeatils";
 import { GroupDetails } from "../Modal/GroupDetails";
 import { useParams } from "react-router-dom";
@@ -17,6 +17,8 @@ import { useParams } from "react-router-dom";
 export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
   mockProductId
 ) => {
+  //TODO: delete those states not every data from the user should be
+  // state because most of the properties from the backend won't change in the productpage
   const { id } = useParams<{ id: string }>();
   const [productDetails, setProductDetails] = React.useState<ProductDetails>(
     getMockProduct(id)
@@ -26,7 +28,6 @@ export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
     numberOfParticipants: 170,
     groupExpirationDate: "",
   });
-
 
   return (
     <Stack horizontalAlign={"center"}>
@@ -49,19 +50,17 @@ export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
             padding: 10,
           }}
         >
-          <Text
-            className="Bold"
-            styles={Styles.headerStyle}
-            variant="xLargePlus"
-          >
+          <Text className="semiBold" variant="xLargePlus">
             {productDetails.name}
           </Text>
           <Separator />
-          <Text styles={Styles.subHeaderStyle}>
+          <Text styles={Styles.priceTextStyles}>
             Maximum Acceptable Price: {productDetails.maximumAcceptablePrice}₪
           </Text>
           <Text styles={Styles.subHeaderStyle}>
-            Group's expiration date: {productDetails.groupExpirationDate}
+            Group's expiration date:{" "}
+            {productDetails.groupExpirationDate.getUTCMonth()+1}/
+            {productDetails.groupExpirationDate.getUTCDate()+1}/{productDetails.groupExpirationDate.getUTCFullYear()}
           </Text>
           <Text styles={Styles.subHeaderStyle} variant="large">
             Description
@@ -75,11 +74,12 @@ export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
               iconName="AddGroup"
               className={Styles.classNames.greenYellow}
             />
-            <Text>
+            <Text styles={Styles.amoutTextStyles}>
               {groupDetails.numberOfParticipants} pepole have joined to the
               group so far
             </Text>
           </Stack>
+          {new Date().getTime() < productDetails.groupExpirationDate.getTime() && 
           <DefaultButton
             text="Join The Group"
             primary
@@ -93,10 +93,11 @@ export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
             }}
             height={"4rem"}
           />
+        }
         </Stack>
       </Stack>
       <Stack horizontal horizontalAlign="center">
-      <SuppliersSection requestedItems={groupDetails.numberOfParticipants}/>
+        <SuppliersSection requestedItems={groupDetails.numberOfParticipants} groupExpirationDate = {productDetails.groupExpirationDate}/>
       </Stack>
     </Stack>
   );

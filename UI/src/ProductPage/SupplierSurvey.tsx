@@ -1,182 +1,76 @@
 import * as React from "react";
 import {
-  DetailsList,
-  IColumn,
-  IDetailsColumnStyles,
-} from "office-ui-fabric-react/lib/DetailsList";
-import { Stack } from "office-ui-fabric-react";
-import { ActionButton, IIconProps } from "office-ui-fabric-react";
+  ChoiceGroup,
+  IChoiceGroupOption,
+  IChoiceGroupStyles,
+} from "office-ui-fabric-react/lib/ChoiceGroup";
 import {
-  IStackStyles,
-  mergeStyleSets,
-  SelectionMode,
-  ProgressIndicator,
-  PrimaryButton,
+  IStackTokens,
+  ITextStyles,
+  Stack,
+  Text,
   DefaultButton,
-  TextField,
 } from "@fluentui/react";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import { NewProposalForm } from "./NewProposalForm";
-export interface ISuppliersListItem {
-  key: number;
-  name: string;
-  Price: number;
-  MinimumUnits: number;
-  Date: string;
-  ProgressBar: JSX.Element;
+
+export interface ISuppliersNamesList {
+  supliersNames: IChoiceGroupOption[];
 }
 
-export interface ISuppliersListState {
-  items: ISuppliersListItem[];
-}
-
-const classNames = mergeStyleSets({
-  fileIconCell: {
-    marginLeft: "1.4rem",
+const choiceGroupStyles: IChoiceGroupStyles = {
+  root: {
+    marginLeft: "-22rem",
   },
-  fileIconCell2: {
-    marginLeft: "-2rem",
-  },
-});
-
-export let _allItems: ISuppliersListItem[] = [];
-
-export let _columns: IColumn[] = [];
-
-for (let i = 0; i < 3; i++) {
-  _allItems.push({
-    key: i,
-    name: "KSP computers and cellular",
-    Price: 10000,
-    MinimumUnits: i + 3,
-    Date: Date(),
-    ProgressBar: (
-      <ProgressIndicator label="70 units to complete" percentComplete={0.4} />
-    ),
-  });
-}
-
-_columns = [
-  {
-    key: "column1",
-    name: "Supplier name",
-    fieldName: "name",
-    minWidth: 100,
-    maxWidth: 150,
-    isResizable: true,
-  },
-  {
-    key: "column2",
-    name: "Price",
-    fieldName: "Price",
-    minWidth: 70,
-    maxWidth: 120,
-    isResizable: true,
-    styles: { cellTitle: { marginLeft: "1.3rem" } },
-    className: classNames.fileIconCell,
-  },
-  {
-    key: "column3",
-    name: "Minimum units",
-    fieldName: "MinimumUnits",
-    minWidth: 70,
-    maxWidth: 120,
-    isResizable: true,
-  },
-  {
-    key: "column5",
-    name: "Date",
-    fieldName: "Date",
-    minWidth: 140,
-    maxWidth: 140,
-    isResizable: true,
-    className: classNames.fileIconCell2,
-  },
-  {
-    key: "column6",
-    name: "ProgressBar",
-    fieldName: "ProgressBar",
-    minWidth: 100,
-    maxWidth: 100,
-    isResizable: true,
-    styles: { cellTitle: { marginLeft: "1rem" } },
-  },
-];
-
-export const addIcon: IIconProps = { iconName: "Add" };
-
-export const stackStyles: Partial<IStackStyles> = { root: { width: "50rem" } };
-
-export const detailsListStyles: Partial<IDetailsColumnStyles> = {
-  root: { textAlign: "right" },
 };
 
-export const SuppliersSection: React.FunctionComponent = () => {
-  const [open, setOpen] = React.useState(false);
-  const [listItems, setListItems] = React.useState<ISuppliersListItem[]>(
-    _allItems
+const textStyles: ITextStyles = {
+  root: {
+    marginLeft: "-22rem",
+  },
+};
+
+const verticalGapStackTokens: IStackTokens = {
+  childrenGap: 30,
+};
+
+export const SuppliersSurvey: React.FunctionComponent<ISuppliersNamesList> = ({
+  supliersNames,
+}) => {
+  const [selectedKey, setSelectedKey] = React.useState<string>();
+
+  const onChange = React.useCallback(
+    (
+      evt?: React.FormEvent<HTMLElement | HTMLInputElement>,
+      option: IChoiceGroupOption | undefined = undefined
+    ) => {
+      setSelectedKey(option?.key as string);
+    },
+    []
   );
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const addPropposalToSupplierList = (
-    price: number,
-    minimumUnits: number
-  ): void => {
-    const stam: ISuppliersListItem = {
-      key: listItems.length + 1,
-      name: `Ofek's store`,
-      Price: price,
-      MinimumUnits: minimumUnits,
-      Date: Date(),
-      ProgressBar: (
-        <ProgressIndicator label="70 units to complete" percentComplete={0.1} />
-      ),
-    };
-    setOpen(false);
-    setListItems((listItems) => [stam, ...listItems]);
-  };
   return (
-    <Stack styles={stackStyles}>
-      <ActionButton
-        iconProps={addIcon}
-        allowDisabledFocus
-        disabled={false}
-        checked={false}
-        onClick={handleClickOpen}
+    <Stack tokens={verticalGapStackTokens}>
+      <Text
+        block={true}
+        className="Bold"
+        styles={textStyles}
+        variant="xLargePlus"
       >
-        Add a new proposal
-      </ActionButton>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogContent>
-          <NewProposalForm
-            addPropposalToSupplierList={addPropposalToSupplierList}
-            handleClose={handleClose}
-          />
-        </DialogContent>
-      </Dialog>
-      <></>
-      <DetailsList
-        items={listItems}
-        columns={_columns}
-        selectionMode={SelectionMode.none}
+        Time to choose you're favorite supplier
+      </Text>
+      <ChoiceGroup
+        styles={choiceGroupStyles}
+        selectedKey={selectedKey}
+        options={supliersNames}
+        onChange={onChange}
       />
+      <DefaultButton
+        text={"Vote"}
+        primary
+        styles={{
+          root: { borderRadius: 25, height: "2.5rem", width:"20rem",  marginLeft:"-10rem" },
+          textContainer: { padding: "1rem", fontSize: "1.5rem" },
+        }}
+      ></DefaultButton>
     </Stack>
   );
 };

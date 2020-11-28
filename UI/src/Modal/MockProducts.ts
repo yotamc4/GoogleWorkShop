@@ -6,7 +6,7 @@ export const SonyPlaystation5DigitalProduct: ProductDetails = {
   category: "Electronics",
   subCategory: "Consoles",
   maximumAcceptablePrice: 1900,
-  groupExpirationDate: "January 12, 2021",
+  groupExpirationDate: new Date(2021, 0, 27, 0, 0, 0, 0),
   imageUrl:
     "https://www.techinn.com/f/13776/137769822/sony-ps5-digital-edition.jpg",
   description: `The PS5™ console unleashes new gaming possibilities that you never anticipated. Experience lightning fast loading with an ultra-high speed SSD, deeper immersion with support for haptic feedback, adaptive triggers, and 3D Audio, and an all-new generation of incredible PlayStation® games. (DISC-FREE CONSOLE - Internet connection and an account for PlayStation™Network required)
@@ -22,7 +22,7 @@ export const AirPodsProProduct: ProductDetails = {
   category: "Electronics",
   subCategory: "Headphones",
   maximumAcceptablePrice: 700,
-  groupExpirationDate: "January 23, 2021",
+  groupExpirationDate: new Date(2020, 10, 25, 0, 0, 0, 0),
   imageUrl:
     "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/MWP22_AV2?wid=1144&hei=1144&fmt=jpeg&qlt=80&op_usm=0.5,0.5&.v=1591634643000",
   description:
@@ -35,7 +35,7 @@ export const GooglePixelProduct: ProductDetails = {
   category: "Electronics",
   subCategory: "Cell Phones",
   maximumAcceptablePrice: 3200,
-  groupExpirationDate: "January 9, 2021",
+  groupExpirationDate: new Date(2021, 0, 25, 0, 0, 0, 0),
   imageUrl: "https://fdn2.gsmarena.com/vv/bigpic/google-pixel-5-5g.jpg",
   description: `
     What happens when you bring together the ultimate Google phone and the speed of 5G?* You get Pixel 5. The super fast Google phone at a helpful price.
@@ -67,7 +67,7 @@ export const SamsungUN70TU6980FXZAProduct: ProductDetails = {
   category: "Electronics",
   subCategory: "Television",
   maximumAcceptablePrice: 2500,
-  groupExpirationDate: "January 23, 2021",
+  groupExpirationDate: new Date(2021, 0, 26, 0, 0, 0, 0),
   imageUrl:
     "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6428/6428508_sd.jpg",
   description:
@@ -80,7 +80,7 @@ export const MicrosoftSurfacePro7Product: ProductDetails = {
   category: "Computers",
   subCategory: "Tablets",
   maximumAcceptablePrice: 4800,
-  groupExpirationDate: "January 26, 2021",
+  groupExpirationDate: new Date(2021, 0, 11, 0, 0, 0, 0),
   imageUrl:
     "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6374/6374987_sd.jpg",
   description:
@@ -93,7 +93,7 @@ export const InokimMini2WhiteProduct: ProductDetails = {
   category: "Transportations",
   subCategory: "Electronic scooters",
   maximumAcceptablePrice: 1700,
-  groupExpirationDate: "January 11, 2021",
+  groupExpirationDate: new Date(2020, 10, 26, 0, 0, 0, 0),
   imageUrl:
     "https://cdn.shopify.com/s/files/1/0020/6077/9589/products/InokimMiniultraportablewhite_953x.progressive.jpg",
   description: `Weight:	10.5 kg I 23 lb
@@ -115,7 +115,7 @@ export const AppleWatchSeries6GPSProduct: ProductDetails = {
   category: "Computers",
   subCategory: "Cell Phones",
   maximumAcceptablePrice: 1600,
-  groupExpirationDate: "February 1, 2021",
+  groupExpirationDate: new Date(2021, 0, 7, 0, 0, 0, 0),
   imageUrl:
     "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6215/6215931_sd.jpg",
   description:
@@ -128,7 +128,7 @@ export const LenovoThinkPadProduct: ProductDetails = {
   category: "Computers",
   subCategory: "Laptops",
   maximumAcceptablePrice: 2000,
-  groupExpirationDate: "January 7, 2021",
+  groupExpirationDate: new Date(2021, 0, 15, 0, 0, 0, 0),
   imageUrl:
     "https://www.lenovo.com/medias/lenovo-laptop-thinkpad-t480-feature-03.jpg?context=bWFzdGVyfHJvb3R8NDk0OTN8aW1hZ2UvanBlZ3xoNDkvaDJiLzk2MTA3MDg3NzkwMzguanBnfDE5NzE4YzViY2MzMzYwMTExNmIwOTIxMjExYzYzMzViYjExNzlkMDk2N2ZhNGQ3ZjlkYjE1NzBlNTJhNzQyYmI&w=1920",
   description:
@@ -141,7 +141,7 @@ export const PowerbeatsProRedProduct: ProductDetails = {
   category: "Electronics",
   subCategory: "Headphones",
   maximumAcceptablePrice: 700,
-  groupExpirationDate: "January 15, 2021",
+  groupExpirationDate: new Date(2021, 0, 6, 0, 0, 0, 0),
   imageUrl:
     "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6397/6397383cv13d.jpg",
   description:
@@ -154,7 +154,7 @@ export const XiaomiMiBoxProduct: ProductDetails = {
   category: "Electronics",
   subCategory: "Media Streamer",
   maximumAcceptablePrice: 200,
-  groupExpirationDate: "January 6, 2021",
+  groupExpirationDate: new Date(2020, 11, 25, 0, 0, 0, 0),
   imageUrl: "https://www.ivory.co.il/files/catalog/org/1575815431m31Ox.jpg",
   description:
     "Xiaomi Mi TV Box S Media Player with Chromecast / Google Assistant Android Kodi Netflix - 2GB RAM - 8GB Storage.",

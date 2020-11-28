@@ -11,13 +11,12 @@ import {
   mergeStyleSets,
   SelectionMode,
   ProgressIndicator,
-  PrimaryButton,
-  DefaultButton,
-  TextField,
 } from "@fluentui/react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import { NewProposalForm } from "./NewProposalForm";
+import { SuppliersSurvey } from "./SupplierSurvey";
+
 export interface ISuppliersListItem {
   key: number;
   name: string;
@@ -33,6 +32,7 @@ export interface ISuppliersListState {
 
 export interface ISuppliersSectionProps {
   requestedItems: number;
+  groupExpirationDate: Date;
 }
 
 const classNames = mergeStyleSets({
@@ -57,7 +57,9 @@ for (let i = 0; i < 300; i += 100) {
     Date: Date(),
     ProgressBar: (
       <ProgressIndicator
-        label="70 units to complete"
+        label={
+          170 + i - 170 > 0 ? `${170 + i - 170} units to complete` : "Complete"
+        }
         percentComplete={170 / (170 + i)}
       />
     ),
@@ -121,6 +123,7 @@ export const detailsListStyles: Partial<IDetailsColumnStyles> = {
 
 export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> = ({
   requestedItems,
+  groupExpirationDate,
 }) => {
   const [open, setOpen] = React.useState(false);
   const [listItems, setListItems] = React.useState<ISuppliersListItem[]>(
@@ -146,8 +149,13 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
       MinimumUnits: minimumUnits,
       Date: Date(),
       ProgressBar: (
+        //TODO: how to present the minimumUnits-requestedItems avoid injection
         <ProgressIndicator
-          label="70 units to complete"
+          label={
+            minimumUnits - requestedItems > 0
+              ? `${minimumUnits - requestedItems} units to complete`
+              : "Complete"
+          }
           percentComplete={requestedItems / minimumUnits}
         />
       ),
@@ -155,7 +163,7 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
     setOpen(false);
     setListItems((listItems) => [stam, ...listItems]);
   };
-  return (
+  return new Date().getTime() < groupExpirationDate.getTime() ? (
     <Stack styles={stackStyles}>
       <ActionButton
         iconProps={addIcon}
@@ -185,6 +193,17 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
         columns={_columns}
         selectionMode={SelectionMode.none}
       />
+    </Stack>
+  ) : (
+    <Stack> 
+    <SuppliersSurvey
+      supliersNames={listItems.map((supplierProposal) => {
+        return {
+          key: String(supplierProposal.key),
+          text: supplierProposal.name,
+        };
+      })}
+    />
     </Stack>
   );
 };
