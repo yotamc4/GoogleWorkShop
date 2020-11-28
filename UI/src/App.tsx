@@ -30,6 +30,9 @@ function App() {
         <Route path="/user/:user">
           <UserProfile />
         </Route>
+        <Route path="/survey">
+          <SuppliersSurvey supliersNames={["ofek", "ksp", "kobi", "apple", "microsoft"]}/>
+        </Route>
       </Switch>
     </>
   );
