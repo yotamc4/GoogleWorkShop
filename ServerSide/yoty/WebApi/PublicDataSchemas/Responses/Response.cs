@@ -7,14 +7,13 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 {
     public class Response<DTObject>: Response  
     {
-        DTObject DTOObject { get; set; }
+        public DTObject DTOObject { get; set; }
     }
 
     public class Response
     {
-        bool IsOperationSucceded { get; set; }
+        public bool IsOperationSuccsseded { get; set; }
 
-        string SuccessFailureMessage { get; set; }
-
+        public string SuccessOrFailureMessage { get; set; }
     }
 }

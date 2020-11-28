@@ -1,6 +1,6 @@
 ﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
-namespace YOTY.Service.Managers.Bids
+namespace YOTY.Service.Core.Managers.Bids
 {
     using System;
     using System.Collections.Generic;
@@ -59,7 +59,7 @@ namespace YOTY.Service.Managers.Bids
             throw new NotImplementedException();
         }
 
-        public Task<IList<BidDTO>> GetBids(BidsFilters bidsFilters)
+        public Task<IList<BidDTO>> GetBids(BidsQueryOptions bidsFilters)
         {
             throw new NotImplementedException();
         }
