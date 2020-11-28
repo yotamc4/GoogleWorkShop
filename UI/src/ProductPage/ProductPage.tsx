@@ -59,9 +59,8 @@ export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
           </Text>
           <Text styles={Styles.subHeaderStyle}>
             Group's expiration date:{" "}
-            {productDetails.groupExpirationDate.getUTCMonth() + 1} /
-            {productDetails.groupExpirationDate.getUTCDate()} /{" "}
-            {productDetails.groupExpirationDate.getUTCFullYear()}
+            {productDetails.groupExpirationDate.getUTCMonth()+1}/
+            {productDetails.groupExpirationDate.getUTCDate()+1}/{productDetails.groupExpirationDate.getUTCFullYear()}
           </Text>
           <Text styles={Styles.subHeaderStyle} variant="large">
             Description
@@ -80,6 +79,7 @@ export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
               group so far
             </Text>
           </Stack>
+          {new Date().getTime() < productDetails.groupExpirationDate.getTime() && 
           <DefaultButton
             text="Join The Group"
             primary
@@ -93,10 +93,11 @@ export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
             }}
             height={"4rem"}
           />
+        }
         </Stack>
       </Stack>
       <Stack horizontal horizontalAlign="center">
-        <SuppliersSection requestedItems={groupDetails.numberOfParticipants} />
+        <SuppliersSection requestedItems={groupDetails.numberOfParticipants} groupExpirationDate = {productDetails.groupExpirationDate}/>
       </Stack>
     </Stack>
   );

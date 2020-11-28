@@ -59,7 +59,9 @@ export const ProductCard: React.FunctionComponent<ProductDetails> = (
           Max Acceptable Price: {productDetails.maximumAcceptablePrice}₪
         </Text>
         <Text variant="small" styles={descriptionTextStyles}>
-          Expiration Date: {productDetails.groupExpirationDate}
+          Expiration Date: {productDetails.groupExpirationDate.getUTCMonth()+1}/
+          {productDetails.groupExpirationDate.getUTCDate()+1}/
+          {productDetails.groupExpirationDate.getUTCFullYear()}
         </Text>
       </Card.Section>
       <Card.Section

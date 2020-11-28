@@ -13,18 +13,18 @@ import {
 } from "@fluentui/react";
 
 export interface ISuppliersNamesList {
-  supliersNames: string[];
+  supliersNames: IChoiceGroupOption[];
 }
 
 const choiceGroupStyles: IChoiceGroupStyles = {
   root: {
-    marginLeft: "50rem",
+    marginLeft: "-22rem",
   },
 };
 
 const textStyles: ITextStyles = {
   root: {
-    marginLeft: "50rem",
+    marginLeft: "-22rem",
   },
 };
 
@@ -36,16 +36,6 @@ export const SuppliersSurvey: React.FunctionComponent<ISuppliersNamesList> = ({
   supliersNames,
 }) => {
   const [selectedKey, setSelectedKey] = React.useState<string>();
-
-  //TODO: react use effect create the list of supplliers
-  let options: IChoiceGroupOption[] = [];
-
-  for (let i = 0; i < supliersNames.length; i++) {
-    options.push({
-      key: String(i),
-      text: supliersNames[i] as string,
-    });
-  }
 
   const onChange = React.useCallback(
     (
@@ -70,14 +60,14 @@ export const SuppliersSurvey: React.FunctionComponent<ISuppliersNamesList> = ({
       <ChoiceGroup
         styles={choiceGroupStyles}
         selectedKey={selectedKey}
-        options={options}
+        options={supliersNames}
         onChange={onChange}
       />
       <DefaultButton
         text={"Vote"}
         primary
         styles={{
-          root: { borderRadius: 25, height: "2.5rem", width:"20rem",  marginLeft:"55rem" },
+          root: { borderRadius: 25, height: "2.5rem", width:"20rem",  marginLeft:"-10rem" },
           textContainer: { padding: "1rem", fontSize: "1.5rem" },
         }}
       ></DefaultButton>
