@@ -1,22 +1,27 @@
 import React from "react";
 import * as Styles from "./ProductPageStyles";
+import * as mockProducts from "../Modal/MockProducts";
 import {
   DefaultButton,
   FontIcon,
-  Icon,
   Image,
   Separator,
   Stack,
   Text,
 } from "@fluentui/react";
-import { SuppliersList } from "./SupplierList";
+import { SuppliersSection, ISuppliersSectionProps } from "./SupplierSection";
 import { ProductDetails } from "../Modal/ProductDeatils";
-import { LenovoThinkPadProduct } from "../Modal/MockProducts";
 import { GroupDetails } from "../Modal/GroupDetails";
+import { useParams } from "react-router-dom";
 
-export const ProductPage: React.FunctionComponent = () => {
+export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
+  mockProductId
+) => {
+  //TODO: delete those states not every data from the user should be
+  // state because most of the properties from the backend won't change in the productpage
+  const { id } = useParams<{ id: string }>();
   const [productDetails, setProductDetails] = React.useState<ProductDetails>(
-    LenovoThinkPadProduct
+    getMockProduct(id)
   );
 
   const [groupDetails, setGroupDetails] = React.useState<GroupDetails>({
@@ -45,19 +50,17 @@ export const ProductPage: React.FunctionComponent = () => {
             padding: 10,
           }}
         >
-          <Text
-            className="Bold"
-            styles={Styles.headerStyle}
-            variant="xLargePlus"
-          >
+          <Text className="semiBold" variant="xLargePlus">
             {productDetails.name}
           </Text>
           <Separator />
-          <Text styles={Styles.subHeaderStyle}>
+          <Text styles={Styles.priceTextStyles}>
             Maximum Acceptable Price: {productDetails.maximumAcceptablePrice}₪
           </Text>
           <Text styles={Styles.subHeaderStyle}>
-            Group's expiration date: {productDetails.groupExpirationDate}
+            Group's expiration date:{" "}
+            {productDetails.groupExpirationDate.getUTCMonth()+1}/
+            {productDetails.groupExpirationDate.getUTCDate()+1}/{productDetails.groupExpirationDate.getUTCFullYear()}
           </Text>
           <Text styles={Styles.subHeaderStyle} variant="large">
             Description
@@ -71,11 +74,12 @@ export const ProductPage: React.FunctionComponent = () => {
               iconName="AddGroup"
               className={Styles.classNames.greenYellow}
             />
-            <Text>
+            <Text styles={Styles.amoutTextStyles}>
               {groupDetails.numberOfParticipants} pepole have joined to the
               group so far
             </Text>
           </Stack>
+          {new Date().getTime() < productDetails.groupExpirationDate.getTime() && 
           <DefaultButton
             text="Join The Group"
             primary
@@ -89,11 +93,37 @@ export const ProductPage: React.FunctionComponent = () => {
             }}
             height={"4rem"}
           />
+        }
         </Stack>
       </Stack>
       <Stack horizontal horizontalAlign="center">
-        <SuppliersList />
+        <SuppliersSection requestedItems={groupDetails.numberOfParticipants} groupExpirationDate = {productDetails.groupExpirationDate}/>
       </Stack>
     </Stack>
   );
 };
+
+function getMockProduct(id: string | undefined): ProductDetails {
+  switch (id) {
+    case "1":
+      return mockProducts.AirPodsProProduct;
+    case "2":
+      return mockProducts.AppleWatchSeries6GPSProduct;
+    case "3":
+      return mockProducts.GooglePixelProduct;
+    case "4":
+      return mockProducts.InokimMini2WhiteProduct;
+    case "5":
+      return mockProducts.LenovoThinkPadProduct;
+    case "6":
+      return mockProducts.MicrosoftSurfacePro7Product;
+    case "7":
+      return mockProducts.PowerbeatsProRedProduct;
+    case "8":
+      return mockProducts.SamsungUN70TU6980FXZAProduct;
+    case "9":
+      return mockProducts.SonyPlaystation5DigitalProduct;
+    default:
+      return mockProducts.XiaomiMiBoxProduct;
+  }
+}

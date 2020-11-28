@@ -1,59 +1,86 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import {getTheme, IImageProps, ImageFit, ITheme, Image,Stack, IStackTokens, StackItem, IStackItemStyles, IImageStyles, IStackStyles} from "@fluentui/react"
-import IconButton from '@material-ui/core/IconButton';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+import {
+  getTheme,
+  IImageProps,
+  ImageFit,
+  ITheme,
+  Image,
+  Stack,
+  IStackTokens,
+  StackItem,
+  IStackItemStyles,
+  Separator,
+  Label,
+  CommandBarButton,
+  IStackStyles,
+  IImageStyles,
+} from "@fluentui/react";
+import { useHistory } from "react-router";
 
-const theme: ITheme =  getTheme();
+const theme: ITheme = getTheme();
 const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
-    alignItems:"left"
+    alignItems: "left",
   },
 }));
 
-const serachFilterGapStackTokens: IStackTokens = {
-    padding:65,
-    };    
+const imagePropsLogo: IImageProps = {
+  src: "/Images/logo.PNG",
+  imageFit: ImageFit.contain,
+};
 
-const imageProps: IImageProps = {
-    src:"/Images/logo.PNG",
-    imageFit: ImageFit.contain,
-    };
+
+
+
+const StacStyles: IStackStyles = {
+  root: {
+    paddingLeft: "0.7rem",
+    paddingRight: "0.7rem",
+  },
+};
+
+const StacStyles2: IStackStyles = {
+  root: {
+    paddingTop: "3rem",
+  },
+};
+
+const StackItemStyles: IStackItemStyles = {
+  root: {
+    width:"7rem",
+    marginLeft: "28rem",
+    marginTop: "-3rem",
+    ":hover":{cursor: "pointer"}
+  },
+};
+
 
 export default function ButtonAppBar() {
-  const classes = useStyles();
-
-
-  const StackItemStyles: IStackItemStyles = {
-    root: {
-        position:"absolute",
-        marginLeft:"34rem",
-        marginTop:"-3rem",
-        zIndex:300,
-    },
+  const history = useHistory();
+  const changeHistory = () => {
+    //history.push(`/products/${productDetails.name.replace(/\s/g, "")}`);
+    history.push(`/`);
   };
-  
+
   return (
-    <Stack  tokens={serachFilterGapStackTokens}>
-        <StackItem styles={StackItemStyles}>
-            <Image
-                {...imageProps}
-                width={200}
-                height={140}
-                />
-        </StackItem>
-      <AppBar style={{zIndex:1,marginLeft:"2rem",width:"75rem",height:"2.8rem",background:theme.palette.blueDark}} position="static">
-        <Toolbar>
-          <Typography style={{marginBottom:"1rem",marginRight:"15rem"}} variant="h6" className={classes.title}>
-            Hello Guest!
-          </Typography>
-          <Button style={{marginBottom:"1rem"}} color="inherit">Login</Button>
-        </Toolbar>
-      </AppBar>
+    <Stack styles={StacStyles2}>
+      <StackItem styles={StackItemStyles}>
+        <Image {...imagePropsLogo} width={200} height={140} onClick={changeHistory}/>
+      </StackItem>
+      <Stack>
+        <Separator theme={theme} styles={{ content: { width: "69rem" } }} />
+        <Stack horizontal horizontalAlign="space-between" styles={StacStyles}>
+          <Label>Hello Guest!</Label>
+          <CommandBarButton text="Login" disabled={false} checked={false} />
+        </Stack>
+        <Separator styles={{ root: { width: "100%" } }} />
+      </Stack>
     </Stack>
   );
 }

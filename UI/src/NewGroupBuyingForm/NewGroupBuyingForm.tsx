@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as NewGroupBuyingFormStyles from "./NewGroupBuyingFormStyles";
+import * as FormsStyles from "../FormStyles/FormsStyles";
 import { Stack, Dropdown, Label } from "office-ui-fabric-react";
 import {
   DatePicker,
@@ -14,7 +14,7 @@ import {
   Image,
 } from "@fluentui/react";
 import { CategoriesMap } from "../HomePage/Model/Categories";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 export const NewGroupBuyingForm: React.FunctionComponent = () => {
   const [formInputs, setFormInputs] = React.useReducer<
@@ -64,25 +64,25 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
       <Text
         block={true}
         className="Bold"
-        styles={NewGroupBuyingFormStyles.headerStyle}
+        styles={FormsStyles.headerStyle}
         variant="xLargePlus"
       >
         New suggestion for Group buying
       </Text>
       <Stack
         styles={{ root: { width: "40%" } }}
-        tokens={NewGroupBuyingFormStyles.verticalGapStackTokens}
+        tokens={FormsStyles.verticalGapStackTokens}
       >
         <Separator styles={{ root: { width: "100%" } }} />
         <TextField
           label="Product's name"
-          styles={{ root: { width: NewGroupBuyingFormStyles.inputWidth } }}
+          styles={{ root: { width: FormsStyles.inputWidth } }}
         />
         <Dropdown
           id={categoryProp}
           onChange={onDropdownChange}
           label={"Product's Category"}
-          styles={NewGroupBuyingFormStyles.dropdownStyles}
+          styles={FormsStyles.dropdownStyles}
           options={Array.from(CategoriesMap.keys()).map((categoryName) => ({
             key: categoryProp,
             text: categoryName,
@@ -90,7 +90,7 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
         ></Dropdown>
         <Dropdown
           label={"Product's Sub Category"}
-          styles={NewGroupBuyingFormStyles.dropdownStyles}
+          styles={FormsStyles.dropdownStyles}
           options={
             formInputs.category
               ? Array.from(
@@ -107,7 +107,7 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
         <TextField
           label="Maximum price"
           onGetErrorMessage={() => "Only numbers allowd"}
-          styles={{ root: { width: NewGroupBuyingFormStyles.inputWidth } }}
+          styles={{ root: { width: FormsStyles.inputWidth } }}
           suffix="₪"
         />
         <DatePicker
@@ -116,13 +116,13 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           strings={DayPickerStrings}
           placeholder="Select a date..."
           ariaLabel="Select a date"
-          styles={{ root: { width: NewGroupBuyingFormStyles.inputWidth } }}
+          styles={{ root: { width: FormsStyles.inputWidth } }}
         />
         <TextField
           label="Description"
           multiline
           autoAdjustHeight
-          styles={{ root: { width: NewGroupBuyingFormStyles.inputWidth } }}
+          styles={{ root: { width: FormsStyles.inputWidth } }}
         />
         <Label>{"Upload an image for reference only"}</Label>
         <input
@@ -131,7 +131,7 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           id="contained-button-file"
           name="image"
           type="file"
-          style={{ width: NewGroupBuyingFormStyles.inputWidth }}
+          style={{ width: FormsStyles.inputWidth }}
         />
         {formInputs?.userImage && (
           <Image
@@ -142,11 +142,11 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           />
         )}
         <Separator
-          styles={{ root: { width: NewGroupBuyingFormStyles.inputWidth } }}
+          styles={{ root: { width: FormsStyles.inputWidth } }}
         />
         <Stack
           horizontal
-          tokens={NewGroupBuyingFormStyles.horizontalGapStackTokens}
+          tokens={FormsStyles.horizontalGapStackTokens}
           styles={{ root: { margin: "auto" } }}
         >
           <DefaultButton

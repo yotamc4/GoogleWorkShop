@@ -7,6 +7,7 @@ import { Route, Switch } from "react-router-dom";
 import { NewGroupBuyingForm } from "./NewGroupBuyingForm/NewGroupBuyingForm";
 import { ProductPage } from "./ProductPage/ProductPage";
 import { UserProfile } from "./UserProfile/UserProfile";
+import { SuppliersSurvey } from "./ProductPage/SupplierSurvey";
 
 initializeIcons();
 
@@ -24,7 +25,7 @@ function App() {
           <NewGroupBuyingForm />
         </Route>
         <Route path="/products/:id">
-          <ProductPage />
+          <ProductPage mockProductId={10} />
         </Route>
         <Route path="/user/:user">
           <UserProfile />
