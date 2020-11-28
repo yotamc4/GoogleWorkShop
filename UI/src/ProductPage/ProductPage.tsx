@@ -1,6 +1,8 @@
 import React from "react";
 import * as Styles from "./ProductPageStyles";
 import * as mockProducts from "../Modal/MockProducts";
+import * as MockBuyers from "../Modal/MockBuyers";
+
 import {
   DefaultButton,
   FontIcon,
@@ -9,10 +11,11 @@ import {
   Stack,
   Text,
 } from "@fluentui/react";
-import { SuppliersSection, ISuppliersSectionProps } from "./SupplierSection";
+import { SuppliersSection } from "./SupplierSection";
 import { ProductDetails } from "../Modal/ProductDeatils";
 import { GroupDetails } from "../Modal/GroupDetails";
 import { useParams } from "react-router-dom";
+import { PaymentsTable } from "../PaymentTable/PaymentTable";
 
 export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
   mockProductId
@@ -59,8 +62,9 @@ export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
           </Text>
           <Text styles={Styles.subHeaderStyle}>
             Group's expiration date:{" "}
-            {productDetails.groupExpirationDate.getUTCMonth()+1}/
-            {productDetails.groupExpirationDate.getUTCDate()+1}/{productDetails.groupExpirationDate.getUTCFullYear()}
+            {productDetails.groupExpirationDate.getUTCMonth() + 1}/
+            {productDetails.groupExpirationDate.getUTCDate() + 1}/
+            {productDetails.groupExpirationDate.getUTCFullYear()}
           </Text>
           <Text styles={Styles.subHeaderStyle} variant="large">
             Description
@@ -76,28 +80,50 @@ export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
             />
             <Text styles={Styles.amoutTextStyles}>
               {groupDetails.numberOfParticipants} pepole have joined to the
-              group so far
+              group
             </Text>
           </Stack>
-          {new Date().getTime() < productDetails.groupExpirationDate.getTime() && 
-          <DefaultButton
-            text="Join The Group"
-            primary
-            iconProps={{
-              iconName: "AddFriend",
-              styles: { root: { fontSize: "1.5rem" } },
-            }}
-            styles={{
-              root: { borderRadius: 25, height: "4rem" },
-              textContainer: { padding: "1rem", fontSize: "1.5rem" },
-            }}
-            height={"4rem"}
-          />
-        }
+          {new Date().getTime() <
+          productDetails.groupExpirationDate.getTime() ? (
+            <DefaultButton
+              text="Join The Group"
+              primary
+              iconProps={{
+                iconName: "AddFriend",
+                styles: { root: { fontSize: "1.5rem" } },
+              }}
+              styles={{
+                root: { borderRadius: 25, height: "4rem" },
+                textContainer: { padding: "1rem", fontSize: "1.5rem" },
+              }}
+              height={"4rem"}
+            />
+          ) : (
+            <Text styles={Styles.newBuyersCantJoinTheGroup}>
+              New Buyers can't Join the group, The Expirtaion date setted by the
+              group's creator has reached.
+            </Text>
+          )}
+          <Separator />
         </Stack>
       </Stack>
-      <Stack horizontal horizontalAlign="center">
-        <SuppliersSection requestedItems={groupDetails.numberOfParticipants} groupExpirationDate = {productDetails.groupExpirationDate}/>
+      <Stack horizontalAlign="center">
+        <Separator />
+        {productDetails.supplierHasChosen ? (
+          <PaymentsTable
+            payers={[
+              MockBuyers.Adi,
+              MockBuyers.Guy,
+              MockBuyers.Or,
+              MockBuyers.Yam,
+            ]}
+          />
+        ) : (
+          <SuppliersSection
+            requestedItems={groupDetails.numberOfParticipants}
+            groupExpirationDate={productDetails.groupExpirationDate}
+          />
+        )}
       </Stack>
     </Stack>
   );

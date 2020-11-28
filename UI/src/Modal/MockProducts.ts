@@ -67,11 +67,12 @@ export const SamsungUN70TU6980FXZAProduct: ProductDetails = {
   category: "Electronics",
   subCategory: "Television",
   maximumAcceptablePrice: 2500,
-  groupExpirationDate: new Date(2021, 0, 26, 0, 0, 0, 0),
+  groupExpirationDate: new Date(2020, 10, 25, 0, 0, 0, 0),
   imageUrl:
-    "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6428/6428508_sd.jpg",
+    "https://www.cwc.co.il/images/itempics/A-015543_020820201638041_large.jpg",
   description:
     "Enhance your viewing experience with this 70-inch Samsung 4K UHD smart TV. The HDR technology and 4K UHD resolution render sharp details and realistic colors, while a Crystal processor delivers exceptional picture quality on the flat-panel display.",
+  supplierHasChosen: true,
 };
 
 export const MicrosoftSurfacePro7Product: ProductDetails = {

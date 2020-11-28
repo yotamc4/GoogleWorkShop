@@ -7,4 +7,5 @@ export interface ProductDetails {
   imageUrl: string;
   description: string;
   mockId: number;
+  supplierHasChosen?: boolean;
 }

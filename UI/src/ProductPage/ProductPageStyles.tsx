@@ -65,5 +65,14 @@ export const amoutTextStyles: ITextStyles = {
 };
 
 export const classNames = mergeStyleSets({
-  greenYellow: [{ color: "greenyellow" }, iconClass],
+  greenYellow: [{ color: "#000c8b" }, iconClass],
 });
+
+export const newBuyersCantJoinTheGroup: ITextStyles = {
+  root: {
+    fontSize: "1.2rem",
+    marginTop: "1rem",
+    color: "#8b002a",
+    fontWeight: FontWeights.semibold,
+  },
+};
