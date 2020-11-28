@@ -1,6 +1,6 @@
 export const CategoriesMap: Map<string, string[]> = new Map();
 
-CategoriesMap.set("Electorincs", [
+CategoriesMap.set("Electronics", [
   "Cell Phones",
   "Headphones",
   "Television",
@@ -16,21 +16,16 @@ CategoriesMap.set("Transportations", [
   "Segway",
 ]);
 
-CategoriesMap.set("ElectorincsB", [
+CategoriesMap.set("Sports", [
   "Cell Phones",
   "Headphones",
   "Television",
   "Media Streamer",
 ]);
 
-CategoriesMap.set("ComputersB", [
-  "Computers",
-  "Laptops",
-  "Monitors",
-  "Tablets",
-]);
+CategoriesMap.set("Clothing", ["Computers", "Laptops", "Monitors", "Tablets"]);
 
-CategoriesMap.set("TransportationsB", [
+CategoriesMap.set("Outdoors", [
   "Bicycle",
   "Electronic scooters",
   "Electric bicycle",

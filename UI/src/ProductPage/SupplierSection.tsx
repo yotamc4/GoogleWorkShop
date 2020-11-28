@@ -172,7 +172,7 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
         checked={false}
         onClick={handleClickOpen}
       >
-        Add a new proposal
+        Add a new Supplier proposal
       </ActionButton>
       <Dialog
         open={open}
@@ -195,15 +195,15 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
       />
     </Stack>
   ) : (
-    <Stack> 
-    <SuppliersSurvey
-      supliersNames={listItems.map((supplierProposal) => {
-        return {
-          key: String(supplierProposal.key),
-          text: supplierProposal.name,
-        };
-      })}
-    />
+    <Stack>
+      <SuppliersSurvey
+        supliersNames={listItems.map((supplierProposal) => {
+          return {
+            key: String(supplierProposal.key),
+            text: supplierProposal.name,
+          };
+        })}
+      />
     </Stack>
   );
 };

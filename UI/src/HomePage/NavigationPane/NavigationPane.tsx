@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Nav, INavLinkGroup } from "office-ui-fabric-react/lib/Nav";
-import { INavLink, Label, Text } from "@fluentui/react";
+import { INavLink, Label, Stack, Text } from "@fluentui/react";
 import { CategoriesMap } from "../Model/Categories";
 import { boldStyle } from "../../TextStyles";
 
@@ -32,7 +32,7 @@ function navLinkGroups(map: Map<string, string[]>): INavLinkGroup[] {
 
 export const NavigationPane: React.FunctionComponent = () => {
   return (
-    <React.Fragment>
+    <Stack>
       <Label>
         <Text variant="large" styles={boldStyle}>
           Categories
@@ -42,6 +42,6 @@ export const NavigationPane: React.FunctionComponent = () => {
         ariaLabel="Nav with nested links"
         groups={navLinkGroups(CategoriesMap)}
       />
-    </React.Fragment>
+    </Stack>
   );
 };
