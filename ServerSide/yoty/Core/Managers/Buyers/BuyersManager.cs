@@ -10,6 +10,7 @@ namespace YOTY.Service.Core.Managers.Buyers
 {
     public class BuyersManager : IBuyersManager
     {
+        private const string BuyerNotFoundFailString = "Failed, Buyer not found";
         private static YotyContext _context = new YotyContext();
 
         public Task<Response<BuyerDTO>> CreateBuyer(NewBuyerRequest newBuyerRequest)
@@ -22,7 +23,7 @@ namespace YOTY.Service.Core.Managers.Buyers
             var buyer = await _context.Buyers.FindAsync(buyerId).ConfigureAwait(false);
             if (buyer == null)
             {
-                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = "buyer not found" };
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BuyerNotFoundFailString };
             }
             using (var new_context = new YotyContext())
             {
@@ -51,7 +52,7 @@ namespace YOTY.Service.Core.Managers.Buyers
             var buyer = await _context.Buyers.FindAsync(buyerId).ConfigureAwait(false);
             if (buyer == null)
             {
-                return new Response<BuyerDTO>() {DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = "buyer not found" };
+                return new Response<BuyerDTO>() {DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BuyerNotFoundFailString };
             }
             //TODO add mapper from buyer_ent to buyer_dto  
             return new Response<BuyerDTO>() { DTOObject = null, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
@@ -63,7 +64,7 @@ namespace YOTY.Service.Core.Managers.Buyers
             var buyer = await _context.Buyers.FindAsync(buyerId).ConfigureAwait(false);
             if (buyer == null)
             {
-                return new Response<IList<BidDTO>>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = "buyer not found" };
+                return new Response<IList<BidDTO>>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BuyerNotFoundFailString };
             }
             //TODO add mapper from bid_ent to dto       ------------------------------------------------------------->                        here
             IList<BidDTO> liveBids = buyer.CurrentParticipancies.Select(p => p.Bid).Where(b => b.ExpirationDate > current_time).Select(bid => new BidDTO()).ToList();
@@ -76,7 +77,7 @@ namespace YOTY.Service.Core.Managers.Buyers
             var buyer = await _context.Buyers.FindAsync(buyerId).ConfigureAwait(false);
             if (buyer == null)
             {
-                return new Response<IList<BidDTO>>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = "buyer not found" };
+                return new Response<IList<BidDTO>>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BuyerNotFoundFailString };
             }
             //TODO add mapper from bid_ent to dto       ------------------------------------------------------------->                        here
             IList<BidDTO> liveBids = buyer.CurrentParticipancies.Select(p => p.Bid).Where(b => b.ExpirationDate <= current_time).Select(bid => new BidDTO()).ToList();
