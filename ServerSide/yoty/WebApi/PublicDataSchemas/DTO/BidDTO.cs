@@ -9,7 +9,7 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
     {
         public string Id { get; set; }
 
-        public ProductDTO ProductDto { get; set; }
+        public ProductDTO Product{ get; set; }
 
         public string OwnerId { get; set; }
 
