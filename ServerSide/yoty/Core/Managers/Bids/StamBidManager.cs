@@ -1,6 +1,6 @@
 ﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
-namespace YOTY.Service.Managers.Bids
+namespace YOTY.Service.Core.Managers.Bids
 {
     using System;
     using System.Collections.Generic;
@@ -49,22 +49,17 @@ namespace YOTY.Service.Managers.Bids
             throw new NotImplementedException();
         }
 
-        public Task<IList<BuyerDTO>> GetBidBuyers(string bidId)
+        public Task<Response<IList<BuyerDTO>>> GetBidBuyers(string bidId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IList<BidDTO>> GetBids()
+        public Task<Response<IList<BidDTO>>> GetBids(BidsQueryOptions bidsFilters)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IList<BidDTO>> GetBids(BidsFilters bidsFilters)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IList<BuyerDTO>> GetBidSuplliers(string bidId)
+        public Task<Response<IList<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId)
         {
             throw new NotImplementedException();
         }

@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using YOTY.Service.WebApi.PublicDataSchemas;
-using YOTY.Service.Managers.Buyers;
+﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
 namespace YOTY.Service.WebApi.Controllers
 {
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Routing;
+    using YOTY.Service.Core.Managers.Buyers;
+    using YOTY.Service.WebApi.PublicDataSchemas;
+
     [ApiController]
     [Route("api/v1/[controller]")]
     public class BuyersController: ControllerBase
@@ -20,19 +19,28 @@ namespace YOTY.Service.WebApi.Controllers
             this.buyersManager = buyersManager;
         }
 
-        [HttpGet]
-        [Route("Buyers")]
-        public async Task<ActionResult<IList<BuyerDTO>>> GetBuyers([FromBody] IList<string> buyersIds)
+        [HttpPost]
+        public async Task<ActionResult<BuyerDTO>> CreateBuyer(NewBuyerRequest newBuyerRequest)
         {
-            try
+            Response<BuyerDTO> response = await this.buyersManager.CreateBuyer(newBuyerRequest).ConfigureAwait(false);
+            if (response.IsOperationSuccseeded )
             {
-                var result = await buyersManager.GetBuyers(buyersIds);
-                return Ok(result);
+                return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
             }
-            catch (Exception e)
+            return this.StatusCode(StatusCodes.Status403Forbidden, response.SuccessOrFailureMessage);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<BuyerDTO>> Getbuyer(string buyerId)
+        {
+            Response<BuyerDTO> response = await this.buyersManager.GetBuyer(buyerId).ConfigureAwait(false);
+            if (response.IsOperationSuccseeded )
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+                
+                return response.DTOObject;
             }
+            // at the moment
+            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);           
         }
     }
 }

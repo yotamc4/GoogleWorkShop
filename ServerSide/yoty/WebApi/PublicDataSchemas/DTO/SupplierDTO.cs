@@ -1,8 +1,8 @@
-﻿
+﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
 namespace YOTY.Service.WebApi.PublicDataSchemas
 {
-    public class Supplier
+    public class SupplierDTO
     {
         string Id { get; set; }
 
@@ -11,8 +11,6 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
         double Rating { get; set; }
 
         int ReviewsCounter { get; set; }
-
-
     }
 }
 

@@ -7,7 +7,7 @@ namespace YOTY.Service.Data.Entities
         public int Id { get; set; }
 
         [Required]
-        public ProductBidEntity Bid { get; set; }
+        public BidEntity Bid { get; set; }
 
         public string BidId { get; set; }
 

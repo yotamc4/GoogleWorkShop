@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
 namespace YOTY.Service.WebApi.Middlewares
 {
+    using Microsoft.Extensions.DependencyInjection;
+    using YOTY.Service.WebApi.Middlewares.CorrelationId;
+    using System;
+
     public static class MiddlewaresConfigurer
     {
 

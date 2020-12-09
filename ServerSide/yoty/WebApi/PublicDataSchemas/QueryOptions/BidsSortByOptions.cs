@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
 namespace YOTY.Service.WebApi.PublicDataSchemas
 {
     public enum BidsSortByOptions
     {
+        None,
         ExpirationData,
         PublishDate,
-        SupplierProposalsCnt,
-        DemandedItemsCounter,
+        SupplierProposals,
+        DemandedItems,
         Price,
     }
 
     public enum BidsSortByOrder
     {
+        None,
         DESC,
         ACS
     }
