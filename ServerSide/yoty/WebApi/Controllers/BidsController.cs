@@ -43,7 +43,7 @@ namespace YOTY.Service.WebApi.Controllers
             {
                 return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
             }
-            return this.StatusCode(StatusCodes.Status403Forbidden, response.SuccessFailureMessage);
+            return this.StatusCode(StatusCodes.Status403Forbidden, response.SuccessOrFailureMessage);
         }
 
         [HttpGet]
@@ -74,7 +74,7 @@ namespace YOTY.Service.WebApi.Controllers
                 return response.DTOObject;
             }
             // at the moment
-            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessFailureMessage);
+            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
         }
 
         [HttpGet]
@@ -87,7 +87,7 @@ namespace YOTY.Service.WebApi.Controllers
                 return response.DTOObject;
             }
             // at the moment
-            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessFailureMessage);
+            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
         }
 
 
@@ -102,7 +102,7 @@ namespace YOTY.Service.WebApi.Controllers
             {
                 return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
             }
-            return this.StatusCode(StatusCodes.Status304NotModified, response.SuccessFailureMessage);
+            return this.StatusCode(StatusCodes.Status304NotModified, response.SuccessOrFailureMessage);
         }
 
         [HttpPost]
@@ -115,7 +115,7 @@ namespace YOTY.Service.WebApi.Controllers
             {
                 return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
             }
-            return this.StatusCode(StatusCodes.Status304NotModified, response.SuccessFailureMessage);
+            return this.StatusCode(StatusCodes.Status304NotModified, response.SuccessOrFailureMessage);
         }
 
         [HttpPut]
@@ -128,7 +128,7 @@ namespace YOTY.Service.WebApi.Controllers
             {
                 return response.DTOObject;
             }
-            return this.StatusCode(StatusCodes.Status304NotModified, response.SuccessFailureMessage);
+            return this.StatusCode(StatusCodes.Status304NotModified, response.SuccessOrFailureMessage);
         }
 
 
@@ -140,11 +140,11 @@ namespace YOTY.Service.WebApi.Controllers
             Response response = await this.bidsManager.DeleteBuyer(bidId, buyerId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
-                return this.StatusCode(StatusCodes.Status200OK, response.SuccessFailureMessage);
+                return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
 
             }
 
-            return this.StatusCode(StatusCodes.Status405MethodNotAllowed, response.SuccessFailureMessage);
+            return this.StatusCode(StatusCodes.Status405MethodNotAllowed, response.SuccessOrFailureMessage);
         }
 
 
@@ -156,11 +156,11 @@ namespace YOTY.Service.WebApi.Controllers
             Response response = await this.bidsManager.DeleteSupplierProposal(bidId, proposalId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
-                return this.StatusCode(StatusCodes.Status200OK, response.SuccessFailureMessage);
+                return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
 
             }
 
-            return this.StatusCode(StatusCodes.Status405MethodNotAllowed, response.SuccessFailureMessage);
+            return this.StatusCode(StatusCodes.Status405MethodNotAllowed, response.SuccessOrFailureMessage);
         }
 
         [HttpGet]

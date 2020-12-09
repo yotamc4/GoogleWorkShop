@@ -14,7 +14,7 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
     {
         public bool IsOperationSucceeded { get; set; }
 
-        public string SuccessFailureMessage { get; set; }
+        public string SuccessOrFailureMessage { get; set; }
 
     }
 }
