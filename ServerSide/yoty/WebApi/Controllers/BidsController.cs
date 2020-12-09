@@ -1,16 +1,15 @@
 ﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using YOTY.Service.Managers.Bids;
-using YOTY.Service.WebApi.PublicDataSchemas;
-
 namespace YOTY.Service.WebApi.Controllers
 {
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Routing;
+    using YOTY.Service.Core.Managers.Bids;
+    using YOTY.Service.WebApi.PublicDataSchemas;
+
     // The controller has designed by the API best-practises doc here:https://hackernoon.com/restful-api-designing-guidelines-the-best-practices-60e1d954e7c9
     [ApiController]
     [Route("api/v1/[controller]")]
@@ -24,14 +23,22 @@ namespace YOTY.Service.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<BidDTO>>> GetBids([FromQuery] BidsQueryOptions bidsFilters)
+        public async Task<ActionResult<List<BidDTO>>> GetBids([FromQuery] BidsQueryOptions bidsQueryOptions)
         {
+            Response<List<BidDTO>> response = await this.bidsManager.GetBids(bidsQueryOptions).ConfigureAwait(false);
+            if (response.IsOperationSuccsseded)
+            {
+                return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
+            }
+            return this.StatusCode(StatusCodes.Status403Forbidden, response.SuccessOrFailureMessage);
+            /*
             return new List<BidDTO> {
                 new BidDTO {
                     Id = " first bid in list",
                     Category = bidsFilters.Category,
                 },
             };
+            */
         }
 
 
@@ -49,10 +56,12 @@ namespace YOTY.Service.WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<BidDTO>> GetBid(string bidId)
         {
+            /*
             return new BidDTO {
                 Id = "onebid",
             };
-            /*
+            */
+            
             Response<BidDTO> response = await this.bidsManager.GetBid(bidId).ConfigureAwait(false);
             if (response.IsOperationSuccsseded)
             {
@@ -61,7 +70,7 @@ namespace YOTY.Service.WebApi.Controllers
             }
             // at the moment
             return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
-            */
+            
         }
 
         [HttpGet]

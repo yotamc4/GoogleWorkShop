@@ -1,4 +1,6 @@
-﻿namespace YOTY.Service.WebApi.PublicDataSchemas
+﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
+
+namespace YOTY.Service.WebApi.PublicDataSchemas
 {
     public class BuyerAccountDeatails
     {

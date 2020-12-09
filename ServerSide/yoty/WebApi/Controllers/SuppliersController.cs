@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using YOTY.Service.WebApi.PublicDataSchemas;
-using YOTY.Service.Core.Managers.Suppliers;
-using Microsoft.AspNetCore.Http;
+﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
 namespace YOTY.Service.WebApi.Controllers
 {
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using YOTY.Service.Core.Managers.Suppliers;
+    using YOTY.Service.WebApi.PublicDataSchemas;
+
     [ApiController]
     [Route("api/v1/[controller]")]
     public class SuppliersController: ControllerBase

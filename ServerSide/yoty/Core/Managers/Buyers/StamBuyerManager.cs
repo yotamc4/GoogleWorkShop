@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using YOTY.Service.WebApi.PublicDataSchemas;
+﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
 namespace YOTY.Service.Core.Managers.Buyers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using YOTY.Service.WebApi.PublicDataSchemas;
+
     public class StamBuyerManager : IBuyersManager
     {
         public Task<Response<BuyerDTO>> CreateBuyer(NewBuyerRequest newBuyerRequest)

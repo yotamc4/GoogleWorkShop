@@ -49,22 +49,17 @@ namespace YOTY.Service.Core.Managers.Bids
             throw new NotImplementedException();
         }
 
-        public Task<IList<BuyerDTO>> GetBidBuyers(string bidId)
+        public Task<Response<List<BuyerDTO>>> GetBidBuyers(string bidId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IList<BidDTO>> GetBids()
+        public Task<Response<List<BidDTO>>> GetBids(BidsQueryOptions bidsFilters)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IList<BidDTO>> GetBids(BidsQueryOptions bidsFilters)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IList<BuyerDTO>> GetBidSuplliers(string bidId)
+        public Task<Response<List<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId)
         {
             throw new NotImplementedException();
         }
