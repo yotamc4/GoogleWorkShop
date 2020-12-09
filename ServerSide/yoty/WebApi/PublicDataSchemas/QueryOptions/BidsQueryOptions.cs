@@ -2,7 +2,6 @@
 
 namespace YOTY.Service.WebApi.PublicDataSchemas
 {
-    using Microsoft.AspNetCore.Mvc;
     //[BindProperties(SupportsGet = true)]
     public class BidsQueryOptions
     {

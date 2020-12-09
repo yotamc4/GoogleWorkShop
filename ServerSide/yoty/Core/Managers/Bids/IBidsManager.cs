@@ -2,9 +2,7 @@
 
 namespace YOTY.Service.Core.Managers.Bids
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
     using YOTY.Service.WebApi.PublicDataSchemas;
 
@@ -15,8 +13,8 @@ namespace YOTY.Service.Core.Managers.Bids
 
         // get bid details
         Task<Response<BidDTO>> GetBid(string bidId);
-        Task<Response<List<BuyerDTO>>> GetBidBuyers(string bidId);
-        Task<Response<List<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId);
+        Task<Response<IList<BuyerDTO>>> GetBidBuyers(string bidId);
+        Task<Response<IList<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId);
 
         // modify bid
         Task<Response<BuyerDTO>> AddBuyer(BidBuyerJoinRequest bidBuyerJoinRequest);
@@ -31,6 +29,6 @@ namespace YOTY.Service.Core.Managers.Bids
         Task<Response> DeleteBid(string bidId);
 
         // get bids
-        Task<IList<BidDTO>> GetBids(BidsFilters bidsFilters);
+        Task<Response<IList<BidDTO>>> GetBids(BidsQueryOptions bidsFilters);
     }
 }

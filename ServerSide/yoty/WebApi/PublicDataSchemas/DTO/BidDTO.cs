@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
 namespace YOTY.Service.WebApi.PublicDataSchemas
 {
+    using System;
+
     // data structure represents product bit with crud
     public class BidDTO: BaseDTO
     {
         public string Id { get; set; }
 
-        public ProductDto ProductDto { get; set; }
+        public ProductDTO Product{ get; set; }
 
         public string OwnerId { get; set; }
 

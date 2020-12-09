@@ -93,7 +93,7 @@ namespace YOTY.Service.Data.Migrations
                     b.ToTable("ParticipancyEntity");
                 });
 
-            modelBuilder.Entity("YOTY.Service.Data.Entities.ProductBidEntity", b =>
+            modelBuilder.Entity("YOTY.Service.Data.Entities.BidEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -211,7 +211,7 @@ namespace YOTY.Service.Data.Migrations
 
             modelBuilder.Entity("YOTY.Service.Data.Entities.ParticipancyEntity", b =>
                 {
-                    b.HasOne("YOTY.Service.Data.Entities.ProductBidEntity", "Bid")
+                    b.HasOne("YOTY.Service.Data.Entities.BidEntity", "Bid")
                         .WithMany("CurrentParticipancies")
                         .HasForeignKey("BidId1")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -230,7 +230,7 @@ namespace YOTY.Service.Data.Migrations
 
             modelBuilder.Entity("YOTY.Service.Data.Entities.SellerOfferEntity", b =>
                 {
-                    b.HasOne("YOTY.Service.Data.Entities.ProductBidEntity", "Bid")
+                    b.HasOne("YOTY.Service.Data.Entities.BidEntity", "Bid")
                         .WithMany("CurrentOffers")
                         .HasForeignKey("BidId1")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -252,7 +252,7 @@ namespace YOTY.Service.Data.Migrations
                     b.Navigation("CurrentParticipancies");
                 });
 
-            modelBuilder.Entity("YOTY.Service.Data.Entities.ProductBidEntity", b =>
+            modelBuilder.Entity("YOTY.Service.Data.Entities.BidEntity", b =>
                 {
                     b.Navigation("CurrentOffers");
 

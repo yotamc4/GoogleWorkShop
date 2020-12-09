@@ -1,11 +1,11 @@
-﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace YOTY.Service.WebApi.PublicDataSchemas
 {
-    using System;
-    using System.Collections.Generic;
-
-    public class ProductDTO
+    public class ProductRequest
     {
         public string Name { get; set; }
 

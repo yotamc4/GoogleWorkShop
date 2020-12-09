@@ -1,17 +1,22 @@
-﻿public class CorrelationIdOptions
+﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
+
+namespace YOTY.Service.WebApi.Middlewares.CorrelationId
 {
+    public class CorrelationIdOptions
+    {
 
-    //src:https://www.stevejgordon.co.uk/asp-net-core-correlation-ids
+        //src:https://www.stevejgordon.co.uk/asp-net-core-correlation-ids
 
-    private const string DefaultHeader = "X-Correlation-ID";
+        private const string DefaultHeader = "X-Correlation-ID";
 
-    /// <summary>
-    /// The header field name where the correlation ID will be stored
-    /// </summary>
-    public string Header { get; set; } = DefaultHeader;
+        /// <summary>
+        /// The header field name where the correlation ID will be stored
+        /// </summary>
+        public string Header { get; set; } = DefaultHeader;
 
-    /// <summary>
-    /// Controls whether the correlation ID is returned in the response headers
-    /// </summary>
-    public bool IncludeInResponse { get; set; } = true;
+        /// <summary>
+        /// Controls whether the correlation ID is returned in the response headers
+        /// </summary>
+        public bool IncludeInResponse { get; set; } = true;
+    }
 }

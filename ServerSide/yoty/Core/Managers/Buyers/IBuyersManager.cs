@@ -19,7 +19,5 @@ namespace YOTY.Service.Core.Managers.Buyers
 
         Task<List<BidDTO>> GetBidsCreatedByBuyer(string buyerId);//c1
 
-        Task<List<DealDTO>> GetBuyerDeals(string buyerId); //c1
-
     }
 }

@@ -1,20 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using YOTY.Service.WebApi.Middlewares;
-using YOTY.Service.Core.Managers;
+// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
 namespace yoty
 {
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
+    using YOTY.Service.Core.Managers;
+    using YOTY.Service.WebApi.Middlewares;
+    using YOTY.Service.WebApi.Middlewares.CorrelationId;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)

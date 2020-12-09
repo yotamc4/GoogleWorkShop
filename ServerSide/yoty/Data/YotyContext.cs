@@ -7,7 +7,7 @@ namespace YOTY.Service.Data
     {
         public DbSet<BuyerEntity> Buyers { get; set; }
         public DbSet<SellerEntity> Sellers { get; set; }
-        public DbSet<ProductBidEntity> Bids { get; set; }
+        public DbSet<BidEntity> Bids { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
