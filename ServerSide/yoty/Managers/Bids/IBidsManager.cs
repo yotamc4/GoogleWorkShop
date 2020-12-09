@@ -13,8 +13,8 @@ namespace YOTY.Service.Managers.Bids
 
         // get bid details
         Task<Response<BidDTO>> GetBid(string bidId);
-        Task<IList<BuyerDTO>> GetBidBuyers(string bidId);
-        Task<IList<BuyerDTO>> GetBidSuplliers(string bidId);
+        Task<Response<IList<BuyerDTO>>> GetBidBuyers(string bidId);
+        Task<Response<IList<BuyerDTO>>> GetBidSuplliers(string bidId);
 
         // modify bid
         Task<Response<BuyerDTO>> AddBuyer(BidBuyerJoinRequest bidBuyerJoinRequest);

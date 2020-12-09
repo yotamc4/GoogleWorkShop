@@ -227,11 +227,16 @@ namespace YOTY.Service.Managers.Bids
 
         }
 
-        public Task<IList<BuyerDTO>> GetBidBuyers(string bidId)
+        public async Task<Response<IList<BuyerDTO>>> GetBidBuyers(string bidId)
         {
-            throw new NotImplementedException();
-        }
+            var bid_ent = await _context.Bids.FindAsync(bidId).ConfigureAwait(false);
+            IList<BuyerDTO> buyers = new List<BuyerDTO>();
+            // map p.Buyer to dto
+            bid_ent.CurrentParticipancies.ForEach(p => buyers.Add(new BuyerDTO() { }));
+            return new Response<IList<BuyerDTO>>() { DTOObject = buyers, IsOperationSucceded = true, SuccessFailureMessage = "GetBidBuyers Success"};
+            }
 
+        // TODO
         public Task<IList<BidDTO>> GetBids()
         {
             throw new NotImplementedException();
@@ -242,7 +247,7 @@ namespace YOTY.Service.Managers.Bids
             throw new NotImplementedException();
         }
 
-        public Task<IList<BuyerDTO>> GetBidSuplliers(string bidId)
+        public Task<Response<IList<BuyerDTO>>> GetBidSuplliers(string bidId)
         {
             throw new NotImplementedException();
         }
