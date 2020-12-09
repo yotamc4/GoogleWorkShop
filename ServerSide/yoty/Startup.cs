@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using YOTY.Service.WebApi.Middlewares;
-using YOTY.Service.Managers;
+using YOTY.Service.Core.Managers;
 
 namespace yoty
 {

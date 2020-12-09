@@ -1,10 +1,14 @@
 import {
   FontWeights,
+  getTheme,
   IDropdownStyles,
   ITextStyles,
+  ITheme,
   mergeStyles,
   mergeStyleSets,
 } from "@fluentui/react";
+
+const theme: ITheme = getTheme();
 
 export const inputWidth: string = "100%";
 
@@ -46,6 +50,29 @@ const iconClass = mergeStyles({
   margin: "0 25px",
 });
 
+export const priceTextStyles: ITextStyles = {
+  root: {
+    color: theme.palette.red,
+    fontWeight: FontWeights.semibold,
+  },
+};
+
+export const amoutTextStyles: ITextStyles = {
+  root: {
+    color: theme.palette.blue,
+    fontWeight: FontWeights.semibold,
+  },
+};
+
 export const classNames = mergeStyleSets({
-  greenYellow: [{ color: "greenyellow" }, iconClass],
+  greenYellow: [{ color: "#000c8b" }, iconClass],
 });
+
+export const newBuyersCantJoinTheGroup: ITextStyles = {
+  root: {
+    fontSize: "1.2rem",
+    marginTop: "1rem",
+    color: "#8b002a",
+    fontWeight: FontWeights.semibold,
+  },
+};

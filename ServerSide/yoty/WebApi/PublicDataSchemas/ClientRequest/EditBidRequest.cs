@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
 
 namespace YOTY.Service.WebApi.PublicDataSchemas
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using Microsoft.AspNetCore.Mvc;
+
     public class EditBidRequest
     {
         [Required]
+        [FromRoute]
         public string BidId { get; set; }
 
         public string NewName { get; set; }

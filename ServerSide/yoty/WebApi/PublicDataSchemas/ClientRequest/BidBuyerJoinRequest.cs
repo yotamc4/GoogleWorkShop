@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
 namespace YOTY.Service.WebApi.PublicDataSchemas
 {
+    using Microsoft.AspNetCore.Mvc;
+
     public class BidBuyerJoinRequest
     {
-        public string buyerId { get; }
-        public string productBidId { get; }
-        public int Items { get; }
+        public string buyerId { get; set; }
+
+        [FromRoute]
+        public string bidId { get; set; }
+
+        public int Items { get; set; }
     }
 }

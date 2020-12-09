@@ -1,109 +1,109 @@
-import React from 'react'; // importing FunctionComponent
-import { Card, ICardTokens, ICardSectionTokens, ICardStyles } from "@uifabric/react-cards";
+import React from "react"; // importing FunctionComponent
+import {
+  Card,
+  ICardTokens,
+  ICardSectionTokens,
+  ICardStyles,
+} from "@uifabric/react-cards";
 import {
   FontWeights,
   Text,
   ITextStyles,
-  initializeIcons,
   getTheme,
   IImageProps,
   ImageFit,
   Image,
   ITheme,
-} from 'office-ui-fabric-react';
+} from "office-ui-fabric-react";
 import { useHistory } from "react-router-dom";
+import { ProductDetails } from "../../Modal/ProductDeatils";
 
+const theme: ITheme = getTheme();
 
-type ProductCardProps = {
-  productId: string,
-  image: string,
-  category: string,
-  nameOfProduct: string,
-  maxPrice: number,
-  creationDate: string,
-  expirationDate: string,
-  description: string,
-  potenialSuplliersCounter: number,
-  unitsCounter: number,   
-}
-
-const theme: ITheme =  getTheme();
-
-export const ProductCard: React.FunctionComponent<ProductCardProps> = ({ 
-  productId,
-  image,
-  category,
-  nameOfProduct,
-  maxPrice,
-  creationDate,
-  expirationDate,
-  description,
-  potenialSuplliersCounter,
-  unitsCounter
- }) => {
-  
+export const ProductCard: React.FunctionComponent<ProductDetails> = (
+  productDetails
+) => {
   const history = useHistory();
   const cardTokens: ICardTokens = { childrenMargin: 12 };
   const agendaCardSectionTokens: ICardSectionTokens = { childrenGap: 0 };
   const attendantsCardSectionTokens: ICardSectionTokens = { childrenGap: 6 };
   const imageProps: IImageProps = {
-    src:image,
+    src: productDetails.imageUrl,
     imageFit: ImageFit.contain,
   };
-const changeHistory = () => {history.push(`/products/${productId}`)};
+  const changeHistory = () => {
+    history.push(`/products/${productDetails.mockId}`);
+  };
 
-  initializeIcons();
-    return ( 
-    <Card
-      tokens={cardTokens}
-      styles={cardStyles}
-      onClick = {changeHistory}
-    >
-      <Circle/>
-      <Card.Section
-        fill
-        horizontalAlign="center"
-        horizontal
-      >
-        <Image
-        {...imageProps}
-        width={300}
-        height={200}
-        />
+  return (
+    <Card tokens={cardTokens} styles={cardStyles} onClick={changeHistory}>
+      <Circle />
+      <Card.Section fill horizontalAlign="center" horizontal>
+        <Image {...imageProps} width={300} height={200} />
       </Card.Section>
-      <Card.Section horizontalAlign="center">
+      <Card.Section
+        horizontalAlign="center"
+        styles={{ root: { flexBasis: "10rem" } }}
+      >
         <Text variant="large" styles={nameOfProductTextStyles}>
-          {nameOfProduct}
+          {productDetails.name}
         </Text>
-        <Text styles={descriptionTextStyles}>{description}</Text>
+        <Text styles={descriptionTextStyles}>
+          {productDetails.description.slice(0, 200) + "..."}
+        </Text>
       </Card.Section>
       <Card.Section horizontalAlign="center" tokens={agendaCardSectionTokens}>
         <Text variant="mediumPlus" styles={priceTextStyles}>
-          Max Price: {maxPrice}₪
+          Max Acceptable Price: {productDetails.maximumAcceptablePrice}₪
         </Text>
         <Text variant="small" styles={descriptionTextStyles}>
-          Expiration Date: {expirationDate}
+          Expiration Date:{" "}
+          {productDetails.groupExpirationDate.getUTCMonth() + 1}/
+          {productDetails.groupExpirationDate.getUTCDate() + 1}/
+          {productDetails.groupExpirationDate.getUTCFullYear()}
         </Text>
       </Card.Section>
-      <Card.Section horizontalAlign="center" horizontal tokens={attendantsCardSectionTokens}>
+      <Card.Section
+        horizontalAlign="center"
+        horizontal
+        tokens={attendantsCardSectionTokens}
+      >
         <Text variant="small" styles={amoutTextStyles}>
-          {potenialSuplliersCounter} Potential Suplliers
+          {17} Suplliers proposals
         </Text>
         <Text variant="small" styles={amoutTextStyles}>
           |
         </Text>
         <Text variant="small" styles={amoutTextStyles}>
-          {unitsCounter} Units counter
+          {118} Requested items
         </Text>
       </Card.Section>
-    </Card>)
-
-}
+    </Card>
+  );
+};
 
 const Circle: React.FunctionComponent = () => {
-  return(<div style={{width:"36px", height:"36px", lineHeight:"36px", borderRadius:"50%", fontSize:"75%", color:"#fff", textAlign:"center",
-      background:theme.palette.blue, position:"absolute", zIndex:100, marginLeft:"10px", marginTop:"20px", fontWeight:600,
-       }}>New</div>)
+  return (
+    <div
+      style={{
+        width: "36px",
+        height: "36px",
+        lineHeight: "36px",
+        borderRadius: "50%",
+        fontSize: "75%",
+        color: "#fff",
+        textAlign: "center",
+        background: theme.palette.blue,
+        position: "absolute",
+        zIndex: 100,
+        marginLeft: "10px",
+        marginTop: "20px",
+        fontWeight: 600,
+      }}
+    >
+      New
+    </div>
+  );
 };
 
 //Styles for Card component
@@ -117,8 +117,8 @@ const amoutTextStyles: ITextStyles = {
 
 const nameOfProductTextStyles: ITextStyles = {
   root: {
-    color: '#333333',
-    fontWeight: FontWeights.semibold
+    color: "#333333",
+    fontWeight: FontWeights.semibold,
   },
 };
 
@@ -131,16 +131,16 @@ const priceTextStyles: ITextStyles = {
 
 const descriptionTextStyles: ITextStyles = {
   root: {
-    color: '#666666',
+    color: "#666666",
   },
 };
 
 const cardStyles: ICardStyles = {
   root: {
     selectors: {
-      ':hover': {
+      ":hover": {
         cursor: "pointer",
       },
-    }
+    },
   },
 };

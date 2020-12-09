@@ -10,7 +10,7 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
     {
         public string Id { get; set; }
 
-        public string Name { get; set; }
+        public ProductDto ProductDto { get; set; }
 
         public string OwnerId { get; set; }
 
@@ -24,12 +24,21 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 
         public DateTime ExpirationDate { get; set; }
 
-        public Uri ProductImage {get;set;}
-
-        public string Description { get; set; }
-
         public int PotenialSuplliersCounter { get; set; }
 
         public int UnitsCounter { get; set; }
+
+    }
+
+    public enum BidStatus
+    {
+        OpenToRegistration,
+        SupplierSelection,
+        BuyersPayments,
+        CompletedSuccssesfully,
+        FailedSupplierNotFound,
+        FailedNotReachedItemsNumberGoal,
+        ClosedByOwner,
+        // failed in payments bacause buyers didn't fullfill their commitment?
     }
 }

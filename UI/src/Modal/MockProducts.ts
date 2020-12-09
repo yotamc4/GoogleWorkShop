@@ -1,11 +1,12 @@
 import { ProductDetails } from "./ProductDeatils";
 
 export const SonyPlaystation5DigitalProduct: ProductDetails = {
+  mockId: 9,
   name: "Sony Playstation 5 Digital Edition",
   category: "Electronics",
   subCategory: "Consoles",
   maximumAcceptablePrice: 1900,
-  groupExpirationDate: "January 12, 2021",
+  groupExpirationDate: new Date(2021, 0, 27, 0, 0, 0, 0),
   imageUrl:
     "https://www.techinn.com/f/13776/137769822/sony-ps5-digital-edition.jpg",
   description: `The PS5™ console unleashes new gaming possibilities that you never anticipated. Experience lightning fast loading with an ultra-high speed SSD, deeper immersion with support for haptic feedback, adaptive triggers, and 3D Audio, and an all-new generation of incredible PlayStation® games. (DISC-FREE CONSOLE - Internet connection and an account for PlayStation™Network required)
@@ -16,11 +17,12 @@ export const SonyPlaystation5DigitalProduct: ProductDetails = {
 };
 
 export const AirPodsProProduct: ProductDetails = {
+  mockId: 1,
   name: "AirPods Pro",
   category: "Electronics",
   subCategory: "Headphones",
   maximumAcceptablePrice: 700,
-  groupExpirationDate: "January 23, 2021",
+  groupExpirationDate: new Date(2020, 10, 25, 0, 0, 0, 0),
   imageUrl:
     "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/MWP22_AV2?wid=1144&hei=1144&fmt=jpeg&qlt=80&op_usm=0.5,0.5&.v=1591634643000",
   description:
@@ -28,11 +30,12 @@ export const AirPodsProProduct: ProductDetails = {
 };
 
 export const GooglePixelProduct: ProductDetails = {
+  mockId: 3,
   name: "Google Pixel 5 5G 128GB",
   category: "Electronics",
   subCategory: "Cell Phones",
   maximumAcceptablePrice: 3200,
-  groupExpirationDate: "January 9, 2021",
+  groupExpirationDate: new Date(2021, 0, 25, 0, 0, 0, 0),
   imageUrl: "https://fdn2.gsmarena.com/vv/bigpic/google-pixel-5-5g.jpg",
   description: `
     What happens when you bring together the ultimate Google phone and the speed of 5G?* You get Pixel 5. The super fast Google phone at a helpful price.
@@ -59,23 +62,26 @@ export const GooglePixelProduct: ProductDetails = {
 };
 
 export const SamsungUN70TU6980FXZAProduct: ProductDetails = {
+  mockId: 8,
   name: "Samsung - 70' Class 6 Series LED 4K UHD Smart Tizen TV",
   category: "Electronics",
   subCategory: "Television",
   maximumAcceptablePrice: 2500,
-  groupExpirationDate: "January 23, 2021",
+  groupExpirationDate: new Date(2020, 10, 25, 0, 0, 0, 0),
   imageUrl:
-    "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6428/6428508_sd.jpg",
+    "https://www.cwc.co.il/images/itempics/A-015543_020820201638041_large.jpg",
   description:
     "Enhance your viewing experience with this 70-inch Samsung 4K UHD smart TV. The HDR technology and 4K UHD resolution render sharp details and realistic colors, while a Crystal processor delivers exceptional picture quality on the flat-panel display.",
+  supplierHasChosen: true,
 };
 
 export const MicrosoftSurfacePro7Product: ProductDetails = {
+  mockId: 6,
   name: "Microsoft - Surface Pro 7 - 12.3'",
   category: "Computers",
   subCategory: "Tablets",
   maximumAcceptablePrice: 4800,
-  groupExpirationDate: "January 26, 2021",
+  groupExpirationDate: new Date(2021, 0, 11, 0, 0, 0, 0),
   imageUrl:
     "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6374/6374987_sd.jpg",
   description:
@@ -83,11 +89,12 @@ export const MicrosoftSurfacePro7Product: ProductDetails = {
 };
 
 export const InokimMini2WhiteProduct: ProductDetails = {
+  mockId: 4,
   name: "Inokim Mini 2 - White",
   category: "Transportations",
   subCategory: "Electronic scooters",
   maximumAcceptablePrice: 1700,
-  groupExpirationDate: "January 11, 2021",
+  groupExpirationDate: new Date(2020, 10, 26, 0, 0, 0, 0),
   imageUrl:
     "https://cdn.shopify.com/s/files/1/0020/6077/9589/products/InokimMiniultraportablewhite_953x.progressive.jpg",
   description: `Weight:	10.5 kg I 23 lb
@@ -104,11 +111,12 @@ Material:	Aluminum 6061 T6
 };
 
 export const AppleWatchSeries6GPSProduct: ProductDetails = {
+  mockId: 2,
   name: "Apple Watch Series 6 (GPS)",
   category: "Computers",
   subCategory: "Cell Phones",
   maximumAcceptablePrice: 1600,
-  groupExpirationDate: "February 1, 2021",
+  groupExpirationDate: new Date(2021, 0, 7, 0, 0, 0, 0),
   imageUrl:
     "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6215/6215931_sd.jpg",
   description:
@@ -116,11 +124,12 @@ export const AppleWatchSeries6GPSProduct: ProductDetails = {
 };
 
 export const LenovoThinkPadProduct: ProductDetails = {
+  mockId: 5,
   name: "Lenovo ThinkPad T480",
   category: "Computers",
   subCategory: "Laptops",
   maximumAcceptablePrice: 2000,
-  groupExpirationDate: "January 7, 2021",
+  groupExpirationDate: new Date(2021, 0, 15, 0, 0, 0, 0),
   imageUrl:
     "https://www.lenovo.com/medias/lenovo-laptop-thinkpad-t480-feature-03.jpg?context=bWFzdGVyfHJvb3R8NDk0OTN8aW1hZ2UvanBlZ3xoNDkvaDJiLzk2MTA3MDg3NzkwMzguanBnfDE5NzE4YzViY2MzMzYwMTExNmIwOTIxMjExYzYzMzViYjExNzlkMDk2N2ZhNGQ3ZjlkYjE1NzBlNTJhNzQyYmI&w=1920",
   description:
@@ -128,11 +137,12 @@ export const LenovoThinkPadProduct: ProductDetails = {
 };
 
 export const PowerbeatsProRedProduct: ProductDetails = {
+  mockId: 7,
   name: "Powerbeats Pro -Lava Red",
   category: "Electronics",
   subCategory: "Headphones",
   maximumAcceptablePrice: 700,
-  groupExpirationDate: "January 15, 2021",
+  groupExpirationDate: new Date(2021, 0, 6, 0, 0, 0, 0),
   imageUrl:
     "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6397/6397383cv13d.jpg",
   description:
@@ -140,11 +150,12 @@ export const PowerbeatsProRedProduct: ProductDetails = {
 };
 
 export const XiaomiMiBoxProduct: ProductDetails = {
+  mockId: 9,
   name: "Xiaomi Mi TV Box S",
   category: "Electronics",
   subCategory: "Media Streamer",
   maximumAcceptablePrice: 200,
-  groupExpirationDate: "January 6, 2021",
+  groupExpirationDate: new Date(2020, 11, 25, 0, 0, 0, 0),
   imageUrl: "https://www.ivory.co.il/files/catalog/org/1575815431m31Ox.jpg",
   description:
     "Xiaomi Mi TV Box S Media Player with Chromecast / Google Assistant Android Kodi Netflix - 2GB RAM - 8GB Storage.",

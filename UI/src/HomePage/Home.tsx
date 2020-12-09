@@ -1,4 +1,5 @@
 import React from "react"; // importing FunctionComponent
+import * as mockProducts from "../Modal/MockProducts";
 import {
   IStackTokens,
   Stack,
@@ -6,9 +7,25 @@ import {
   ISearchBoxStyles,
   DefaultButton,
   IStackStyles,
+  IImageProps,
+  ImageFit,
+  StackItem,
+  Image,
 } from "@fluentui/react";
 import { ProductCard } from "./ProductCard/ProductCard";
 import { NavigationPane } from "./NavigationPane/NavigationPane";
+
+const StacStyles2: IStackStyles = {
+  root: {
+    height: "20rem",
+    marginBottom: "-0.3rem",
+  },
+};
+
+const imagePropsSubLogo: IImageProps = {
+  src: "/Images/subLogo2.PNG",
+  imageFit: ImageFit.cover,
+};
 
 export const Home: React.FunctionComponent = () => {
   const genericGapStackTokens: (gap: number) => IStackTokens = (gap) => ({
@@ -16,73 +33,69 @@ export const Home: React.FunctionComponent = () => {
   });
 
   const verticalGapStackTokens: IStackTokens = {
-    padding: 20,
     childrenGap: 20,
   };
-  const searchBoxStyles: Partial<ISearchBoxStyles> = { root: { height:"2.6rem",width: '35rem', marginRight:'13rem'} };
+  const searchBoxStyles: Partial<ISearchBoxStyles> = {
+    root: { height: "2.6rem", width: "40rem", marginRight: "10rem" },
+  };
 
   return (
     <Stack tokens={verticalGapStackTokens}>
-      <Stack
-        horizontal
-        horizontalAlign="center"
-        tokens={genericGapStackTokens(120)}
-      >
-        <DefaultButton
-          text={"Create a new group-buy"}
-          primary
-          href={"/createNewGroup"}
-          iconProps={{
-            iconName: "Add",
-            styles: { root: { color: "darkgrey" } },
-          }}
-        ></DefaultButton>
-        <SearchBox
-          styles={searchBoxStyles}
-          placeholder="Search"
-        />
+      <Stack horizontal horizontalAlign="center">
+        <Image {...imagePropsSubLogo} width="71rem" height="20rem" />
       </Stack>
-      <Stack
-        horizontal
-        horizontalAlign="center"
-        tokens={genericGapStackTokens(60)}
-      >
-        <Stack tokens={{ childrenGap: 5 }}>
-          <NavigationPane />
+      <Stack tokens={genericGapStackTokens(20)}>
+        <Stack
+          horizontal
+          horizontalAlign="center"
+          tokens={genericGapStackTokens(-200)}
+        >
+          <DefaultButton
+            text={"Create a new group-buy"}
+            primary
+            href={"/createNewGroup"}
+            iconProps={{
+              iconName: "Add",
+              styles: { root: { color: "darkgrey", marginRight: "-0.6rem" } },
+            }}
+            styles={{
+              root: {
+                borderRadius: 25,
+                height: "2.5rem",
+                marginRight: "15rem",
+              },
+              textContainer: {
+                padding: "1rem",
+                fontSize: "1.2rem",
+                marginBottom: "0.4rem",
+              },
+            }}
+          ></DefaultButton>
+          <SearchBox styles={searchBoxStyles} placeholder="Search for group" />
         </Stack>
-        <Stack tokens={genericGapStackTokens(20)}>
-          <Stack horizontal tokens={genericGapStackTokens(20)}>
-            {test}
-            {test}
-            {test}
+        <Stack horizontal horizontalAlign="center">
+          <Stack tokens={{ childrenGap: 5 }}>
+            <NavigationPane />
           </Stack>
-          <Stack horizontal tokens={genericGapStackTokens(20)}>
-            {test}
-            {test}
-            {test}
-          </Stack>
-          <Stack horizontal tokens={genericGapStackTokens(20)}>
-            {test}
-            {test}
-            {test}
+          <Stack>
+            <Stack horizontal tokens={genericGapStackTokens(20)}>
+              <ProductCard {...mockProducts.AirPodsProProduct} />
+              <ProductCard {...mockProducts.AppleWatchSeries6GPSProduct} />
+              <ProductCard {...mockProducts.GooglePixelProduct} />
+            </Stack>
+            <Stack horizontal tokens={genericGapStackTokens(20)}>
+              <ProductCard {...mockProducts.InokimMini2WhiteProduct} />
+              <ProductCard {...mockProducts.LenovoThinkPadProduct} />
+              <ProductCard {...mockProducts.MicrosoftSurfacePro7Product} />
+            </Stack>
+            <Stack horizontal tokens={genericGapStackTokens(20)}>
+              <ProductCard {...mockProducts.PowerbeatsProRedProduct} />
+              <ProductCard {...mockProducts.SamsungUN70TU6980FXZAProduct} />
+              <ProductCard {...mockProducts.SonyPlaystation5DigitalProduct} />
+            </Stack>
           </Stack>
         </Stack>
       </Stack>
     </Stack>
   );
 };
-
-const test = (
-  <ProductCard
-    productId="eiuw23jh3kjhfkjhfk3jh3kj3hkj3fkj3hk3jh33"
-    image="https://bstore.bezeq.co.il/media/20696/740-2-blue.jpg"
-    category="computers"
-    nameOfProduct="Lenovo ThinkPad T4800"
-    maxPrice={4000}
-    creationDate="11/11/2020"
-    expirationDate="11/13/2020"
-    description="Lenovo ThinkPad T480 is a Windows 10 laptop with a 14.00-inch display that has a resolution of 1920x1080 pixels."
-    potenialSuplliersCounter={3}
-    unitsCounter={95}
-  />
-);

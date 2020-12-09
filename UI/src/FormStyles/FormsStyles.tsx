@@ -19,3 +19,8 @@ export const horizontalGapStackTokens = {
   childrenGap: "20rem",
   padding: 5,
 };
+
+export const horizontalGapStackTokensForButtons = {
+  childrenGap: "10rem",
+  padding: 5,
+};

@@ -3,7 +3,9 @@ export interface ProductDetails {
   category: string;
   subCategory: string;
   maximumAcceptablePrice: number;
-  groupExpirationDate: string;
+  groupExpirationDate: Date;
   imageUrl: string;
   description: string;
+  mockId: number;
+  supplierHasChosen?: boolean;
 }

@@ -7,15 +7,17 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 {
     public enum BidsSortByOptions
     {
+        None,
         ExpirationData,
         PublishDate,
-        SupplierProposalsCnt,
-        DemandedItemsCounter,
+        SupplierProposals,
+        DemandedItems,
         Price,
     }
 
     public enum BidsSortByOrder
     {
+        None,
         DESC,
         ACS
     }

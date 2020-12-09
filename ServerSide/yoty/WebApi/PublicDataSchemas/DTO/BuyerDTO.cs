@@ -9,9 +9,7 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
     {
         public string Id { get; set; }
 
-        public string Name { get; set; }
-
-        public FacebookAccount FacebookAccount { get; set; }
+        FacebookAccount FacebookAccount { get; set; }
 
         public BuyerAccountDetails BuyerAccountDeatails { get;set;}
     
