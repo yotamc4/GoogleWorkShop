@@ -1,52 +1,57 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
-using System;
-using System.Threading.Tasks;
+﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
-public class CorrelationIdMiddleware
+namespace YOTY.Service.WebApi.Middlewares.CorrelationId
 {
-    private readonly RequestDelegate _next;
-    private readonly CorrelationIdOptions _options;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Options;
+    using Microsoft.Extensions.Primitives;
+    using System;
+    using System.Threading.Tasks;
 
-    public CorrelationIdMiddleware(RequestDelegate next, IOptions<CorrelationIdOptions> options)
+    public class CorrelationIdMiddleware
     {
-        if (options == null)
+        private readonly RequestDelegate _next;
+        private readonly CorrelationIdOptions _options;
+
+        public CorrelationIdMiddleware(RequestDelegate next, IOptions<CorrelationIdOptions> options)
         {
-            throw new ArgumentNullException(nameof(options));
-        }
-
-        _next = next ?? throw new ArgumentNullException(nameof(next));
-
-        _options = options.Value;
-    }
-
-    public Task Invoke(HttpContext context)
-    {
-
-        this.SetCorrelationID(context);
-        if (_options.IncludeInResponse)
-        {
-            // apply the correlation ID to the response header for client side tracking
-            context.Response.OnStarting(() =>
+            if (options == null)
             {
-                context.Response.Headers.Add(_options.Header, new[] { context.TraceIdentifier });
-                return Task.CompletedTask;
-            });
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            _next = next ?? throw new ArgumentNullException(nameof(next));
+
+            _options = options.Value;
         }
 
-        return _next(context);
-    }
+        public Task Invoke(HttpContext context)
+        {
 
-    private void SetCorrelationID(HttpContext context)
-    {
-        if (context.Request.Headers.TryGetValue(_options.Header, out StringValues correlationId))
-        {
-            context.TraceIdentifier = correlationId;
+            this.SetCorrelationID(context);
+            if (_options.IncludeInResponse)
+            {
+                // apply the correlation ID to the response header for client side tracking
+                context.Response.OnStarting(() =>
+                {
+                    context.Response.Headers.Add(_options.Header, new[] { context.TraceIdentifier });
+                    return Task.CompletedTask;
+                });
+            }
+
+            return _next(context);
         }
-        else
+
+        private void SetCorrelationID(HttpContext context)
         {
-            context.TraceIdentifier = new Guid().ToString();
+            if (context.Request.Headers.TryGetValue(_options.Header, out StringValues correlationId))
+            {
+                context.TraceIdentifier = correlationId;
+            }
+            else
+            {
+                context.TraceIdentifier = new Guid().ToString();
+            }
         }
     }
 }

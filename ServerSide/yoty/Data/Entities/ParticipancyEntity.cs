@@ -5,10 +5,6 @@ namespace YOTY.Service.Data.Entities
 {
     public class ParticipancyEntity
     {
-        public string BidId { get; set; }
-
-        public string BuyerId { get; set; }
-
         public int NumOfUnits { get; set; }
 
         //-----------------------------
@@ -17,6 +13,10 @@ namespace YOTY.Service.Data.Entities
         public BuyerEntity Buyer { get; set; }
 
         [Required]
-        public ProductBidEntity Bid { get; set; }
+        public BidEntity Bid { get; set; }
+
+        public string BidId { get; set; }
+
+        public string BuyerId { get; set; }
     }
 }

@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
 namespace YOTY.Service.WebApi.PublicDataSchemas
 {
+    using System.Collections.Generic;
+
     public class DealDTO
     {
         public string DealId { get; set; }
 
         public string CorrolatedBidId { get; set; }
 
-        public ProductDto ProductDTO { get; set; }
+        public ProductDTO ProductDTO { get; set; }
 
         public DealStatus DealStatus { get; set; }
 

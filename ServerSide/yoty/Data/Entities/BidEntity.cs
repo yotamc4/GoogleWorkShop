@@ -1,14 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
 namespace YOTY.Service.Data.Entities
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+
     // data structure represents product bit with crud
-    public class ProductBidEntity
+    public class BidEntity
     {
         [Key]
         public string Id { get; set; }
+
+        public ProductEntity Product { get; set; }
 
         public string Name { get; set; }
 

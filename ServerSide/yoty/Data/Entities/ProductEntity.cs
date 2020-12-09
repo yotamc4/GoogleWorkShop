@@ -1,12 +1,15 @@
 ﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
-namespace YOTY.Service.WebApi.PublicDataSchemas
+namespace YOTY.Service.Data.Entities
 {
     using System;
-    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
 
-    public class ProductDTO
+    public class ProductEntity
     {
+        [Key]
+        public string Id { get; set; }
+
         public string Name { get; set; }
 
         public Uri Image { get; set; }

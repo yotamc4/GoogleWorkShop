@@ -4,10 +4,6 @@ namespace YOTY.Service.Data.Entities
 {
     public class SellerOfferEntity
     {
-        public string BidId { get; set; }
-
-        public string SellerId { get; set; }
-
         public DateTime PublishedTime { get; set; }
 
         public int MinimumUnits { get; set; }
@@ -22,6 +18,11 @@ namespace YOTY.Service.Data.Entities
         public SellerEntity Seller { get; set; }
 
         [Required]
-        public ProductBidEntity Bid { get; set; }
+        public BidEntity Bid { get; set; }
+
+        public string BidId { get; set; }
+
+        public string SellerId { get; set; }
+
     }
 }

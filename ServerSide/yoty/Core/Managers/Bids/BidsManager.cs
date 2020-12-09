@@ -18,7 +18,7 @@ namespace YOTY.Service.Core.Managers.Bids
 
         public async Task<Response<BuyerDTO>> AddBuyer(BidBuyerJoinRequest bidBuyerJoinRequest)
         {
-            ProductBidEntity bid = await _context.Bids.FindAsync(bidBuyerJoinRequest.bidId).ConfigureAwait(false);
+            BidEntity bid = await _context.Bids.FindAsync(bidBuyerJoinRequest.bidId).ConfigureAwait(false);
             if (bid == null)
             {
                 return new Response<BuyerDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
@@ -49,7 +49,7 @@ namespace YOTY.Service.Core.Managers.Bids
 
         public async Task<Response<SupplierProposalDTO>> AddSupplierProposal(SupplierProposalRequest supplierProposal)
         {
-            ProductBidEntity bid = await _context.Bids.FindAsync(supplierProposal.BidId).ConfigureAwait(false);
+            BidEntity bid = await _context.Bids.FindAsync(supplierProposal.BidId).ConfigureAwait(false);
             if (bid == null)
             {
                 return new Response<SupplierProposalDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
@@ -83,15 +83,20 @@ namespace YOTY.Service.Core.Managers.Bids
 
         public async Task<Response<BidDTO>> CreateNewBid(NewBidRequst productBidRequest)
         {
-            ProductBidEntity newBid = new ProductBidEntity() {
-                Name = productBidRequest.Name,
+            // TODO use mapper instead
+            ProductEntity product_ent = new ProductEntity() {
+                Description = null,
+                Id = null,
+                Image = null,
+                Name = null,
+            };
+            BidEntity newBid = new BidEntity() {
                 OwnerId = productBidRequest.OwnerId,
                 Category = productBidRequest.Category,
                 SubCategory = productBidRequest.SubCategory,
                 MaxPrice = productBidRequest.MaxPrice,
                 ExpirationDate = productBidRequest.ExpirationDate,
-                Description = productBidRequest.Description,
-                ProductImage = productBidRequest.ProductImage,
+                Product = product_ent,
                 //TODO is this the time we want? (or global).
                 CreationDate = DateTime.Now,
                 CurrentOffers = new List<SellerOfferEntity>(),
@@ -143,7 +148,7 @@ namespace YOTY.Service.Core.Managers.Bids
 
         public async Task<Response> DeleteBuyer(string bidId, string buyerId)
         {
-            ProductBidEntity bid = await _context.Bids.FindAsync(bidId).ConfigureAwait(false);
+            BidEntity bid = await _context.Bids.FindAsync(bidId).ConfigureAwait(false);
             if (bid == null)
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
@@ -168,7 +173,7 @@ namespace YOTY.Service.Core.Managers.Bids
 
         public async Task<Response> DeleteSupplierProposal(string bidId, string supplierId)
         {
-            ProductBidEntity bid = await _context.Bids.FindAsync(bidId).ConfigureAwait(false);
+            BidEntity bid = await _context.Bids.FindAsync(bidId).ConfigureAwait(false);
             if (bid == null)
             {
                 return new Response() {IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
@@ -193,7 +198,7 @@ namespace YOTY.Service.Core.Managers.Bids
 
         public async Task<Response<BidDTO>> EditBid(EditBidRequest editBidRequest)
         {
-            ProductBidEntity bid = await _context.Bids.FindAsync(editBidRequest.BidId).ConfigureAwait(false);
+            BidEntity bid = await _context.Bids.FindAsync(editBidRequest.BidId).ConfigureAwait(false);
             if(bid == null)
             {
                 return new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
@@ -221,7 +226,7 @@ namespace YOTY.Service.Core.Managers.Bids
 
         public async Task<Response<BidDTO>> GetBid(string bidId)
         {
-            ProductBidEntity bid = await _context.Bids.FindAsync(bidId).ConfigureAwait(false);
+            BidEntity bid = await _context.Bids.FindAsync(bidId).ConfigureAwait(false);
             if (bid == null)
             {
                 return new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
