@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using YOTY.Service.WebApi.PublicDataSchemas;
 
-namespace YOTY.Service.Managers.Buyers
+namespace YOTY.Service.Core.Managers.Buyers
 {
     public class StamBuyerManager : IBuyersManager
     {
