@@ -25,7 +25,7 @@ namespace YOTY.Service.WebApi.Controllers
         public async Task<ActionResult<SupplierDTO>> CreateSupplier(NewSupplierRequest newSupplierRequest)
         {
             Response<SupplierDTO> response = await this.suppliersManager.CreateSupplier(newSupplierRequest).ConfigureAwait(false);
-            if (response.IsOperationSuccsseded)
+            if (response.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
             }
@@ -36,7 +36,7 @@ namespace YOTY.Service.WebApi.Controllers
         public async Task<ActionResult<SupplierDTO>> GetSupplier(string supplierId)
         {
             Response<SupplierDTO> response = await this.suppliersManager.GetSupplier(supplierId).ConfigureAwait(false);
-            if (response.IsOperationSuccsseded)
+            if (response.IsOperationSucceeded)
             {
 
                 return response.DTOObject;
