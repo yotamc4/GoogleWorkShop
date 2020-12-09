@@ -10,6 +10,6 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 
         public string PhoneNumber { get; set; }
 
-        public string Adress { get; set; } // string at the moment
+        public string Address { get; set; } // string at the moment
     }
 }
