@@ -16,8 +16,8 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 
         public BidsSortByOrder? SortOrder { get; set; }
 
-        // the client could pass here the most specifid category - we should save categories as a string that contains all the categories and sub catergories of the product 
-        // see IHerb request for refference 
+        // the client could pass here the most specified category - we should save categories as a string that contains all the categories and sub categories of the product 
+        // see IHerb request for reference 
         public string Category { get; set; }
 
         public int MinPrice { get; set; }
