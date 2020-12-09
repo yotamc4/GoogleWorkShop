@@ -6,21 +6,14 @@ import {
   SearchBox,
   ISearchBoxStyles,
   DefaultButton,
-  IStackStyles,
   IImageProps,
   ImageFit,
-  StackItem,
   Image,
 } from "@fluentui/react";
+
 import { ProductCard } from "./ProductCard/ProductCard";
 import { NavigationPane } from "./NavigationPane/NavigationPane";
-
-const StacStyles2: IStackStyles = {
-  root: {
-    height: "20rem",
-    marginBottom: "-0.3rem",
-  },
-};
+import { useHistory } from "react-router";
 
 const imagePropsSubLogo: IImageProps = {
   src: "/Images/subLogo2.PNG",
@@ -31,6 +24,11 @@ export const Home: React.FunctionComponent = () => {
   const genericGapStackTokens: (gap: number) => IStackTokens = (gap) => ({
     childrenGap: gap,
   });
+  const history = useHistory();
+
+  const changeHistory = () => {
+    history.push("/createNewGroup");
+  };
 
   const verticalGapStackTokens: IStackTokens = {
     childrenGap: 20,
@@ -53,7 +51,7 @@ export const Home: React.FunctionComponent = () => {
           <DefaultButton
             text={"Create a new group-buy"}
             primary
-            href={"/createNewGroup"}
+            onClick={changeHistory}
             iconProps={{
               iconName: "Add",
               styles: { root: { color: "darkgrey", marginRight: "-0.6rem" } },
