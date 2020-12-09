@@ -13,8 +13,8 @@ namespace YOTY.Service.Core.Managers.Bids
 
         // get bid details
         Task<Response<BidDTO>> GetBid(string bidId);
-        Task<Response<List<BuyerDTO>>> GetBidBuyers(string bidId);
-        Task<Response<List<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId);
+        Task<Response<IList<BuyerDTO>>> GetBidBuyers(string bidId);
+        Task<Response<IList<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId);
 
         // modify bid
         Task<Response<BuyerDTO>> AddBuyer(BidBuyerJoinRequest bidBuyerJoinRequest);
@@ -29,6 +29,6 @@ namespace YOTY.Service.Core.Managers.Bids
         Task<Response> DeleteBid(string bidId);
 
         // get bids
-        Task<Response<List<BidDTO>>> GetBids(BidsQueryOptions bidsFilters);
+        Task<Response<IList<BidDTO>>> GetBids(BidsQueryOptions bidsFilters);
     }
 }

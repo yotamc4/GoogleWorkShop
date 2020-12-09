@@ -9,7 +9,7 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 
     public class Response
     {
-        public bool IsOperationSuccsseded { get; set; }
+        public bool IsOperationSuccseeded  { get; set; }
 
         public string SuccessOrFailureMessage { get; set; }
     }
