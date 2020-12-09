@@ -9,6 +9,7 @@ namespace YOTY.Service.Core.Managers.Buyers
 
     public class StamBuyerManager : IBuyersManager
     {
+
         public Task<Response<BuyerDTO>> CreateBuyer(NewBuyerRequest newBuyerRequest)
         {
             throw new NotImplementedException();
@@ -25,11 +26,6 @@ namespace YOTY.Service.Core.Managers.Buyers
         }
 
         public Task<Response<BuyerDTO>> GetBuyer(string buyerId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<DealDTO>> GetBuyerDeals(string buyerId)
         {
             throw new NotImplementedException();
         }
