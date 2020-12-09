@@ -23,12 +23,6 @@ import {
 import { useHistory } from "react-router";
 
 const theme: ITheme = getTheme();
-const useStyles = makeStyles((theme) => ({
-  title: {
-    flexGrow: 1,
-    alignItems: "left",
-  },
-}));
 
 const imagePropsLogo: IImageProps = {
   src: "/Images/logo.PNG",

@@ -9,7 +9,6 @@ import {
   FontWeights,
   Text,
   ITextStyles,
-  initializeIcons,
   getTheme,
   IImageProps,
   ImageFit,
@@ -33,7 +32,6 @@ export const ProductCard: React.FunctionComponent<ProductDetails> = (
     imageFit: ImageFit.contain,
   };
   const changeHistory = () => {
-    //history.push(`/products/${productDetails.name.replace(/\s/g, "")}`);
     history.push(`/products/${productDetails.mockId}`);
   };
 
@@ -59,8 +57,9 @@ export const ProductCard: React.FunctionComponent<ProductDetails> = (
           Max Acceptable Price: {productDetails.maximumAcceptablePrice}₪
         </Text>
         <Text variant="small" styles={descriptionTextStyles}>
-          Expiration Date: {productDetails.groupExpirationDate.getUTCMonth()+1}/
-          {productDetails.groupExpirationDate.getUTCDate()+1}/
+          Expiration Date:{" "}
+          {productDetails.groupExpirationDate.getUTCMonth() + 1}/
+          {productDetails.groupExpirationDate.getUTCDate() + 1}/
           {productDetails.groupExpirationDate.getUTCFullYear()}
         </Text>
       </Card.Section>
