@@ -25,7 +25,7 @@ namespace YOTY.Service.WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<List<BidDTO>>> GetBids([FromQuery] BidsQueryOptions bidsQueryOptions)
         {
-            Response<List<BidDTO>> response = await this.bidsManager.GetBids(bidsQueryOptions).ConfigureAwait(false);
+            Response<IList<BidDTO>> response = await this.bidsManager.GetBids(bidsQueryOptions).ConfigureAwait(false);
             if (response.IsOperationSuccseeded )
             {
                 return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
