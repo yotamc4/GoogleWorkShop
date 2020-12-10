@@ -12,7 +12,7 @@ import {
   Text,
 } from "@fluentui/react";
 import { SuppliersSection } from "./SupplierSection";
-import { ProductDetails } from "../Modal/ProductDeatils";
+import { ProductDetails } from "../Modal/ProductDetails";
 import { GroupDetails } from "../Modal/GroupDetails";
 import { useParams } from "react-router-dom";
 import { PaymentsTable } from "../PaymentTable/PaymentTable";

@@ -1,4 +1,4 @@
-import { ProductDetails } from "./ProductDeatils";
+import { ProductDetails } from "./ProductDetails";
 
 export const SonyPlaystation5DigitalProduct: ProductDetails = {
   mockId: 9,
@@ -160,3 +160,16 @@ export const XiaomiMiBoxProduct: ProductDetails = {
   description:
     "Xiaomi Mi TV Box S Media Player with Chromecast / Google Assistant Android Kodi Netflix - 2GB RAM - 8GB Storage.",
 };
+
+export const ArrayOfMockProducts: ProductDetails[] = [
+  SonyPlaystation5DigitalProduct,
+  AirPodsProProduct,
+  GooglePixelProduct,
+  SamsungUN70TU6980FXZAProduct,
+  MicrosoftSurfacePro7Product,
+  InokimMini2WhiteProduct,
+  AppleWatchSeries6GPSProduct,
+  LenovoThinkPadProduct,
+  PowerbeatsProRedProduct,
+  XiaomiMiBoxProduct,
+];
