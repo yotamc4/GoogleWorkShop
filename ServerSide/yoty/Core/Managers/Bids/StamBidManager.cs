@@ -4,11 +4,23 @@ namespace YOTY.Service.Core.Managers.Bids
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
+    using AutoMapper;
+    using YOTY.Service.Data.Entities;
     using YOTY.Service.WebApi.PublicDataSchemas;
 
     public class StamBidManager : IBidsManager
     {
+        private readonly IMapper _mapper;
+        private Dictionary<string, BidEntity> mockedBidsSet;
+
+        public StamBidManager(IMapper mapper)
+        {
+            _mapper = mapper;
+            mockedBidsSet = new Dictionary<string, BidEntity>();
+        }
+
         public Task<Response<BuyerDTO>> AddBuyer(BidBuyerJoinRequest bidBuyerJoinRequest)
         {
             throw new NotImplementedException();
@@ -19,9 +31,31 @@ namespace YOTY.Service.Core.Managers.Bids
             throw new NotImplementedException();
         }
 
-        public Task<Response<BidDTO>> CreateNewBid(NewBidRequst productBid)
+        public async Task<Response<BidDTO>> CreateNewBid(NewBidRequst bidRquest)
         {
-            throw new NotImplementedException();
+            // create
+            BidEntity bidEnitity = _mapper.Map<BidEntity>(bidRquest);
+            bidEnitity.CreationDate = DateTime.Now;
+            bidEnitity.Id = new Guid().ToString();
+
+            // add to db 
+            if (mockedBidsSet.TryAdd(bidEnitity.Id, bidEnitity))
+            {
+                BidDTO bidDto = _mapper.Map<BidDTO>(bidEnitity);
+                return new Response<BidDTO> {
+                    IsOperationSuccseeded  = true,
+                    //SuccessOrFailureMessage = bidDto.GetType().GetProperties().ToList().ForEach(entity => { })
+                    DTOObject = bidDto,
+                };
+            }
+            else
+            {
+                return new Response<BidDTO> {
+                    IsOperationSuccseeded  = false,
+                    SuccessOrFailureMessage = "failed to add to db"
+                };
+            }
+
         }
 
         public Task<Response> DeleteBid(string bidId)
@@ -44,12 +78,28 @@ namespace YOTY.Service.Core.Managers.Bids
             throw new NotImplementedException();
         }
 
-        public Task<Response<BidDTO>> GetBid(string bidId)
+        public async Task<Response<BidDTO>> GetBid(string bidId)
         {
-            throw new NotImplementedException();
+            // add to db 
+            if (mockedBidsSet.TryGetValue(bidId,out BidEntity bidEnitity))
+            {
+                BidDTO bidDto = _mapper.Map<BidDTO>(bidEnitity);
+                return new Response<BidDTO> {
+                    IsOperationSuccseeded  = true,
+                    //SuccessOrFailureMessage = bidDto.GetType().GetProperties().ToList().ForEach(entity => { })
+                    DTOObject = bidDto,
+                };
+            }
+            else
+            {
+                return new Response<BidDTO> {
+                    IsOperationSuccseeded  = false,
+                    SuccessOrFailureMessage = "bid is not existed"
+                };
+            }
         }
 
-        public Task<Response<IList<BuyerDTO>>> GetBidBuyers(string bidId)
+        public Task<Response<List<BuyerDTO>>> GetBidBuyers(string bidId)
         {
             throw new NotImplementedException();
         }
@@ -59,7 +109,7 @@ namespace YOTY.Service.Core.Managers.Bids
             throw new NotImplementedException();
         }
 
-        public Task<Response<IList<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId)
+        public Task<Response<List<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId)
         {
             throw new NotImplementedException();
         }
