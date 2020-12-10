@@ -11,9 +11,9 @@ import {
   Image,
 } from "@fluentui/react";
 
-import { ProductCard } from "./ProductCard/ProductCard";
 import { NavigationPane } from "./NavigationPane/NavigationPane";
 import { useHistory } from "react-router";
+import { ProductCardGridPages } from "../Components/ProductCardGrid/ProductCardGridPages";
 
 const imagePropsSubLogo: IImageProps = {
   src: "/Images/subLogo2.PNG",
@@ -75,23 +75,7 @@ export const Home: React.FunctionComponent = () => {
           <Stack tokens={{ childrenGap: 5 }}>
             <NavigationPane />
           </Stack>
-          <Stack>
-            <Stack horizontal tokens={genericGapStackTokens(20)}>
-              <ProductCard {...mockProducts.AirPodsProProduct} />
-              <ProductCard {...mockProducts.AppleWatchSeries6GPSProduct} />
-              <ProductCard {...mockProducts.GooglePixelProduct} />
-            </Stack>
-            <Stack horizontal tokens={genericGapStackTokens(20)}>
-              <ProductCard {...mockProducts.InokimMini2WhiteProduct} />
-              <ProductCard {...mockProducts.LenovoThinkPadProduct} />
-              <ProductCard {...mockProducts.MicrosoftSurfacePro7Product} />
-            </Stack>
-            <Stack horizontal tokens={genericGapStackTokens(20)}>
-              <ProductCard {...mockProducts.PowerbeatsProRedProduct} />
-              <ProductCard {...mockProducts.SamsungUN70TU6980FXZAProduct} />
-              <ProductCard {...mockProducts.SonyPlaystation5DigitalProduct} />
-            </Stack>
-          </Stack>
+          <ProductCardGridPages />
         </Stack>
       </Stack>
     </Stack>
