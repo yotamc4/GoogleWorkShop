@@ -23,6 +23,7 @@ import {
 } from "@fluentui/react";
 import { useHistory } from "react-router";
 import FacebookLogin from "react-facebook-login";
+import { AuthContext } from "./Context/AuthContext";
 const theme: ITheme = getTheme();
 
 const imagePropsLogo: IImageProps = {
@@ -54,13 +55,13 @@ const StackItemStyles: IStackItemStyles = {
 
 export default function ButtonAppBar() {
   const [picture, setPicture] = React.useState<string>("");
-
   const [name, setName] = React.useState<string>("");
+  const { isLoggedIn, updateAuthContext } = React.useContext(AuthContext);
 
   const responseFacebook = (response: any) => {
     setPicture(response.picture.data.url);
     setName(response.name);
-    console.log(response);
+    //updateAuthContext(response);
   };
 
   const history = useHistory();
@@ -89,7 +90,13 @@ export default function ButtonAppBar() {
               autoLoad={true}
               fields="name,email,picture"
               callback={responseFacebook}
-              buttonStyle={{width:"12rem",fontSize:"0.6rem", height:"2rem", padding:"0.7rem", paddingTop:"0.4rem"}}
+              buttonStyle={{
+                width: "12rem",
+                fontSize: "0.6rem",
+                height: "2rem",
+                padding: "0.7rem",
+                paddingTop: "0.4rem",
+              }}
             />
           </Stack>
         ) : (
