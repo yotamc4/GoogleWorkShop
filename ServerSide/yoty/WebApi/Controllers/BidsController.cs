@@ -25,7 +25,7 @@ namespace YOTY.Service.WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<List<BidDTO>>> GetBids([FromQuery] BidsQueryOptions bidsQueryOptions)
         {
-            Response<IList<BidDTO>> response = await this.bidsManager.GetBids(bidsQueryOptions).ConfigureAwait(false);
+            Response<List<BidDTO>> response = await this.bidsManager.GetBids(bidsQueryOptions).ConfigureAwait(false);
             if (response.IsOperationSucceeded )
             {
                 return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
@@ -75,12 +75,11 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpGet]
         [Route("{bidId}/buyers")]
-        public async Task<ActionResult<IList<BuyerDTO>>> GetBidBuyers(string bidId)
+        public async Task<ActionResult<List<BuyerDTO>>> GetBidBuyers(string bidId)
         {
-            Response<IList<BuyerDTO>> response = await this.bidsManager.GetBidBuyers(bidId).ConfigureAwait(false);
+            Response<List<BuyerDTO>> response = await this.bidsManager.GetBidBuyers(bidId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
-                // TODO fix cast
                 return response.DTOObject;
             }
             // at the moment
@@ -89,12 +88,11 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpGet]
         [Route("{bidId}/proposals")]
-        public async Task<ActionResult<IList<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId)
+        public async Task<ActionResult<List<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId)
         {
-            Response<IList<SupplierProposalDTO>> response = await this.bidsManager.GetBidSuplliersProposals(bidId).ConfigureAwait(false);
+            Response<List<SupplierProposalDTO>> response = await this.bidsManager.GetBidSuplliersProposals(bidId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
-                // TODO fix cast
                 return response.DTOObject;
             }
             // at the moment

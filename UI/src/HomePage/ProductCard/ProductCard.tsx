@@ -16,7 +16,7 @@ import {
   ITheme,
 } from "office-ui-fabric-react";
 import { useHistory } from "react-router-dom";
-import { ProductDetails } from "../../Modal/ProductDeatils";
+import { ProductDetails } from "../../Modal/ProductDetails";
 
 const theme: ITheme = getTheme();
 

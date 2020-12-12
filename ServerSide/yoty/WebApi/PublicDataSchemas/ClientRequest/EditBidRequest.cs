@@ -22,5 +22,7 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
         public string NewCategory { get; set; }
 
         public string NewSubCategory { get; set; }
+
+        //note: adding things here validate EditBid in manager is updated
     }
 }

@@ -6,7 +6,7 @@ namespace YOTY.Service.Data
     public class YotyContext : DbContext
     {
         public DbSet<BuyerEntity> Buyers { get; set; }
-        public DbSet<SellerEntity> Sellers { get; set; }
+        public DbSet<SupplierEntity> Suppliers { get; set; }
         public DbSet<BidEntity> Bids { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -17,17 +17,17 @@ namespace YOTY.Service.Data
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<SellerOfferEntity>().HasKey(o => new { o.BidId, o.SellerId });
+            modelBuilder.Entity<SupplierProposalEntity>().HasKey(o => new { o.BidId, o.SupplierId });
             modelBuilder.Entity<ParticipancyEntity>().HasKey(p => new { p.BidId, p.BuyerId });
 
-            modelBuilder.Entity<SellerOfferEntity>()
+            modelBuilder.Entity<SupplierProposalEntity>()
                 .HasOne(o => o.Bid)
-                .WithMany(b => b.CurrentOffers)
+                .WithMany(b => b.CurrentProposals)
                 .HasForeignKey(o => o.BidId);
-            modelBuilder.Entity<SellerOfferEntity>()
-                .HasOne(o => o.Seller)
-                .WithMany(s => s.CurrentOffers)
-                .HasForeignKey(s => s.SellerId);
+            modelBuilder.Entity<SupplierProposalEntity>()
+                .HasOne(o => o.Supplier)
+                .WithMany(s => s.CurrentProposals)
+                .HasForeignKey(s => s.SupplierId);
 
             modelBuilder.Entity<ParticipancyEntity>()
                 .HasOne(p => p.Bid)

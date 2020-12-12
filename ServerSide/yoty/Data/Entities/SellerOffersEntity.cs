@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 namespace YOTY.Service.Data.Entities
 {
-    public class SellerOfferEntity
+    public class SupplierProposalEntity
     {
         public DateTime PublishedTime { get; set; }
 
@@ -15,14 +15,14 @@ namespace YOTY.Service.Data.Entities
         //-----------------------------
         //Relationships
         [Required]
-        public SellerEntity Seller { get; set; }
+        public SupplierEntity Supplier { get; set; }
 
         [Required]
         public BidEntity Bid { get; set; }
 
         public string BidId { get; set; }
 
-        public string SellerId { get; set; }
+        public string SupplierId { get; set; }
 
     }
 }

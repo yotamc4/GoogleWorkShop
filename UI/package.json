@@ -5,19 +5,21 @@
   "dependencies": {
     "@fluentui/react": "^7.150.0",
     "@material-ui/core": "^4.11.0",
+    "@material-ui/lab": "^4.0.0-alpha.57",
     "@testing-library/jest-dom": "^5.11.5",
     "@testing-library/react": "^11.1.2",
     "@testing-library/user-event": "^12.2.2",
     "@types/jest": "^26.0.15",
     "@types/node": "^14.14.7",
-    "@types/react": "^16.9.56",
     "@types/react-dom": "^16.9.9",
+    "@types/react-facebook-login": "^4.1.2",
     "@types/react-router-dom": "^5.1.6",
     "@types/uuid": "^8.3.0",
     "@uifabric/react-cards": "^0.114.10",
     "gh-pages": "^3.1.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-facebook-login": "^4.1.1",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.0",
@@ -50,6 +52,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react": "^16.14.2",
     "prettier": "2.1.2"
   }
 }

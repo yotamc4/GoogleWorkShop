@@ -7,6 +7,7 @@ namespace YOTY.Service.Core.Managers.Bids
     using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
+    using AutoMapper;
     using YOTY.Service.Data;
     using YOTY.Service.Data.Entities;
     using YOTY.Service.WebApi.PublicDataSchemas;
@@ -15,6 +16,12 @@ namespace YOTY.Service.Core.Managers.Bids
     {
         private const string BidNotFoundFailString = "Failed, Bid not found";
         private static YotyContext _context = new YotyContext();
+        private readonly IMapper _mapper;
+
+        public BidsManager(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
 
         public async Task<Response<BuyerDTO>> AddBuyer(BidBuyerJoinRequest bidBuyerJoinRequest)
         {
@@ -42,26 +49,20 @@ namespace YOTY.Service.Core.Managers.Bids
                 }
             }
             //TODO dropping the dto obj from the response will save us the second db access 
-            var buyer_ent = await _context.Buyers.FindAsync(bidBuyerJoinRequest.buyerId).ConfigureAwait(false);
-            //TODO map ent to dto
-            return new Response<BuyerDTO>() { DTOObject = null, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+            BuyerEntity buyer_ent = await _context.Buyers.FindAsync(bidBuyerJoinRequest.buyerId).ConfigureAwait(false);
+            BuyerDTO buyer_dto = _mapper.Map<BuyerDTO>(buyer_ent);
+            return new Response<BuyerDTO>() { DTOObject = buyer_dto, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
-        public async Task<Response<SupplierProposalDTO>> AddSupplierProposal(SupplierProposalRequest supplierProposal)
+        public async Task<Response<SupplierProposalDTO>> AddSupplierProposal(SupplierProposalRequest supplierProposalRequest)
         {
-            BidEntity bid = await _context.Bids.FindAsync(supplierProposal.BidId).ConfigureAwait(false);
+            BidEntity bid = await _context.Bids.FindAsync(supplierProposalRequest.BidId).ConfigureAwait(false);
             if (bid == null)
             {
                 return new Response<SupplierProposalDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
             }
-            bid.CurrentOffers.Add(new SellerOfferEntity {
-                BidId = bid.Id,
-                SellerId = supplierProposal.SupplierId,
-                PublishedTime = supplierProposal.PublishedTime,
-                MinimumUnits = supplierProposal.MinimumUnits,
-                OfferedPrice = supplierProposal.ProposedPrice,
-                OfferDescription = supplierProposal.Description,
-            });
+            SupplierProposalEntity new_proposal_ent = _mapper.Map<SupplierProposalEntity>(supplierProposalRequest);
+            bid.CurrentProposals.Add(new_proposal_ent);
             bid.PotenialSuplliersCounter += 1;
             using (var new_context = new YotyContext())
             {
@@ -76,50 +77,34 @@ namespace YOTY.Service.Core.Managers.Bids
                 }
             }
             //TODO dropping the dto obj from the response will save us the second db access 
-            var supplier_ent = await _context.Sellers.FindAsync(supplierProposal.SupplierId).ConfigureAwait(false);
-            //TODO map ent to dto
-            return new Response<SupplierProposalDTO>() { DTOObject = null, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+            SupplierEntity supplier_ent = await _context.Suppliers.FindAsync(supplierProposalRequest.SupplierId).ConfigureAwait(false);
+            SupplierProposalDTO supplier_dto = _mapper.Map<SupplierProposalDTO>(supplier_ent);
+            return new Response<SupplierProposalDTO>() { DTOObject = supplier_dto, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
-        public async Task<Response<BidDTO>> CreateNewBid(NewBidRequst productBidRequest)
+        public async Task<Response<BidDTO>> CreateNewBid(NewBidRequst bidRequest)
         {
-            // TODO use mapper instead
-            ProductEntity product_ent = new ProductEntity() {
-                Description = null,
-                Id = null,
-                Image = null,
-                Name = null,
-            };
-            BidEntity newBid = new BidEntity() {
-                OwnerId = productBidRequest.OwnerId,
-                Category = productBidRequest.Category,
-                SubCategory = productBidRequest.SubCategory,
-                MaxPrice = productBidRequest.MaxPrice,
-                ExpirationDate = productBidRequest.ExpirationDate,
-                Product = product_ent,
-                //TODO is this the time we want? (or global).
-                CreationDate = DateTime.Now,
-                CurrentOffers = new List<SellerOfferEntity>(),
-                CurrentParticipancies = new List<ParticipancyEntity>(),
-                UnitsCounter = 0,
-                Id = this.GenerateBidId().ToString(),
-                PotenialSuplliersCounter = 0,
-            };
+            BidEntity bidEnitity = _mapper.Map<BidEntity>(bidRequest);
+            //TODO is this the time we want? (or global).
+            bidEnitity.CreationDate = DateTime.Now;
+            bidEnitity.Id = this.GenerateBidId().ToString();
+            bidEnitity.UnitsCounter = 0;
+            bidEnitity.PotenialSuplliersCounter = 0;
 
             using (var new_context = new YotyContext())
             {
-                new_context.Bids.Add(newBid);
+                new_context.Bids.Add(bidEnitity);
                 try
                 {
                     await new_context.SaveChangesAsync().ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
+                    //TODO log exception and return proper error message instead
                     return new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
                 }
             }
-            BidDTO dto = null;
-            //TODO map ent to dto
+            BidDTO dto = _mapper.Map<BidDTO>(bidEnitity);
             return new Response<BidDTO>() { DTOObject = dto, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
 
         }
@@ -178,8 +163,8 @@ namespace YOTY.Service.Core.Managers.Bids
             {
                 return new Response() {IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
             }
-            SellerOfferEntity proposal = bid.CurrentOffers.Find(p => p.SellerId == supplierId);
-            bid.CurrentOffers.Remove(proposal);
+            SupplierProposalEntity proposal = bid.CurrentProposals.Find(p => p.SupplierId == supplierId);
+            bid.CurrentProposals.Remove(proposal);
             bid.PotenialSuplliersCounter--;
             using (var new_context = new YotyContext())
             {
@@ -220,8 +205,8 @@ namespace YOTY.Service.Core.Managers.Bids
                     return new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
                 }
             }
-            //TODO map ent to dto
-            return new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+            BidDTO bidDTO = _mapper.Map<BidDTO>(bid);
+            return new Response<BidDTO>() { DTOObject = bidDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
         public async Task<Response<BidDTO>> GetBid(string bidId)
@@ -231,47 +216,45 @@ namespace YOTY.Service.Core.Managers.Bids
             {
                 return new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
             }
-            //TODO map ent to dto
-            return new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+            BidDTO bidDTO = _mapper.Map<BidDTO>(bid);
+            return new Response<BidDTO>() { DTOObject = bidDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
 
         }
 
-        public async Task<Response<IList<BuyerDTO>>> GetBidBuyers(string bidId)
+        public async Task<Response<List<BuyerDTO>>> GetBidBuyers(string bidId)
         {
             var bid_ent = await _context.Bids.FindAsync(bidId).ConfigureAwait(false);
             if (bid_ent == null)
             {
-                return new Response<IList<BuyerDTO>>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
+                return new Response<List<BuyerDTO>>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
 
             }
 
-            IList<BuyerDTO> buyers = new List<BuyerDTO>();
-            // map p.Buyer to dto
-            bid_ent.CurrentParticipancies.ForEach(p => buyers.Add(new BuyerDTO() { }));
-            return new Response<IList<BuyerDTO>>() { DTOObject = buyers, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+            List<BuyerDTO> buyers = new List<BuyerDTO>();
+            bid_ent.CurrentParticipancies.ForEach(p => buyers.Add(_mapper.Map<BuyerDTO>(p.Buyer)));
+            return new Response<List<BuyerDTO>>() { DTOObject = buyers, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
             }
 
-        public Task<Response<IList<BidDTO>>> GetBids(BidsQueryOptions bidsFilters)
+        public Task<Response<List<BidDTO>>> GetBids(BidsQueryOptions bidsFilters)
         {
             //TODO
             throw new NotImplementedException();
         }
 
-        public async Task<Response<IList<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId)
+        public async Task<Response<List<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId)
         {
             var bid_ent = await _context.Bids.FindAsync(bidId).ConfigureAwait(false);
             if (bid_ent == null)
             {
-                return new Response<IList<SupplierProposalDTO>>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
+                return new Response<List<SupplierProposalDTO>>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
             }
-            IList<SupplierProposalDTO> proposals = new List<SupplierProposalDTO>();
-            foreach(SellerOfferEntity proposal_ent in bid_ent.CurrentOffers)
+            List<SupplierProposalDTO> proposals = new List<SupplierProposalDTO>();
+            foreach(SupplierProposalEntity proposal_ent in bid_ent.CurrentProposals)
             {
-                // TODO map ent to dto
-                proposals.Add(new SupplierProposalDTO());
+                proposals.Add(_mapper.Map<SupplierProposalDTO>(proposal_ent));
             }
 
-            return new Response<IList<SupplierProposalDTO>>() { DTOObject = proposals, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+            return new Response<List<SupplierProposalDTO>>() { DTOObject = proposals, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
         private Guid GenerateBidId()

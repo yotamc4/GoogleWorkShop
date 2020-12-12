@@ -2,7 +2,7 @@ import React from "react";
 import * as Styles from "./ProductPageStyles";
 import * as mockProducts from "../Modal/MockProducts";
 import * as MockBuyers from "../Modal/MockBuyers";
-
+import { useRouteMatch  } from "react-router-dom";
 import {
   DefaultButton,
   FontIcon,
@@ -12,7 +12,7 @@ import {
   Text,
 } from "@fluentui/react";
 import { SuppliersSection } from "./SupplierSection";
-import { ProductDetails } from "../Modal/ProductDeatils";
+import { ProductDetails } from "../Modal/ProductDetails";
 import { GroupDetails } from "../Modal/GroupDetails";
 import { useParams } from "react-router-dom";
 import { PaymentsTable } from "../PaymentTable/PaymentTable";
@@ -26,6 +26,7 @@ export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
   const [productDetails, setProductDetails] = React.useState<ProductDetails>(
     getMockProduct(id)
   );
+  console.log(useRouteMatch());
 
   const [groupDetails, setGroupDetails] = React.useState<GroupDetails>({
     numberOfParticipants: 170,
