@@ -3,16 +3,15 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using YOTY.Service.Data;
 
-namespace YOTY.Service.Data.Migrations
+namespace YOTY.Service.Migrations
 {
     [DbContext(typeof(YotyContext))]
-    [Migration("20201120143533_init")]
-    partial class init
+    partial class YotyContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,10 +21,8 @@ namespace YOTY.Service.Data.Migrations
 
             modelBuilder.Entity("YOTY.Service.Data.Entities.BuyerAccountDetailsEntity", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -37,11 +34,11 @@ namespace YOTY.Service.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("BuyerAccountDetailsId")
-                        .HasColumnType("int");
+                    b.Property<string>("BuyerAccountDetailsId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("FacebookAccountId")
-                        .HasColumnType("int");
+                    b.Property<string>("FacebookAccountId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -57,10 +54,8 @@ namespace YOTY.Service.Data.Migrations
 
             modelBuilder.Entity("YOTY.Service.Data.Entities.FacebookAccountEntity", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -75,18 +70,13 @@ namespace YOTY.Service.Data.Migrations
                     b.Property<string>("BuyerId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("BidId1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("NumOfUnits")
                         .HasColumnType("int");
 
                     b.HasKey("BidId", "BuyerId");
-
-                    b.HasIndex("BidId1");
 
                     b.HasIndex("BuyerId");
 
@@ -95,10 +85,8 @@ namespace YOTY.Service.Data.Migrations
 
             modelBuilder.Entity("YOTY.Service.Data.Entities.BidEntity", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Category")
                         .HasColumnType("nvarchar(max)");
@@ -137,10 +125,8 @@ namespace YOTY.Service.Data.Migrations
 
             modelBuilder.Entity("YOTY.Service.Data.Entities.SellerEntity", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -164,11 +150,8 @@ namespace YOTY.Service.Data.Migrations
                     b.Property<string>("SellerId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("BidId1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MinimumUnits")
                         .HasColumnType("int");
@@ -182,14 +165,9 @@ namespace YOTY.Service.Data.Migrations
                     b.Property<DateTime>("PublishedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("SellerId1")
-                        .HasColumnType("int");
-
                     b.HasKey("BidId", "SellerId");
 
-                    b.HasIndex("BidId1");
-
-                    b.HasIndex("SellerId1");
+                    b.HasIndex("SellerId");
 
                     b.ToTable("SellerOfferEntity");
                 });
@@ -213,7 +191,7 @@ namespace YOTY.Service.Data.Migrations
                 {
                     b.HasOne("YOTY.Service.Data.Entities.BidEntity", "Bid")
                         .WithMany("CurrentParticipancies")
-                        .HasForeignKey("BidId1")
+                        .HasForeignKey("BidId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -232,13 +210,13 @@ namespace YOTY.Service.Data.Migrations
                 {
                     b.HasOne("YOTY.Service.Data.Entities.BidEntity", "Bid")
                         .WithMany("CurrentOffers")
-                        .HasForeignKey("BidId1")
+                        .HasForeignKey("BidId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("YOTY.Service.Data.Entities.SellerEntity", "Seller")
                         .WithMany("CurrentOffers")
-                        .HasForeignKey("SellerId1")
+                        .HasForeignKey("SellerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

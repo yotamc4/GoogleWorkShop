@@ -5,21 +5,19 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
     using System;
     public class SupplierProposalDTO: BaseDTO
     {
-        string BidId { get; set; }
+        public string BidId { get; set; }
 
-        string SupplierName { get; set; }
+        public string SupplierName { get; set; }
 
-        string ProposalId { get; set; }
+        public string SupplierId { get; set; }
 
-        string SupplierId { get; set; }
+        public DateTime PublishedTime { get; set; }
 
-        DateTime PublishedTime { get; set; }
+        public int MinimumUnits { get; set; }
 
-        int MinimumUnits { get; set; }
+        public double ProposedPrice { get; set; }
 
-        double ProposedPrice { get; set; }
-
-        string Description { get; set; }
+        public string Description { get; set; }
 
     }
 }

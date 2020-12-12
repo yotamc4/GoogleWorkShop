@@ -6,10 +6,10 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 
     public class BidBuyerJoinRequest
     {
-        string buyerId { get; set; }
+        public string buyerId { get; set; }
 
         [FromRoute]
-        string bidId { get; set; }
+        public string bidId { get; set; }
 
         public int Items { get; set; }
     }

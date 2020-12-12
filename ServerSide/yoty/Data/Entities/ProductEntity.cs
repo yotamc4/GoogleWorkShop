@@ -3,10 +3,7 @@
 namespace YOTY.Service.Data.Entities
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     public class ProductEntity
     {
@@ -15,7 +12,7 @@ namespace YOTY.Service.Data.Entities
 
         public string Name { get; set; }
 
-        public Uri Images { get; set; }
+        public Uri Image { get; set; }
 
         public string Description { get; set; }
     }

@@ -20,13 +20,15 @@ namespace YOTY.Service.Data.Entities
 
         public string Category { get; set; }
 
+        public string SubCategory { get; set; }
+
         public double MaxPrice { get; set; }
 
         public DateTime CreationDate { get; set; }
 
         public DateTime ExpirationDate { get; set; }
 
-        public List<Uri> ProductImages {get;set;}
+        public Uri ProductImage {get;set;}
 
         public string Description { get; set; }
 
@@ -34,7 +36,7 @@ namespace YOTY.Service.Data.Entities
 
         public int UnitsCounter { get; set; }
 
-        public List<SellerOfferEntity> CurrentOffers { get; set; }
+        public List<SupplierProposalEntity> CurrentProposals { get; set; }
 
         public List<ParticipancyEntity> CurrentParticipancies { get; set; }
     }

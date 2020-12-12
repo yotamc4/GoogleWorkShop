@@ -23,7 +23,7 @@ namespace YOTY.Service.WebApi.Controllers
         public async Task<ActionResult<BuyerDTO>> CreateBuyer(NewBuyerRequest newBuyerRequest)
         {
             Response<BuyerDTO> response = await this.buyersManager.CreateBuyer(newBuyerRequest).ConfigureAwait(false);
-            if (response.IsOperationSuccseeded )
+            if (response.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
             }
@@ -34,7 +34,7 @@ namespace YOTY.Service.WebApi.Controllers
         public async Task<ActionResult<BuyerDTO>> Getbuyer(string buyerId)
         {
             Response<BuyerDTO> response = await this.buyersManager.GetBuyer(buyerId).ConfigureAwait(false);
-            if (response.IsOperationSuccseeded )
+            if (response.IsOperationSucceeded)
             {
                 
                 return response.DTOObject;
