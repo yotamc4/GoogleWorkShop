@@ -11,16 +11,18 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
     {
         [Required]
         [FromRoute]
-        string BidId { get; set; }
+        public string BidId { get; set; }
 
-        string NewName { get; set; }
+        public string NewName { get; set; }
 
-        List<Uri> NewProductImages { get; set; }
+        public Uri NewProductImage { get; set; }
 
-        string NewDescription { get; set; }
+        public string NewDescription { get; set; }
 
-        string NewCategory { get; set; }
+        public string NewCategory { get; set; }
 
-        string NewSubCategory { get; set; }
+        public string NewSubCategory { get; set; }
+
+        //note: adding things here validate EditBid in manager is updated
     }
 }

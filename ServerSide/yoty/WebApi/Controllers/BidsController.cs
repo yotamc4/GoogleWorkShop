@@ -25,8 +25,8 @@ namespace YOTY.Service.WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<List<BidDTO>>> GetBids([FromQuery] BidsQueryOptions bidsQueryOptions)
         {
-            Response<IList<BidDTO>> response = await this.bidsManager.GetBids(bidsQueryOptions).ConfigureAwait(false);
-            if (response.IsOperationSuccseeded )
+            Response<List<BidDTO>> response = await this.bidsManager.GetBids(bidsQueryOptions).ConfigureAwait(false);
+            if (response.IsOperationSucceeded )
             {
                 return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
             }
@@ -46,7 +46,7 @@ namespace YOTY.Service.WebApi.Controllers
         public async Task<ActionResult<BidDTO>> PostNewBid(NewBidRequst bid)
         {
             Response<BidDTO> response = await this.bidsManager.CreateNewBid(bid).ConfigureAwait(false);
-            if (response.IsOperationSuccseeded )
+            if (response.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
             }
@@ -63,7 +63,7 @@ namespace YOTY.Service.WebApi.Controllers
             */
             
             Response<BidDTO> response = await this.bidsManager.GetBid(bidId).ConfigureAwait(false);
-            if (response.IsOperationSuccseeded )
+            if (response.IsOperationSucceeded )
             {
                 
                 return response.DTOObject;
@@ -78,7 +78,7 @@ namespace YOTY.Service.WebApi.Controllers
         public async Task<ActionResult<List<BuyerDTO>>> GetBidBuyers(string bidId)
         {
             Response<List<BuyerDTO>> response = await this.bidsManager.GetBidBuyers(bidId).ConfigureAwait(false);
-            if (response.IsOperationSuccseeded )
+            if (response.IsOperationSucceeded)
             {
                 return response.DTOObject;
             }
@@ -91,7 +91,7 @@ namespace YOTY.Service.WebApi.Controllers
         public async Task<ActionResult<List<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId)
         {
             Response<List<SupplierProposalDTO>> response = await this.bidsManager.GetBidSuplliersProposals(bidId).ConfigureAwait(false);
-            if (response.IsOperationSuccseeded )
+            if (response.IsOperationSucceeded)
             {
                 return response.DTOObject;
             }
@@ -107,7 +107,7 @@ namespace YOTY.Service.WebApi.Controllers
         {
 
             Response<BuyerDTO> response = await this.bidsManager.AddBuyer(bidBuyerJoinRequest).ConfigureAwait(false);
-            if (response.IsOperationSuccseeded )
+            if (response.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
             }
@@ -120,7 +120,7 @@ namespace YOTY.Service.WebApi.Controllers
         {
 
             Response<SupplierProposalDTO> response = await this.bidsManager.AddSupplierProposal(supplierProposalRequest).ConfigureAwait(false);
-            if (response.IsOperationSuccseeded )
+            if (response.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
             }
@@ -133,7 +133,7 @@ namespace YOTY.Service.WebApi.Controllers
         {
 
             Response<BidDTO> response = await this.bidsManager.EditBid(editBidRequest).ConfigureAwait(false);
-            if (response.IsOperationSuccseeded )
+            if (response.IsOperationSucceeded)
             {
                 return response.DTOObject;
             }
@@ -147,7 +147,7 @@ namespace YOTY.Service.WebApi.Controllers
         {
 
             Response response = await this.bidsManager.DeleteBuyer(bidId, buyerId).ConfigureAwait(false);
-            if (response.IsOperationSuccseeded )
+            if (response.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
 
@@ -163,7 +163,7 @@ namespace YOTY.Service.WebApi.Controllers
         {
 
             Response response = await this.bidsManager.DeleteSupplierProposal(bidId, proposalId).ConfigureAwait(false);
-            if (response.IsOperationSuccseeded )
+            if (response.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
 

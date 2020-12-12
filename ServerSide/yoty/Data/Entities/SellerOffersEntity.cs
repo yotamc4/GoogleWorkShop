@@ -2,20 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 namespace YOTY.Service.Data.Entities
 {
-    public class SellerOfferEntity
+    public class SupplierProposalEntity
     {
-        public int Id { get; set; }
-
-        [Required]
-        public BidEntity Bid { get; set; }
-
-        public string BidId { get; set; }
-
-        public string SellerId { get; set; }
-
-        [Required]
-        public SellerEntity Seller { get; set; }
-
         public DateTime PublishedTime { get; set; }
 
         public int MinimumUnits { get; set; }
@@ -23,6 +11,18 @@ namespace YOTY.Service.Data.Entities
         public double OfferedPrice { get; set; }
 
         public string OfferDescription { get; set; }
+
+        //-----------------------------
+        //Relationships
+        [Required]
+        public SupplierEntity Supplier { get; set; }
+
+        [Required]
+        public BidEntity Bid { get; set; }
+
+        public string BidId { get; set; }
+
+        public string SupplierId { get; set; }
 
     }
 }

@@ -10,12 +10,10 @@ namespace YOTY.Service.Core.Managers.Suppliers
     {
         Task<Response<SupplierDTO>> CreateSupplier(NewSupplierRequest newSupplierRequest); // c0
         Task<Response<SupplierDTO>> ModifySupplierDetails(); // c0
-        Task<Response> DeleteSupplier(string buyerId); // c0
-        Task<Response<SupplierDTO>> GetSupplier(string buyerId); //c0
-        Task<List<BidDTO>> GetSupplierLiveBids(string buyerId); //c0
-        Task<List<BidDTO>> GetSupplierOldBids(string buyerId); //c1
-        Task<List<BidDTO>> GetSupplierDeals(string buyerId);//c1
-
+        Task<Response> DeleteSupplier(string supplierId); // c0
+        Task<Response<SupplierDTO>> GetSupplier(string supplierId); //c0
+        Task<Response<List<BidDTO>>> GetSupplierLiveBids(string supplierId); //c0
+        Task<Response<List<BidDTO>>> GetSupplierOldBids(string supplierId); //c1
     }
 
 }

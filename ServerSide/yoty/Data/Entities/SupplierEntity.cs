@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace YOTY.Service.Data.Entities
 {
-    public class SellerEntity
+    public class SupplierEntity
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         public string Name { get; set; }
 
@@ -15,7 +15,7 @@ namespace YOTY.Service.Data.Entities
 
         public int ReviewsCounter { get; set; }
 
-        public List<SellerOfferEntity> CurrentOffers { get; set; }
+        public List<SupplierProposalEntity> CurrentProposals { get; set; }
 
 
     }

@@ -10,12 +10,12 @@ namespace YOTY.Service.Core.Managers.Bids
     using YOTY.Service.Data.Entities;
     using YOTY.Service.WebApi.PublicDataSchemas;
 
-    public class StamBidManager : IBidsManager
+    public class MockedBidManager : IBidsManager
     {
         private readonly IMapper _mapper;
         private Dictionary<string, BidEntity> mockedBidsSet;
 
-        public StamBidManager(IMapper mapper)
+        public MockedBidManager(IMapper mapper)
         {
             _mapper = mapper;
             mockedBidsSet = new Dictionary<string, BidEntity>();
@@ -43,7 +43,7 @@ namespace YOTY.Service.Core.Managers.Bids
             {
                 BidDTO bidDto = _mapper.Map<BidDTO>(bidEnitity);
                 return new Response<BidDTO> {
-                    IsOperationSuccseeded  = true,
+                    IsOperationSucceeded  = true,
                     //SuccessOrFailureMessage = bidDto.GetType().GetProperties().ToList().ForEach(entity => { })
                     DTOObject = bidDto,
                 };
@@ -51,7 +51,7 @@ namespace YOTY.Service.Core.Managers.Bids
             else
             {
                 return new Response<BidDTO> {
-                    IsOperationSuccseeded  = false,
+                    IsOperationSucceeded = false,
                     SuccessOrFailureMessage = "failed to add to db"
                 };
             }
@@ -85,7 +85,7 @@ namespace YOTY.Service.Core.Managers.Bids
             {
                 BidDTO bidDto = _mapper.Map<BidDTO>(bidEnitity);
                 return new Response<BidDTO> {
-                    IsOperationSuccseeded  = true,
+                    IsOperationSucceeded = true,
                     //SuccessOrFailureMessage = bidDto.GetType().GetProperties().ToList().ForEach(entity => { })
                     DTOObject = bidDto,
                 };
@@ -93,7 +93,7 @@ namespace YOTY.Service.Core.Managers.Bids
             else
             {
                 return new Response<BidDTO> {
-                    IsOperationSuccseeded  = false,
+                    IsOperationSucceeded = false,
                     SuccessOrFailureMessage = "bid is not existed"
                 };
             }
@@ -104,7 +104,7 @@ namespace YOTY.Service.Core.Managers.Bids
             throw new NotImplementedException();
         }
 
-        public Task<Response<IList<BidDTO>>> GetBids(BidsQueryOptions bidsFilters)
+        public Task<Response<List<BidDTO>>> GetBids(BidsQueryOptions bidsFilters)
         {
             throw new NotImplementedException();
         }

@@ -21,7 +21,7 @@ namespace YOTY.Service.Core.Managers.Bids
         Task<Response> DeleteBuyer(string bidId, string buyerId);
 
         Task<Response<SupplierProposalDTO>> AddSupplierProposal(SupplierProposalRequest supplierProposal);
-        Task<Response> DeleteSupplierProposal(string bidId, string ProposalId);
+        Task<Response> DeleteSupplierProposal(string bidId, string supplierId);
 
         Task<Response<BidDTO>> EditBid(EditBidRequest editBidRequest);
 
@@ -29,6 +29,6 @@ namespace YOTY.Service.Core.Managers.Bids
         Task<Response> DeleteBid(string bidId);
 
         // get bids
-        Task<Response<IList<BidDTO>>> GetBids(BidsQueryOptions bidsFilters);
+        Task<Response<List<BidDTO>>> GetBids(BidsQueryOptions bidsFilters);
     }
 }
