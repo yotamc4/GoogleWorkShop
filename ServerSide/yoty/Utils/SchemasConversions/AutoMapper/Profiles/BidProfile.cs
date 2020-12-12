@@ -9,8 +9,8 @@ namespace YOTY.Service.Utils.SchemasConversions.AutoMapper.Profiles
     {
         public BidProfile()
         {
-            CreateMap<BidEntity, BidDTO>();
-            CreateMap<NewBidRequst, BidEntity>();
+            CreateMap<BidEntity, BidDTO>(MemberList.Destination);
+            CreateMap<NewBidRequst, BidEntity>(MemberList.Source);
         }
     }
 }

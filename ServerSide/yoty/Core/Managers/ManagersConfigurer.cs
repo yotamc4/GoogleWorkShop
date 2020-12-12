@@ -13,8 +13,7 @@ namespace YOTY.Service.Core.Managers
         {
             return services.AddScoped<IBidsManager, BidsManager>()
                     .AddScoped<IBuyersManager, BuyersManager>()
-                    .AddScoped<ISuppliersManager, SuppliersManager>()
-                    .AddScoped<IBidsManager, MockedBidManager>();
+                    .AddScoped<ISuppliersManager, SuppliersManager>();        
         }
     }
 }

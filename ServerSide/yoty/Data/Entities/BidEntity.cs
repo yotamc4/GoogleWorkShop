@@ -10,15 +10,11 @@ namespace YOTY.Service.Data.Entities
     // data structure represents product bit with crud
     public class BidEntity
     {
-        public BidEntity(NewBidRequst bidRequest)
-        {
-
-        }
 
         [Key]
         public string Id { get; set; }
 
-        //public ProductEntity Product { get; set; }
+        public ProductEntity Product { get; set; }
 
         public string OwnerId { get; set; }
 

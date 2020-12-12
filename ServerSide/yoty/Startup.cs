@@ -32,12 +32,14 @@ namespace yoty
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            mapper.ConfigurationProvider.AssertConfigurationIsValid();
 
             app.UseHttpsRedirection();
 

@@ -22,22 +22,22 @@ ProductRequest Product { get; set; }
     public class NewBidRequst
     {
         [JsonProperty("ownerId")]
-        string OwnerId { get; set; }
+        public string OwnerId { get; set; }
 
         //[JsonRequired]
         [JsonProperty("category")]
-        string Category { get; set; }
+        public string Category { get; set; }
 
         [JsonProperty("subCategory")]
-        string SubCategory { get; set; }
+        public string SubCategory { get; set; }
 
         [JsonProperty("maxPrice")]
-        double MaxPrice { get; set; }
+        public double MaxPrice { get; set; }
 
         [JsonProperty("expirationDate")]
-        DateTime ExpirationDate { get; set; }
+        public DateTime ExpirationDate { get; set; }
 
         [JsonProperty("Product")]
-        ProductRequest Product { get; set; }
+        public ProductRequest Product { get; set; }
     }
 }

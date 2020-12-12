@@ -188,9 +188,9 @@ namespace YOTY.Service.Core.Managers.Bids
             {
                 return new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
             }
-            bid.Name = editBidRequest.NewName;
-            bid.ProductImage = editBidRequest.NewProductImage;
-            bid.Description = editBidRequest.NewDescription;
+            bid.Product.Name = editBidRequest.NewName;
+            bid.Product.Image = editBidRequest.NewProductImage;
+            bid.Product.Description = editBidRequest.NewDescription;
             bid.Category = editBidRequest.NewCategory;
             bid.SubCategory = editBidRequest.NewSubCategory;
             using (var new_context = new YotyContext())
