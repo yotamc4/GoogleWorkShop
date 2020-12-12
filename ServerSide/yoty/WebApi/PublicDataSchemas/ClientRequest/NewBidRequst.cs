@@ -21,21 +21,20 @@ ProductRequest Product { get; set; }
 */
     public class NewBidRequst
     {
-        [JsonProperty("OwnerId")]
-        [Required]
+        [JsonProperty("ownerId")]
         string OwnerId { get; set; }
 
-        [JsonRequired]
+        //[JsonRequired]
         [JsonProperty("category")]
         string Category { get; set; }
 
-        [JsonProperty("SubCategory")]
+        [JsonProperty("subCategory")]
         string SubCategory { get; set; }
 
-        [JsonProperty("MaxPrice")]
+        [JsonProperty("maxPrice")]
         double MaxPrice { get; set; }
 
-        [JsonProperty("ExpirationDate")]
+        [JsonProperty("expirationDate")]
         DateTime ExpirationDate { get; set; }
 
         [JsonProperty("Product")]

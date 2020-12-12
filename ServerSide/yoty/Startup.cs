@@ -11,6 +11,7 @@ namespace yoty
     using YOTY.Service.Core.Managers;
     using YOTY.Service.WebApi.Middlewares;
     using YOTY.Service.WebApi.Middlewares.CorrelationId;
+    using Newtonsoft.Json;
 
     public class Startup
     {
@@ -25,7 +26,7 @@ namespace yoty
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(Startup));
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddCorrelationIdOptions();
             services.AddManagers();
         }
