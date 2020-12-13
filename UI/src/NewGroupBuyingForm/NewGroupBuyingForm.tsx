@@ -141,9 +141,7 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
             height={"25rem"}
           />
         )}
-        <Separator
-          styles={{ root: { width: FormsStyles.inputWidth } }}
-        />
+        <Separator styles={{ root: { width: FormsStyles.inputWidth } }} />
         <Stack
           horizontal
           tokens={FormsStyles.horizontalGapStackTokens}

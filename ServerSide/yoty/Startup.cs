@@ -25,6 +25,13 @@ namespace yoty
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(option => option.AddDefaultPolicy(
+                builder => {
+                    builder.AllowAnyOrigin();
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyMethod();
+                    })
+            );
             services.AddAutoMapper(typeof(Startup));
             services.AddControllers().AddNewtonsoftJson();
             services.AddCorrelationIdOptions();
@@ -44,6 +51,8 @@ namespace yoty
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 
