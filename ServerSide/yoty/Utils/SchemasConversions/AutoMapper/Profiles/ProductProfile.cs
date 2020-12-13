@@ -10,8 +10,8 @@ namespace YOTY.Service.Utils.SchemasConversions.AutoMapper.Profiles
     {
         public ProductProfile()
         {
-            CreateMap<ProductEntity, ProductDTO>();
-            CreateMap<ProductRequest, ProductEntity>();
+            CreateMap<ProductEntity, ProductDTO>(MemberList.Destination);
+            CreateMap<ProductRequest, ProductEntity>(MemberList.Source);
         }
     }
 }

@@ -36,7 +36,7 @@ namespace YOTY.Service.Core.Managers.Bids
             // create
             BidEntity bidEnitity = _mapper.Map<BidEntity>(bidRquest);
             bidEnitity.CreationDate = DateTime.Now;
-            bidEnitity.Id = new Guid().ToString();
+            bidEnitity.Id = Guid.NewGuid().ToString();
 
             // add to db 
             if (mockedBidsSet.TryAdd(bidEnitity.Id, bidEnitity))

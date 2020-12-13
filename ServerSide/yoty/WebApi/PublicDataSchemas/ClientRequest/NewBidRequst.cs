@@ -21,24 +21,23 @@ ProductRequest Product { get; set; }
 */
     public class NewBidRequst
     {
-        [JsonProperty("OwnerId")]
-        [Required]
-        string OwnerId { get; set; }
+        [JsonProperty("ownerId")]
+        public string OwnerId { get; set; }
 
-        [JsonRequired]
+        //[JsonRequired]
         [JsonProperty("category")]
-        string Category { get; set; }
+        public string Category { get; set; }
 
-        [JsonProperty("SubCategory")]
-        string SubCategory { get; set; }
+        [JsonProperty("subCategory")]
+        public string SubCategory { get; set; }
 
-        [JsonProperty("MaxPrice")]
-        double MaxPrice { get; set; }
+        [JsonProperty("maxPrice")]
+        public double MaxPrice { get; set; }
 
-        [JsonProperty("ExpirationDate")]
-        DateTime ExpirationDate { get; set; }
+        [JsonProperty("expirationDate")]
+        public DateTime ExpirationDate { get; set; }
 
         [JsonProperty("Product")]
-        ProductRequest Product { get; set; }
+        public ProductRequest Product { get; set; }
     }
 }
