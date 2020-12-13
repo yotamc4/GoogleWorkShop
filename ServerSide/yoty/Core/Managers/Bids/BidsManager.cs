@@ -87,9 +87,10 @@ namespace YOTY.Service.Core.Managers.Bids
             BidEntity bidEnitity = _mapper.Map<BidEntity>(bidRequest);
             //TODO is this the time we want? (or global).
             bidEnitity.CreationDate = DateTime.Now;
-            bidEnitity.Id = this.GenerateBidId().ToString();
+            bidEnitity.Id = Guid.NewGuid().ToString();
             bidEnitity.UnitsCounter = 0;
             bidEnitity.PotenialSuplliersCounter = 0;
+            bidEnitity.Product.Id = Guid.NewGuid().ToString();
 
             using (var new_context = new YotyContext())
             {
@@ -257,15 +258,6 @@ namespace YOTY.Service.Core.Managers.Bids
             return new Response<List<SupplierProposalDTO>>() { DTOObject = proposals, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
-        private Guid GenerateBidId()
-        {
-            Guid id = Guid.NewGuid();
-            while (_context.Bids.Find(id) != null)
-            {
-                id = Guid.NewGuid();
-            }
-            return id;
-        }
         private string getSuccessMessage([CallerMemberName] string callerName = "")
         {
             return $"{callerName} success";
