@@ -258,10 +258,6 @@ namespace YOTY.Service.Core.Managers.Bids
             return new Response<List<SupplierProposalDTO>>() { DTOObject = proposals, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
-        private string GenerateBidId()
-        {
-            return Guid.NewGuid().ToString();
-        }
         private string getSuccessMessage([CallerMemberName] string callerName = "")
         {
             return $"{callerName} success";
