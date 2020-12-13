@@ -1,10 +1,7 @@
 import React from "react"; // importing FunctionComponent
-import * as mockProducts from "../Modal/MockProducts";
 import {
-  IStackTokens,
   Stack,
   SearchBox,
-  ISearchBoxStyles,
   DefaultButton,
   IImageProps,
   ImageFit,
@@ -15,6 +12,12 @@ import { NavigationPane } from "./NavigationPane/NavigationPane";
 import { useHistory } from "react-router";
 import { ProductCardGridPages } from "../Components/ProductCardGrid/ProductCardGridPages";
 import { AuthContextProvider } from "../Context/AuthContext";
+import {
+  defaultButtonStyles,
+  genericGapStackTokens,
+  searchBoxStyles,
+  verticalGapStackTokens,
+} from "./HomeStyles";
 
 const imagePropsSubLogo: IImageProps = {
   src: "/Images/subLogo2.PNG",
@@ -22,20 +25,10 @@ const imagePropsSubLogo: IImageProps = {
 };
 
 export const Home: React.FunctionComponent = () => {
-  const genericGapStackTokens: (gap: number) => IStackTokens = (gap) => ({
-    childrenGap: gap,
-  });
   const history = useHistory();
 
   const changeHistory = () => {
     history.push("/createNewGroup");
-  };
-
-  const verticalGapStackTokens: IStackTokens = {
-    childrenGap: 20,
-  };
-  const searchBoxStyles: Partial<ISearchBoxStyles> = {
-    root: { height: "2.6rem", width: "40rem", marginRight: "10rem" },
   };
 
   return (
@@ -58,18 +51,7 @@ export const Home: React.FunctionComponent = () => {
                 iconName: "Add",
                 styles: { root: { color: "darkgrey", marginRight: "-0.6rem" } },
               }}
-              styles={{
-                root: {
-                  borderRadius: 25,
-                  height: "2.5rem",
-                  marginRight: "15rem",
-                },
-                textContainer: {
-                  padding: "1rem",
-                  fontSize: "1.2rem",
-                  marginBottom: "0.4rem",
-                },
-              }}
+              styles={defaultButtonStyles}
             ></DefaultButton>
             <SearchBox
               styles={searchBoxStyles}

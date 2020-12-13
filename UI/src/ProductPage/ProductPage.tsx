@@ -2,7 +2,7 @@ import React from "react";
 import * as Styles from "./ProductPageStyles";
 import * as mockProducts from "../Modal/MockProducts";
 import * as MockBuyers from "../Modal/MockBuyers";
-import { useRouteMatch  } from "react-router-dom";
+import { useRouteMatch } from "react-router-dom";
 import {
   DefaultButton,
   FontIcon,

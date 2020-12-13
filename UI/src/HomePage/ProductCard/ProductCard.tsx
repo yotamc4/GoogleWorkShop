@@ -1,24 +1,16 @@
 import React from "react"; // importing FunctionComponent
-import {
-  Card,
-  ICardTokens,
-  ICardSectionTokens,
-  ICardStyles,
-} from "@uifabric/react-cards";
-import {
-  FontWeights,
-  Text,
-  ITextStyles,
-  getTheme,
-  IImageProps,
-  ImageFit,
-  Image,
-  ITheme,
-} from "office-ui-fabric-react";
+import { Card, ICardTokens, ICardSectionTokens } from "@uifabric/react-cards";
+import { Text, IImageProps, ImageFit, Image } from "office-ui-fabric-react";
 import { useHistory } from "react-router-dom";
 import { ProductDetails } from "../../Modal/ProductDetails";
-
-const theme: ITheme = getTheme();
+import {
+  amoutTextStyles,
+  cardStyles,
+  descriptionTextStyles,
+  nameOfProductTextStyles,
+  priceTextStyles,
+  divStyles,
+} from "./ProductCardStyles";
 
 export const ProductCard: React.FunctionComponent<ProductDetails> = (
   productDetails
@@ -83,64 +75,5 @@ export const ProductCard: React.FunctionComponent<ProductDetails> = (
 };
 
 const Circle: React.FunctionComponent = () => {
-  return (
-    <div
-      style={{
-        width: "36px",
-        height: "36px",
-        lineHeight: "36px",
-        borderRadius: "50%",
-        fontSize: "75%",
-        color: "#fff",
-        textAlign: "center",
-        background: theme.palette.blue,
-        position: "absolute",
-        zIndex: 100,
-        marginLeft: "10px",
-        marginTop: "20px",
-        fontWeight: 600,
-      }}
-    >
-      New
-    </div>
-  );
-};
-
-//Styles for Card component
-
-const amoutTextStyles: ITextStyles = {
-  root: {
-    color: theme.palette.blue,
-    fontWeight: FontWeights.semibold,
-  },
-};
-
-const nameOfProductTextStyles: ITextStyles = {
-  root: {
-    color: "#333333",
-    fontWeight: FontWeights.semibold,
-  },
-};
-
-const priceTextStyles: ITextStyles = {
-  root: {
-    color: theme.palette.red,
-    fontWeight: FontWeights.semibold,
-  },
-};
-
-const descriptionTextStyles: ITextStyles = {
-  root: {
-    color: "#666666",
-  },
-};
-
-const cardStyles: ICardStyles = {
-  root: {
-    selectors: {
-      ":hover": {
-        cursor: "pointer",
-      },
-    },
-  },
+  return <div style={divStyles}>New</div>;
 };

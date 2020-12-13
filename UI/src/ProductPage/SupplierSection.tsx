@@ -14,7 +14,10 @@ import {
 } from "@fluentui/react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
-import { NewProposalForm } from "./NewProposalForm";
+import {
+  ISupplierProposalFormDetails,
+  SupplierProposalForm,
+} from "./SupplierProposalForm";
 import { SuppliersSurvey } from "./SupplierSurvey";
 
 export interface ISuppliersListItem {
@@ -24,6 +27,7 @@ export interface ISuppliersListItem {
   MinimumUnits: number;
   Date: string;
   ProgressBar: JSX.Element;
+  Description?: string;
 }
 
 export interface ISuppliersListState {
@@ -39,8 +43,11 @@ const classNames = mergeStyleSets({
   fileIconCell: {
     marginLeft: "1.4rem",
   },
-  fileIconCell2: {
+  fileIconCellDate: {
     marginLeft: "-2rem",
+  },
+  fileIconCellDescription: {
+    marginLeft: "1.8rem",
   },
 });
 
@@ -63,6 +70,8 @@ for (let i = 0; i < 300; i += 100) {
         percentComplete={170 / (170 + i)}
       />
     ),
+    Description:
+      "Computer online store KSP offer a wide range of computers. Easy filters help you to choose the computer is most suitable for your needs. As for the price of computers, we are closely watching the computers market in Israel and Netanya, and therefore offer our customers only the best prices, allowing you to buy cheap computer. All our products, including computers, are certified and have the official warranty from the manufacturer.",
   });
 }
 
@@ -80,7 +89,7 @@ _columns = [
     name: "Price",
     fieldName: "Price",
     minWidth: 70,
-    maxWidth: 120,
+    maxWidth: 100,
     isResizable: true,
     styles: { cellTitle: { marginLeft: "1.3rem" } },
     className: classNames.fileIconCell,
@@ -90,7 +99,7 @@ _columns = [
     name: "Minimum units",
     fieldName: "MinimumUnits",
     minWidth: 70,
-    maxWidth: 120,
+    maxWidth: 100,
     isResizable: true,
   },
   {
@@ -98,24 +107,35 @@ _columns = [
     name: "Date",
     fieldName: "Date",
     minWidth: 140,
-    maxWidth: 140,
+    maxWidth: 190,
     isResizable: true,
-    className: classNames.fileIconCell2,
+    className: classNames.fileIconCellDate,
   },
   {
     key: "column6",
     name: "ProgressBar",
     fieldName: "ProgressBar",
-    minWidth: 100,
-    maxWidth: 100,
+    minWidth: 150,
+    maxWidth: 150,
     isResizable: true,
+    styles: { cellTitle: { marginLeft: "0.4rem" } },
+  },
+  {
+    key: "column7",
+    name: "Description",
+    fieldName: "Description",
+    minWidth: 150,
+    maxWidth: 150,
+    isResizable: true,
+    isMultiline: true,
+    className: classNames.fileIconCellDescription,
     styles: { cellTitle: { marginLeft: "1rem" } },
   },
 ];
 
 export const addIcon: IIconProps = { iconName: "Add" };
 
-export const stackStyles: Partial<IStackStyles> = { root: { width: "50rem" } };
+export const stackStyles: Partial<IStackStyles> = { root: { width: "65rem" } };
 
 export const detailsListStyles: Partial<IDetailsColumnStyles> = {
   root: { textAlign: "right" },
@@ -139,26 +159,34 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
   };
 
   const addPropposalToSupplierList = (
-    price: number,
-    minimumUnits: number
+    supplierProposalFormDetails: ISupplierProposalFormDetails
   ): void => {
     const stam: ISuppliersListItem = {
       key: listItems.length + 1,
-      name: `Ofek's store`,
-      Price: price,
-      MinimumUnits: minimumUnits,
-      Date: Date(),
+      name: supplierProposalFormDetails.supplierName,
+      Price: supplierProposalFormDetails.proposedPrice as number,
+      MinimumUnits: supplierProposalFormDetails.minimumUnits as number,
+      Date: supplierProposalFormDetails.date,
       ProgressBar: (
         //TODO: how to present the minimumUnits-requestedItems avoid injection
         <ProgressIndicator
           label={
-            minimumUnits - requestedItems > 0
-              ? `${minimumUnits - requestedItems} units to complete`
+            (supplierProposalFormDetails.minimumUnits as number) -
+              requestedItems >
+            0
+              ? `${
+                  (supplierProposalFormDetails.minimumUnits as number) -
+                  requestedItems
+                } units to complete`
               : "Complete"
           }
-          percentComplete={requestedItems / minimumUnits}
+          percentComplete={
+            requestedItems /
+            (supplierProposalFormDetails.minimumUnits as number)
+          }
         />
       ),
+      Description: supplierProposalFormDetails.description,
     };
     setOpen(false);
     setListItems((listItems) => [stam, ...listItems]);
@@ -181,7 +209,7 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
         aria-describedby="alert-dialog-description"
       >
         <DialogContent>
-          <NewProposalForm
+          <SupplierProposalForm
             addPropposalToSupplierList={addPropposalToSupplierList}
             handleClose={handleClose}
           />

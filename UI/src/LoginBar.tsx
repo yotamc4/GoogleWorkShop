@@ -1,9 +1,4 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
 import {
   getTheme,
   IImageProps,
@@ -11,46 +6,27 @@ import {
   ITheme,
   Image,
   Stack,
-  IStackTokens,
   StackItem,
-  IStackItemStyles,
   Separator,
   Label,
   CommandBarButton,
-  IStackStyles,
-  IImageStyles,
   Persona,
 } from "@fluentui/react";
 import { useHistory } from "react-router";
 import FacebookLogin from "react-facebook-login";
 import { AuthContext } from "./Context/AuthContext";
+import {
+  SeperatorStyles,
+  StackItemStyles,
+  StacStyles,
+  StacStyles2,
+} from "./LoginBarStyles";
+
 const theme: ITheme = getTheme();
 
 const imagePropsLogo: IImageProps = {
   src: "/Images/logo.PNG",
   imageFit: ImageFit.contain,
-};
-
-const StacStyles: IStackStyles = {
-  root: {
-    paddingLeft: "0.7rem",
-    paddingRight: "0.7rem",
-  },
-};
-
-const StacStyles2: IStackStyles = {
-  root: {
-    paddingTop: "3rem",
-  },
-};
-
-const StackItemStyles: IStackItemStyles = {
-  root: {
-    width: "7rem",
-    marginLeft: "28rem",
-    marginTop: "-3rem",
-    ":hover": { cursor: "pointer" },
-  },
 };
 
 export default function ButtonAppBar() {
@@ -59,8 +35,10 @@ export default function ButtonAppBar() {
   const { isLoggedIn, updateAuthContext } = React.useContext(AuthContext);
 
   const responseFacebook = (response: any) => {
+    console.log(response);
     setPicture(response.picture.data.url);
     setName(response.name);
+
     //updateAuthContext(response);
   };
 
@@ -105,7 +83,7 @@ export default function ButtonAppBar() {
             <CommandBarButton text="Logout" disabled={false} checked={false} />
           </Stack>
         )}
-        <Separator styles={{ root: { width: "100%" } }} />
+        <Separator styles={SeperatorStyles} />
       </Stack>
     </Stack>
   );
