@@ -9,6 +9,11 @@ namespace YOTY.Service.Data
         public DbSet<SupplierEntity> Suppliers { get; set; }
         public DbSet<BidEntity> Bids { get; set; }
 
+        public YotyContext(DbContextOptions<YotyContext> options)
+        : base(options)
+        {
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(

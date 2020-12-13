@@ -12,6 +12,8 @@ namespace yoty
     using YOTY.Service.WebApi.Middlewares;
     using YOTY.Service.WebApi.Middlewares.CorrelationId;
     using Newtonsoft.Json;
+    using YOTY.Service.Data;
+    using Microsoft.EntityFrameworkCore;
 
     public class Startup
     {
@@ -36,6 +38,7 @@ namespace yoty
             services.AddControllers().AddNewtonsoftJson();
             services.AddCorrelationIdOptions();
             services.AddManagers();
+            services.AddDbContext<YotyContext>(options => options.UseSqlServer("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

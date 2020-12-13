@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using YOTY.Service.Data;
 using YOTY.Service.WebApi.PublicDataSchemas;
 
@@ -12,13 +13,15 @@ namespace YOTY.Service.Core.Managers.Buyers
     public class BuyersManager : IBuyersManager
     {
         private const string BuyerNotFoundFailString = "Failed, Buyer not found";
-        private static YotyContext _context = new YotyContext();
+        private readonly YotyContext _context;
         private readonly IMapper _mapper;
 
-        public BuyersManager(IMapper mapper)
+        public BuyersManager(IMapper mapper, YotyContext context)
         {
             _mapper = mapper;
+            _context = context;
         }
+
         public Task<Response<BuyerDTO>> CreateBuyer(NewBuyerRequest newBuyerRequest)
         {
             throw new NotImplementedException();
@@ -26,22 +29,19 @@ namespace YOTY.Service.Core.Managers.Buyers
 
         public async Task<Response> DeleteBuyer(string buyerId)
         {
-            var buyer = await _context.Buyers.FindAsync(buyerId).ConfigureAwait(false);
+            var buyer = await _context.Buyers.Where(b => b.Id == buyerId).Include(b => b.CurrentParticipancies).FirstOrDefaultAsync().ConfigureAwait(false);
             if (buyer == null)
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BuyerNotFoundFailString };
             }
-            using (var new_context = new YotyContext())
+            _context.Buyers.Remove(buyer);
+            try
             {
-                new_context.Buyers.Remove(buyer);
-                try
-                {
-                    await new_context.SaveChangesAsync().ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
-                }
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
             }
             return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
@@ -66,7 +66,7 @@ namespace YOTY.Service.Core.Managers.Buyers
         public async Task<Response<List<BidDTO>>> GetBuyerLiveBids(string buyerId)
         {
             DateTime current_time = DateTime.Now;
-            var buyer = await _context.Buyers.FindAsync(buyerId).ConfigureAwait(false);
+            var buyer = await _context.Buyers.Where(b => b.Id == buyerId).Include(b => b.CurrentParticipancies).ThenInclude(p => p.Bid).FirstOrDefaultAsync().ConfigureAwait(false);
             if (buyer == null)
             {
                 return new Response<List<BidDTO>>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BuyerNotFoundFailString };
@@ -78,7 +78,7 @@ namespace YOTY.Service.Core.Managers.Buyers
         public async Task<Response<List<BidDTO>>> GetBuyerOldBids(string buyerId)
         {
             DateTime current_time = DateTime.Now;
-            var buyer = await _context.Buyers.FindAsync(buyerId).ConfigureAwait(false);
+            var buyer = await _context.Buyers.Where(b => b.Id == buyerId).Include(b => b.CurrentParticipancies).ThenInclude(p=>p.Bid).FirstOrDefaultAsync().ConfigureAwait(false);
             if (buyer == null)
             {
                 return new Response<List<BidDTO>>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BuyerNotFoundFailString };
