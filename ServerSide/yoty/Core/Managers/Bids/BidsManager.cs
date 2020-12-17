@@ -10,6 +10,7 @@ namespace YOTY.Service.Core.Managers.Bids
     using AutoMapper;
     using YOTY.Service.Data;
     using YOTY.Service.Data.Entities;
+    using YOTY.Service.Utils;
     using YOTY.Service.WebApi.PublicDataSchemas;
 
     public class BidsManager : IBidsManager
@@ -17,6 +18,8 @@ namespace YOTY.Service.Core.Managers.Bids
         private const string BidNotFoundFailString = "Failed, Bid not found";
         private static YotyContext _context = new YotyContext();
         private readonly IMapper _mapper;
+        private int _pageDefaultSize = 9;
+        private int _maxPageSize = 20;
 
         public BidsManager(IMapper mapper)
         {
@@ -233,12 +236,110 @@ namespace YOTY.Service.Core.Managers.Bids
             List<BuyerDTO> buyers = new List<BuyerDTO>();
             bid_ent.CurrentParticipancies.ForEach(p => buyers.Add(_mapper.Map<BuyerDTO>(p.Buyer)));
             return new Response<List<BuyerDTO>>() { DTOObject = buyers, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+        }
+
+        public async Task<Response<List<BidDTO>>> GetBids(BidsQueryOptions bidsFilters)
+        {
+
+            // firts category and sub category 
+            // then 
+            if (bidsFilters.Category == null && bidsFilters.Search == null)
+            {
+                return this.GetDefaultHomePageBids(bidsFilters.Page);
+            }
+            else if (!ValidateBidsFilters(bidsFilters, out string validationErorrString))
+            {
+                return new Response<List<BidDTO>>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = validationErorrString };
+            }
+            else // TODO : extract to sub methods
+            {
+                IEnumerable<BidEntity> filteredBids = _context.Bids
+                    // filter by Categories
+                    .Where(bid => bid.Category == null ?
+                                true :
+                                bid.Category.Equals(bidsFilters.Category) &&
+                                (bidsFilters.SubCategory == null) ?
+                                    true :
+                                    bid.SubCategory != null && bid.SubCategory.Equals(bidsFilters.Category))
+                    //filter by prices
+                    .Where(bid => bidsFilters.MaxPrice < Int32.MaxValue ? bid.MaxPrice < bidsFilters.MaxPrice : true &&
+                            bidsFilters.MinPrice > 0 ? bid.MaxPrice > bidsFilters.MinPrice : true)
+                    // filter by query string
+                    .Where(bid => bid.Product.Name.Contains(bidsFilters.Search) || bid.Product.Description.Contains(bidsFilters.Search));
+                
+                //sort
+                IEnumerable<BidEntity> sortedBids;
+                BidsSortByOrder sortOrder = bidsFilters.SortOrder;
+                switch (bidsFilters.SortBy)
+                {
+                    case BidsSortByOptions.CreationDate:
+                        sortedBids = filteredBids.Sort(bid => bid.CreationDate, sortOrder);
+                        break;
+                    case BidsSortByOptions.ExpirationDate:
+                        sortedBids = filteredBids.Sort(bid => bid.ExpirationDate, sortOrder);
+                        break;
+                    case BidsSortByOptions.SupplierProposals:
+                        sortedBids = filteredBids.Sort(bid => bid.PotenialSuplliersCounter, sortOrder);
+                        break;
+                    case BidsSortByOptions.DemandedItems:
+                        sortedBids = filteredBids.Sort(bid => bid.UnitsCounter, sortOrder);
+                        break;
+                    case BidsSortByOptions.Price:
+                        sortedBids = filteredBids.Sort(bid => bid.MaxPrice, sortOrder);
+                        break;
+                    default:
+                        sortedBids = filteredBids.Sort(bid => bid.MaxPrice, sortOrder);
+                        break;
+                }
+
+                // return page
+                int pageSize = bidsFilters.Limit == 0 || bidsFilters.Limit > _maxPageSize ? _pageDefaultSize : bidsFilters.Limit;
+
+                var bidsPage = sortedBids
+                    .Skip(bidsFilters.Page * pageSize)
+                    .Take(pageSize)
+                    .Select (bidEntity => _mapper.Map<BidDTO>(bidEntity))
+                    .ToList();
+
+                return new Response<List<BidDTO>>() { DTOObject = bidsPage, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+
+            }
+        }
+
+        private Response<List<BidDTO>> GetDefaultHomePageBids (int page)
+        {
+            List<BidDTO> bids =  _context.Bids
+                .OrderByDescending(bid => bid.UnitsCounter)
+                .OrderByDescending(bid => bid.PotenialSuplliersCounter)
+                .OrderBy(bid => bid.ExpirationDate)
+                .Skip(page * _pageDefaultSize)
+                .Take(_pageDefaultSize)
+                .Select(bidEntitiy => _mapper.Map<BidDTO>(bidEntitiy))
+                .ToList();
+
+            return new Response<List<BidDTO>>() { DTOObject = bids, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+        }
+
+        private bool  ValidateBidsFilters(BidsQueryOptions bidsFilters, out string validationErorrString)
+        {
+            validationErorrString = null;
+            string demandedCategory = bidsFilters.Category;
+            string demandedSubCategory = bidsFilters.SubCategory; 
+            if (demandedSubCategory != null && demandedCategory == null)
+            {
+                validationErorrString = $"Sub catergory has set to :{bidsFilters.SubCategory } while category is null";
+                return false;
             }
 
-        public Task<Response<List<BidDTO>>> GetBids(BidsQueryOptions bidsFilters)
-        {
-            //TODO
-            throw new NotImplementedException();
+            // should implement it smarter with creating categories table and with kind of index on it 
+            if (!_context.Bids.Select(bid =>bid.Category).ToHashSet().Contains(demandedCategory))
+            {
+                validationErorrString = $"Catergory has set to :{demandedCategory } while category is not exist in DB";
+                return false;
+            }
+            // should implemnt also table of Category-SubCategory with many to one relationship to vaildate....
+
+            return true;
         }
 
         public async Task<Response<List<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId)
