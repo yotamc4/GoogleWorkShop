@@ -12,6 +12,8 @@ namespace yoty
     using YOTY.Service.WebApi.Middlewares;
     using YOTY.Service.WebApi.Middlewares.CorrelationId;
     using Newtonsoft.Json;
+    using YOTY.Service.Data;
+    using Microsoft.EntityFrameworkCore;
 
     public class Startup
     {
@@ -25,10 +27,18 @@ namespace yoty
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(option => option.AddDefaultPolicy(
+                builder => {
+                    builder.AllowAnyOrigin();
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyMethod();
+                    })
+            );
             services.AddAutoMapper(typeof(Startup));
             services.AddControllers().AddNewtonsoftJson();
             services.AddCorrelationIdOptions();
             services.AddManagers();
+            services.AddDbContext<YotyContext>(options => options.UseSqlServer("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,6 +54,8 @@ namespace yoty
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 
