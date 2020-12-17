@@ -210,7 +210,7 @@ namespace YOTY.Service.Core.Managers.Bids
 
         public async Task<Response<BidDTO>> GetBid(string bidId)
         {
-            BidEntity bid = await _context.Bids.FindAsync(bidId).ConfigureAwait(false);
+            BidEntity bid = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.Product).FirstOrDefaultAsync().ConfigureAwait(false);
             if (bid == null)
             {
                 return new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
