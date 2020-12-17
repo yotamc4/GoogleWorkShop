@@ -16,6 +16,9 @@ namespace YOTY.Service.Core.Managers.Bids
     public class BidsManager : IBidsManager
     {
         private const string BidNotFoundFailString = "Failed, Bid not found";
+        private const string ProposalNotFoundFailString = "Failed, Proposal not found";
+        private const string ParticipantNotFoundFailString = "Failed, Participant not found";
+
         private readonly YotyContext _context;
         private readonly IMapper _mapper;
 
@@ -133,8 +136,13 @@ namespace YOTY.Service.Core.Managers.Bids
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
             }
             ParticipancyEntity participancy = bid.CurrentParticipancies.Find(p => p.BuyerId == buyerId);
+            if (participancy == null)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ParticipantNotFoundFailString };
+            }
             bid.UnitsCounter -= participancy.NumOfUnits;
             bid.CurrentParticipancies.Remove(participancy);
+            _context.Set<ParticipancyEntity>().Remove(participancy);
             try
             {
                 _context.Bids.Update(bid);
@@ -155,9 +163,13 @@ namespace YOTY.Service.Core.Managers.Bids
                 return new Response() {IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
             }
             SupplierProposalEntity proposal = bid.CurrentProposals.Find(p => p.SupplierId == supplierId);
+            if (proposal == null)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ProposalNotFoundFailString };
+            }
             bid.CurrentProposals.Remove(proposal);
             bid.PotenialSuplliersCounter--;
-            
+            _context.Set<SupplierProposalEntity>().Remove(proposal);
             try
             {
                 _context.Bids.Update(bid);
