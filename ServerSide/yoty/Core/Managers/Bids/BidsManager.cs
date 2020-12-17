@@ -88,8 +88,6 @@ namespace YOTY.Service.Core.Managers.Bids
             //TODO is this the time we want? (or global).
             bidEntity.CreationDate = DateTime.Now;
             bidEntity.Id = Guid.NewGuid().ToString();
-            bidEntity.UnitsCounter = 0;
-            bidEntity.PotenialSuplliersCounter = 0;
             bidEntity.Product.Id = Guid.NewGuid().ToString();
             bidEntity.CurrentParticipancies = new List<ParticipancyEntity>();
             bidEntity.CurrentProposals = new List<SupplierProposalEntity>();
@@ -106,7 +104,6 @@ namespace YOTY.Service.Core.Managers.Bids
             }
             BidDTO dto = _mapper.Map<BidDTO>(bidEntity);
             return new Response<BidDTO>() { DTOObject = dto, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
-
         }
 
         public async Task<Response> DeleteBid(string bidId)
