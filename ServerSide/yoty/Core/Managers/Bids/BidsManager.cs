@@ -30,14 +30,14 @@ namespace YOTY.Service.Core.Managers.Bids
 
         public async Task<Response<BuyerDTO>> AddBuyer(BidBuyerJoinRequest bidBuyerJoinRequest)
         {
-            BidEntity bid = await _context.Bids.Where(b => b.Id == bidBuyerJoinRequest.bidId).Include(b => b.CurrentParticipancies).FirstOrDefaultAsync().ConfigureAwait(false);
+            BidEntity bid = await _context.Bids.Where(b => b.Id == bidBuyerJoinRequest.BidId).Include(b => b.CurrentParticipancies).FirstOrDefaultAsync().ConfigureAwait(false);
             if (bid == null)
             {
                 return new Response<BuyerDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
             }
             bid.CurrentParticipancies.Add(new ParticipancyEntity {
-                BidId = bidBuyerJoinRequest.bidId,
-                BuyerId = bidBuyerJoinRequest.buyerId,
+                BidId = bidBuyerJoinRequest.BidId,
+                BuyerId = bidBuyerJoinRequest.BuyerId,
                 NumOfUnits = bidBuyerJoinRequest.Items
             });
             bid.UnitsCounter += bidBuyerJoinRequest.Items;
@@ -51,7 +51,7 @@ namespace YOTY.Service.Core.Managers.Bids
                 return new Response<BuyerDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
             }
             //TODO dropping the dto obj from the response will save us the second db access 
-            BuyerEntity buyer_ent = await _context.Buyers.FindAsync(bidBuyerJoinRequest.buyerId).ConfigureAwait(false);
+            BuyerEntity buyer_ent = await _context.Buyers.FindAsync(bidBuyerJoinRequest.BuyerId).ConfigureAwait(false);
             BuyerDTO buyer_dto = _mapper.Map<BuyerDTO>(buyer_ent);
             return new Response<BuyerDTO>() { DTOObject = buyer_dto, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
