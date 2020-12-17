@@ -28,20 +28,24 @@ namespace YOTY.Service.Data
             modelBuilder.Entity<SupplierProposalEntity>()
                 .HasOne(o => o.Bid)
                 .WithMany(b => b.CurrentProposals)
-                .HasForeignKey(o => o.BidId);
+                .HasForeignKey(o => o.BidId)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<SupplierProposalEntity>()
                 .HasOne(o => o.Supplier)
                 .WithMany(s => s.CurrentProposals)
-                .HasForeignKey(s => s.SupplierId);
+                .HasForeignKey(s => s.SupplierId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ParticipancyEntity>()
                 .HasOne(p => p.Bid)
                 .WithMany(b => b.CurrentParticipancies)
-                .HasForeignKey(p => p.BidId);
+                .HasForeignKey(p => p.BidId)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<ParticipancyEntity>()
                 .HasOne(p => p.Buyer)
                 .WithMany(b => b.CurrentParticipancies)
-                .HasForeignKey(p => p.BuyerId);
+                .HasForeignKey(p => p.BuyerId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
