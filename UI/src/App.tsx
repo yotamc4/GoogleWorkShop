@@ -25,7 +25,7 @@ function App() {
           <NewGroupBuyingForm />
         </Route>
         <Route path="/products/:id">
-          <ProductPage mockProductId={10} />
+          <ProductPage/>
         </Route>
         <Route path="/user/:user">
           <UserProfile />

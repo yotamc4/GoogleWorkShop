@@ -7,13 +7,13 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 
     public class ProductRequest
     {
-        [JsonProperty("bidId")]
+        [JsonProperty("name")]
         public string Name { get; set; }
 
-        [JsonProperty("bidId")]
+        [JsonProperty("image")]
         public Uri Image { get; set; }
 
-        [JsonProperty("bidId")]
+        [JsonProperty("description")]
         public string Description { get; set; }
     }
 }

@@ -34,9 +34,9 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
       ...state,
     }),
     {
-      Name: "",
-      Image: undefined,
-      Description: "",
+      name: "",
+      image: undefined,
+      description: "",
     }
   );
 
@@ -51,12 +51,12 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
       ...state,
     }),
     {
-      OwnerId: "1",
-      Category: "",
-      SubCategory: "",
-      ExpirationDate: undefined,
-      MaxPrice: 0,
-      Product: undefined,
+      ownerId: "1",
+      category: "",
+      subCategory: "",
+      expirationDate: new Date(),
+      maxPrice: 0,
+      product: undefined,
     }
   );
 
@@ -75,11 +75,15 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
   React.useEffect(() => {
     const allRequiredFieldsAreFulfilledObjectTemp: boolean =
       Object.values(bidRequest).every((el) => el) &&
-      !!productDetails.Description &&
-      !!productDetails.Name;
+      !!productDetails.description &&
+      !!productDetails.name;
 
     SetAllRequiredFieldsAreFulfilled(allRequiredFieldsAreFulfilledObjectTemp);
   }, [bidRequest, productDetails]);
+
+  React.useEffect(() => {
+    setBidRequest({ product: productDetails });
+  }, [productDetails]);
 
   function onDropdownChange(
     event: React.FormEvent<HTMLDivElement>,
@@ -143,39 +147,38 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           </MessageBar>
         )}
         <TextField
-          id="Name"
+          id="name"
           label="Product's name"
           styles={{ root: { width: FormsStyles.inputWidth } }}
           onChange={(event, newValue) => {
             onTextFieldChange(setProductDetails, event, newValue);
-            setBidRequest({ Product: productDetails });
           }}
           required
         />
         <Dropdown
-          id="Category"
+          id="category"
           onChange={onDropdownChange}
           label={"Product's Category"}
           styles={FormsStyles.dropdownStyles}
           options={Array.from(CategoriesMap.keys()).map((categoryName) => ({
             key: categoryName,
-            id: "Category",
+            id: "category",
             text: categoryName,
           }))}
           required
         ></Dropdown>
         <Dropdown
-          id="SubCategory"
+          id="subCategory"
           label={"Product's Sub Category"}
           onChange={onDropdownChange}
           styles={FormsStyles.dropdownStyles}
           options={
-            bidRequest.Category
+            bidRequest.category
               ? Array.from(
-                  CategoriesMap.get(bidRequest.Category)!.map(
+                  CategoriesMap.get(bidRequest.category)!.map(
                     (subCategory) => ({
                       key: subCategory,
-                      id: "SubCategory",
+                      id: "subCategory",
                       text: subCategory,
                     })
                   )
@@ -185,7 +188,7 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           required
         ></Dropdown>
         <TextField
-          id="MaxPrice"
+          id="maxPrice"
           onChange={(event, newValue) =>
             onTextFieldChange(setBidRequest, event, newValue)
           }
@@ -200,13 +203,13 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           required
         />
         <DatePicker
-          id="ExpirationDate"
+          id="expirationDate"
           onSelectDate={(date: Date | null | undefined): void => {
             setBidRequest({
-              ExpirationDate: date,
+              expirationDate: date!,
             });
           }}
-          value={bidRequest.ExpirationDate ?? undefined}
+          value={bidRequest.expirationDate ?? undefined}
           label="Set expiration date for the group"
           firstDayOfWeek={DayOfWeek.Sunday}
           strings={DayPickerStrings}
@@ -219,10 +222,9 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           isRequired
         />
         <TextField
-          id="Description"
+          id="description"
           onChange={(event, newValue) => {
             onTextFieldChange(setProductDetails, event, newValue);
-            setBidRequest({ Product: productDetails });
           }}
           label="Description"
           multiline
@@ -231,17 +233,16 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           required
         />
         <TextField
-          id="Image"
+          id="image"
           label="Enter URL image for reference"
           styles={{ root: { width: FormsStyles.inputWidth } }}
           onChange={(event, newValue) => {
             onTextFieldChange(setProductDetails, event, newValue);
-            setBidRequest({ Product: productDetails });
           }}
         />
-        {productDetails?.Image && (
+        {productDetails?.image && (
           <Image
-            src={productDetails.Image}
+            src={productDetails.image}
             id="target"
             width={"25rem"}
             height={"20rem"}
@@ -258,7 +259,9 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
             {requestInProcess && <Spinner />}
             <PrimaryButton
               text="Send"
-              onClick={onSubmitForm}
+              onClick={() => {
+                onSubmitForm();
+              }}
               disabled={!allRequiredFieldsAreFulfilled}
             />
           </Stack>

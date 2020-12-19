@@ -1,6 +1,6 @@
 export interface BidDetails {
   id: string;
-  product: ProductDetails1;
+  product: newProductRequest;
   ownerId: string;
   category: number;
   subCategory: string;
@@ -9,18 +9,6 @@ export interface BidDetails {
   expirationDate: string;
   potenialSuplliersCounter: number;
   unitsCounter: number;
-}
-
-export interface ProductDetails1 {
-  name: string;
-  image: string;
-  description: string;
-}
-
-export interface newProductRequest {
-  Name: string;
-  Image: string | undefined;
-  Description: string;
 }
 
 export interface ProductDetails {
@@ -33,4 +21,10 @@ export interface ProductDetails {
   description: string;
   mockId: number;
   supplierHasChosen?: boolean;
+}
+
+export interface newProductRequest {
+  name: string;
+  image: string | undefined;
+  description: string;
 }

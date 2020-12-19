@@ -18,9 +18,7 @@ import { useParams } from "react-router-dom";
 import { PaymentsTable } from "../PaymentTable/PaymentTable";
 import { ISupplierProposalRequest } from "./Suppliers/SupplierSection.interface";
 
-export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
-  mockProductId
-) => {
+export const ProductPage: React.FunctionComponent = () => {
   const [numberOfParticipants, setnumberOfParticipants] = React.useState<
     number
   >(0);
