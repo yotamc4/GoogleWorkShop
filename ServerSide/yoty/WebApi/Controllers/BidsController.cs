@@ -23,9 +23,9 @@ namespace YOTY.Service.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<BidDTO>>> GetBids([FromQuery] BidsQueryOptions bidsQueryOptions)
+        public async Task<ActionResult<BidsDTO>> GetBids([FromQuery] BidsQueryOptions bidsQueryOptions)
         {
-            Response<List<BidDTO>> response = await this.bidsManager.GetBids(bidsQueryOptions).ConfigureAwait(false);
+            Response<BidsDTO> response = await this.bidsManager.GetBids(bidsQueryOptions).ConfigureAwait(false);
             if (response.IsOperationSucceeded )
             {
                 return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
@@ -43,17 +43,18 @@ namespace YOTY.Service.WebApi.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<BidDTO>> PostNewBid(NewBidRequst bid)
+        public async Task<ActionResult> PostNewBid(NewBidRequest bid)
         {
-            Response<BidDTO> response = await this.bidsManager.CreateNewBid(bid).ConfigureAwait(false);
+            Response response = await this.bidsManager.CreateNewBid(bid).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
-                return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
+                return this.StatusCode(StatusCodes.Status201Created, response.SuccessOrFailureMessage);
             }
             return this.StatusCode(StatusCodes.Status403Forbidden, response.SuccessOrFailureMessage);
         }
 
         [HttpGet]
+        [Route("{bidId}")]
         public async Task<ActionResult<BidDTO>> GetBid(string bidId)
         {
             /*
@@ -69,8 +70,7 @@ namespace YOTY.Service.WebApi.Controllers
                 return response.DTOObject;
             }
             // at the moment
-            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
-            
+            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);            
         }
 
         [HttpGet]
@@ -90,7 +90,7 @@ namespace YOTY.Service.WebApi.Controllers
         [Route("{bidId}/proposals")]
         public async Task<ActionResult<List<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId)
         {
-            Response<List<SupplierProposalDTO>> response = await this.bidsManager.GetBidSuplliersProposals(bidId).ConfigureAwait(false);
+            Response<List<SupplierProposalDTO>> response = await bidsManager.GetBidSuplliersProposals(bidId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
                 return response.DTOObject;
@@ -99,36 +99,40 @@ namespace YOTY.Service.WebApi.Controllers
             return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
         }
 
-
-        
         [HttpPost]
-        [Route("{bidId}/Buyers")]
-        public async Task<ActionResult<BuyerDTO>> AddBuyer(BidBuyerJoinRequest bidBuyerJoinRequest)
+        [Route("{bidId}/buyers")]
+        public async Task<ActionResult> AddBuyer(string bidId, BidBuyerJoinRequest bidBuyerJoinRequest)
         {
+            if (bidBuyerJoinRequest.BidId == null)
+            {
+                bidBuyerJoinRequest.BidId = bidId;
+            }
 
-            Response<BuyerDTO> response = await this.bidsManager.AddBuyer(bidBuyerJoinRequest).ConfigureAwait(false);
+            Response response = await this.bidsManager.AddBuyer(bidBuyerJoinRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
-                return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
+                return this.StatusCode(StatusCodes.Status201Created, response.SuccessOrFailureMessage);
             }
             return this.StatusCode(StatusCodes.Status304NotModified, response.SuccessOrFailureMessage);
         }
 
         [HttpPost]
-        [Route("{bidId}/Proposals")]
-        public async Task<ActionResult<SupplierProposalDTO>> AddSupplierProposal(SupplierProposalRequest supplierProposalRequest)
+        [Route("{bidId}/proposals")]
+        public async Task<ActionResult> AddSupplierProposal(string bidId, SupplierProposalRequest supplierProposalRequest)
         {
-
-            Response<SupplierProposalDTO> response = await this.bidsManager.AddSupplierProposal(supplierProposalRequest).ConfigureAwait(false);
+            if (supplierProposalRequest.BidId == null)
+            {
+                supplierProposalRequest.BidId = bidId;
+            }
+            Response response = await this.bidsManager.AddSupplierProposal(supplierProposalRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
-                return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
+                return this.StatusCode(StatusCodes.Status201Created, response.SuccessOrFailureMessage);
             }
             return this.StatusCode(StatusCodes.Status304NotModified, response.SuccessOrFailureMessage);
         }
 
         [HttpPut]
-        [Route("{bidId}")]
         public async Task<ActionResult<BidDTO>> EditBid(EditBidRequest editBidRequest)
         {
 
@@ -142,7 +146,7 @@ namespace YOTY.Service.WebApi.Controllers
 
 
         [HttpDelete]
-        [Route("{bidId}/Buyers/{buyerId}")]
+        [Route("{bidId}/buyers/{buyerId}")]
         public async Task<ActionResult> DeleteBuyer(string bidId, string buyerId)
         {
 
@@ -158,7 +162,7 @@ namespace YOTY.Service.WebApi.Controllers
 
 
         [HttpDelete]
-        [Route("{bidId}/Proposals/{proposalId}")]
+        [Route("{bidId}/proposals/{proposalId}")]
         public async Task<ActionResult> DeleteSupplierProposal(string bidId, string proposalId)
         {
 

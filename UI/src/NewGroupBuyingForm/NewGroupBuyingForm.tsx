@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as FormsStyles from "../FormStyles/FormsStyles";
-import { Stack, Dropdown, Label } from "office-ui-fabric-react";
+import { Stack, Dropdown } from "office-ui-fabric-react";
 import {
   DatePicker,
   DayOfWeek,
@@ -12,52 +12,116 @@ import {
   Text,
   TextField,
   Image,
+  MessageBar,
+  MessageBarType,
+  Spinner,
 } from "@fluentui/react";
 import { CategoriesMap } from "../HomePage/Model/Categories";
-import { v4 as uuidv4 } from "uuid";
+import { newProductRequest } from "../Modal/ProductDetails";
+import { NewBidRequest } from "../Modal/GroupDetails";
+import { submitNewGroupForm } from "../Services/BidsControllerService";
+import { useHistory } from "react-router";
 
 export const NewGroupBuyingForm: React.FunctionComponent = () => {
-  const [formInputs, setFormInputs] = React.useReducer<
+  const [productDetails, setProductDetails] = React.useReducer<
     (
-      prevState: NewGroupBuyDetails,
-      state: NewGroupBuyDetails
-    ) => NewGroupBuyDetails
+      prevState: Partial<newProductRequest>,
+      state: Partial<newProductRequest>
+    ) => newProductRequest
   >(
     (prevState: any, state: any) => ({
       ...prevState,
       ...state,
     }),
     {
-      category: undefined,
-      subCategory: undefined,
-      expirationDate: undefined,
-      maxPrice: undefined,
-      description: undefined,
-      userImage: undefined,
+      name: "",
+      image: undefined,
+      description: "",
     }
   );
+
+  const [bidRequest, setBidRequest] = React.useReducer<
+    (
+      prevState: Partial<NewBidRequest>,
+      state: Partial<NewBidRequest>
+    ) => NewBidRequest
+  >(
+    (prevState: any, state: any) => ({
+      ...prevState,
+      ...state,
+    }),
+    {
+      ownerId: "1",
+      category: "",
+      subCategory: "",
+      expirationDate: new Date(),
+      maxPrice: 0,
+      product: undefined,
+    }
+  );
+
+  const [
+    allRequiredFieldsAreFulfilled,
+    SetAllRequiredFieldsAreFulfilled,
+  ] = React.useState<boolean>(false);
+
+  const [requestInProcess, setRequestInProcess] = React.useState<boolean>(
+    false
+  );
+
+  const [errorMessage, setErrorMessage] = React.useState<string>();
+  const urlHistory = useHistory();
+
+  React.useEffect(() => {
+    const allRequiredFieldsAreFulfilledObjectTemp: boolean =
+      Object.values(bidRequest).every((el) => el) &&
+      !!productDetails.description &&
+      !!productDetails.name;
+
+    SetAllRequiredFieldsAreFulfilled(allRequiredFieldsAreFulfilledObjectTemp);
+  }, [bidRequest, productDetails]);
+
+  React.useEffect(() => {
+    setBidRequest({ product: productDetails });
+  }, [productDetails]);
 
   function onDropdownChange(
     event: React.FormEvent<HTMLDivElement>,
     option?: IDropdownOption
   ): void {
-    const name: string | undefined = option?.key as string;
-    const value: string | undefined = option?.text!;
-    setFormInputs({ [name]: value });
+    const id: string | undefined = option?.id as string;
+    const text: string | undefined = option?.text!;
+    setBidRequest({ [id]: text });
   }
 
-  function onImageChange(event: React.FormEvent<HTMLInputElement>): void {
-    if (
-      (event.target as HTMLInputElement).files &&
-      (event.target as HTMLInputElement).files![0]
-    ) {
-      setFormInputs({
-        userImage: URL.createObjectURL(
-          (event.target as HTMLInputElement).files![0]
-        ),
-      });
+  const onTextFieldChange = (
+    setStateFunction: Function,
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string,
+    convertToNumber?: boolean
+  ): void => {
+    const updatedValue: string | number | undefined = convertToNumber
+      ? Number(newValue)
+      : newValue;
+
+    setStateFunction({
+      [(event.target as HTMLInputElement).id]: updatedValue,
+    });
+  };
+
+  // TODO - Move the call to separate file (Services controllers)
+  const onSubmitForm = async (): Promise<void> => {
+    try {
+      setRequestInProcess(true);
+      await submitNewGroupForm(bidRequest);
+      urlHistory.push(`/`);
+    } catch {
+      setRequestInProcess(false);
+      setErrorMessage(
+        "An error occurred while trying to create your group. Please try again later."
+      );
     }
-  }
+  };
 
   return (
     <Stack horizontalAlign={"center"}>
@@ -74,71 +138,114 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
         tokens={FormsStyles.verticalGapStackTokens}
       >
         <Separator styles={{ root: { width: "100%" } }} />
+        {errorMessage && (
+          <MessageBar
+            messageBarType={MessageBarType.error}
+            onDismiss={() => setErrorMessage("")}
+          >
+            {errorMessage}
+          </MessageBar>
+        )}
         <TextField
+          id="name"
           label="Product's name"
           styles={{ root: { width: FormsStyles.inputWidth } }}
+          onChange={(event, newValue) => {
+            onTextFieldChange(setProductDetails, event, newValue);
+          }}
+          required
         />
         <Dropdown
-          id={categoryProp}
+          id="category"
           onChange={onDropdownChange}
           label={"Product's Category"}
           styles={FormsStyles.dropdownStyles}
           options={Array.from(CategoriesMap.keys()).map((categoryName) => ({
-            key: categoryProp,
+            key: categoryName,
+            id: "category",
             text: categoryName,
           }))}
+          required
         ></Dropdown>
         <Dropdown
+          id="subCategory"
           label={"Product's Sub Category"}
+          onChange={onDropdownChange}
           styles={FormsStyles.dropdownStyles}
           options={
-            formInputs.category
+            bidRequest.category
               ? Array.from(
-                  CategoriesMap.get(formInputs.category)!.map(
+                  CategoriesMap.get(bidRequest.category)!.map(
                     (subCategory) => ({
                       key: subCategory,
+                      id: "subCategory",
                       text: subCategory,
                     })
                   )
                 )
               : []
           }
+          required
         ></Dropdown>
         <TextField
+          id="maxPrice"
+          onChange={(event, newValue) =>
+            onTextFieldChange(setBidRequest, event, newValue)
+          }
           label="Maximum price"
-          onGetErrorMessage={() => "Only numbers allowd"}
+          onGetErrorMessage={(value) =>
+            value === "" || value.match(/^[0-9]+$/) != null
+              ? ""
+              : "Only numbers allowed"
+          }
           styles={{ root: { width: FormsStyles.inputWidth } }}
           suffix="₪"
+          required
         />
         <DatePicker
-          label="Select expiration date for the group"
+          id="expirationDate"
+          onSelectDate={(date: Date | null | undefined): void => {
+            setBidRequest({
+              expirationDate: date!,
+            });
+          }}
+          value={bidRequest.expirationDate ?? undefined}
+          label="Set expiration date for the group"
           firstDayOfWeek={DayOfWeek.Sunday}
           strings={DayPickerStrings}
-          placeholder="Select a date..."
-          ariaLabel="Select a date"
+          placeholder="Select a date"
+          calendarProps={{
+            strings: DayPickerStrings,
+            minDate: new Date(2020, 12, 12, 0, 0, 0, 0),
+          }}
           styles={{ root: { width: FormsStyles.inputWidth } }}
+          isRequired
         />
         <TextField
+          id="description"
+          onChange={(event, newValue) => {
+            onTextFieldChange(setProductDetails, event, newValue);
+          }}
           label="Description"
           multiline
           autoAdjustHeight
           styles={{ root: { width: FormsStyles.inputWidth } }}
+          required
         />
-        <Label>{"Upload an image for reference only"}</Label>
-        <input
-          accept="image/*"
-          onChange={onImageChange}
-          id="contained-button-file"
-          name="image"
-          type="file"
-          style={{ width: FormsStyles.inputWidth }}
+        <TextField
+          id="image"
+          label="Enter URL image for reference"
+          styles={{ root: { width: FormsStyles.inputWidth } }}
+          onChange={(event, newValue) => {
+            onTextFieldChange(setProductDetails, event, newValue);
+          }}
         />
-        {formInputs?.userImage && (
+        {productDetails?.image && (
           <Image
-            src={formInputs.userImage}
+            src={productDetails.image}
             id="target"
-            width={"30rem"}
-            height={"25rem"}
+            width={"25rem"}
+            height={"20rem"}
           />
         )}
         <Separator styles={{ root: { width: FormsStyles.inputWidth } }} />
@@ -147,38 +254,22 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           tokens={FormsStyles.horizontalGapStackTokens}
           styles={{ root: { margin: "auto" } }}
         >
-          <DefaultButton
-            text="Cancel"
-            //onClick={_alertClicked}
-            allowDisabledFocus
-            //disabled={disabled}
-            // checked={checked}
-            href={"/"}
-          />
-          <PrimaryButton
-            text="Send"
-            //onClick={_alertClicked}
-            allowDisabledFocus
-            //disabled={disabled}
-            //checked={checked}
-            href={`/products/${uuidv4()}`}
-          />
+          <DefaultButton text="Cancel" href={"/"} />
+          <Stack horizontal tokens={{ childrenGap: "1rem" }}>
+            {requestInProcess && <Spinner />}
+            <PrimaryButton
+              text="Send"
+              onClick={() => {
+                onSubmitForm();
+              }}
+              disabled={!allRequiredFieldsAreFulfilled}
+            />
+          </Stack>
         </Stack>
       </Stack>
     </Stack>
   );
 };
-
-interface NewGroupBuyDetails {
-  category?: string;
-  subCategory?: string;
-  expirationDate?: Date;
-  maxPrice?: number;
-  description?: string;
-  userImage?: string;
-}
-
-const categoryProp: string = "category";
 
 const DayPickerStrings: IDatePickerStrings = {
   months: [

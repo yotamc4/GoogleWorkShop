@@ -19,7 +19,7 @@ DateTime ExpirationDate { get; set; }
 ProductRequest Product { get; set; }
 }
 */
-    public class NewBidRequst
+    public class NewBidRequest
     {
         [JsonProperty("ownerId")]
         public string OwnerId { get; set; }
@@ -37,7 +37,7 @@ ProductRequest Product { get; set; }
         [JsonProperty("expirationDate")]
         public DateTime ExpirationDate { get; set; }
 
-        [JsonProperty("Product")]
+        [JsonProperty("product")]
         public ProductRequest Product { get; set; }
     }
 }

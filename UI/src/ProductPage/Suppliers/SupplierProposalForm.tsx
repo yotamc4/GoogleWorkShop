@@ -8,21 +8,25 @@ import {
   TextField,
 } from "@fluentui/react";
 import axios from "axios";
-import * as FormsStyles from "../FormStyles/FormsStyles";
+import * as FormsStyles from "../../FormStyles/FormsStyles";
+import { ISupplierProposalFormProps } from "./SupplierProposalForm.interface";
+import { useParams } from "react-router";
+import { ISupplierProposalRequest } from "./SupplierSection.interface";
 
 export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalFormProps> = ({
   addPropposalToSupplierList,
   handleClose,
 }) => {
+  const { id } = useParams<{ id: string }>();
   const [formInputs, setFormInputs] = React.useReducer<
     (
-      prevState: Partial<ISupplierProposalFormDetails>,
-      state: Partial<ISupplierProposalFormDetails>
-    ) => Partial<ISupplierProposalFormDetails>
+      prevState: Partial<ISupplierProposalRequest>,
+      state: Partial<ISupplierProposalRequest>
+    ) => Partial<ISupplierProposalRequest>
   >(
     (
-      prevState: Partial<ISupplierProposalFormDetails>,
-      state: Partial<ISupplierProposalFormDetails>
+      prevState: Partial<ISupplierProposalRequest>,
+      state: Partial<ISupplierProposalRequest>
     ) => ({
       ...prevState,
       ...state,
@@ -46,16 +50,16 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
     const date = Date();
     if (!(!formInputs.proposedPrice && !formInputs.minimumUnits)) {
       addPropposalToSupplierList({
-        date: date,
-        bidId: "123456",
+        publishedTime: date,
+        bidId: id,
         supplierId: "1234",
         supplierName: "Ivory",
         ...formInputs,
       });
       //TODO: needs to consume from the context the bidId and the supplierId
       postSupplierPropposal({
-        date: date,
-        bidId: "123456",
+        publishedTime: date,
+        bidId: id,
         supplierId: "1234",
         ...formInputs,
       });
@@ -64,15 +68,18 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
   };
 
   const postSupplierPropposal = (
-    supplierProposalFormDetails: Partial<ISupplierProposalFormDetails>
+    supplierProposalFormDetails: Partial<ISupplierProposalRequest>
   ): void => {
     axios
       .post(
-        "https://localhost:5001/api/v1/bids/1234/Proposals",
+        `https://localhost:5001/api/v1/bids/${id}/proposals`,
         supplierProposalFormDetails
       )
       .then((response) => {
         console.log(response);
+      })
+      .catch((error) => {
+        console.error(error);
       });
   };
 
@@ -149,21 +156,3 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
     </Stack>
   );
 };
-
-//needs to add the description
-export interface ISupplierProposalFormDetails {
-  proposedPrice?: number;
-  minimumUnits?: number;
-  description?: string;
-  date: string;
-  supplierId: string;
-  bidId: string;
-  supplierName: string;
-}
-
-interface ISupplierProposalFormProps {
-  addPropposalToSupplierList: (
-    supplierProposalFormDetails: ISupplierProposalFormDetails
-  ) => void;
-  handleClose: () => void;
-}

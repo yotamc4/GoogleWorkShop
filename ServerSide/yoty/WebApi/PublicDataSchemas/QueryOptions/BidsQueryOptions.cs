@@ -1,14 +1,16 @@
 ﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
+using System;
+
 namespace YOTY.Service.WebApi.PublicDataSchemas
 {
     //[BindProperties(SupportsGet = true)]
     public class BidsQueryOptions
     {
         // pagination
-        public int? Page { get; set; }
+        public int Page { get; set; }
 
-        public int? Limit { get; set; } // how many items returned, should determined 
+        public int Limit { get; set; } // how many items returned, should determined 
 
         // sorting     
         public BidsSortByOptions SortBy { get; set; }
@@ -19,11 +21,13 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
         // see IHerb request for reference 
         public string Category { get; set; }
 
+        public string SubCategory { get; set; }
+
         public int MinPrice { get; set; }
 
-        public int MaxPrice { get; set; }
+        public int MaxPrice { get; set; } = Int32.MaxValue;
         //public BidsSortByOptions? SortBy { get; }
 
-        public string search { get; set; }
+        public string Search { get; set; }
     }
 }

@@ -8,9 +8,11 @@ namespace YOTY.Service.Data.Entities
 
         public int MinimumUnits { get; set; }
 
-        public double OfferedPrice { get; set; }
+        public double ProposedPrice { get; set; }
 
-        public string OfferDescription { get; set; }
+        public string Description { get; set; }
+
+        public string SupplierName { get; set; }
 
         public int VotesCounter { get; set; }
 

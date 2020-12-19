@@ -2,7 +2,6 @@ import React from "react"; // importing FunctionComponent
 import { Card, ICardTokens, ICardSectionTokens } from "@uifabric/react-cards";
 import { Text, IImageProps, ImageFit, Image } from "office-ui-fabric-react";
 import { useHistory } from "react-router-dom";
-import { ProductDetails } from "../../Modal/ProductDetails";
 import {
   amoutTextStyles,
   cardStyles,
@@ -11,20 +10,19 @@ import {
   priceTextStyles,
   divStyles,
 } from "./ProductCardStyles";
+import { Bid } from "../../Modal/GroupDetails";
 
-export const ProductCard: React.FunctionComponent<ProductDetails> = (
-  productDetails
-) => {
+export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
   const history = useHistory();
   const cardTokens: ICardTokens = { childrenMargin: 12 };
   const agendaCardSectionTokens: ICardSectionTokens = { childrenGap: 0 };
   const attendantsCardSectionTokens: ICardSectionTokens = { childrenGap: 6 };
   const imageProps: IImageProps = {
-    src: productDetails.imageUrl,
+    src: bid.product?.image,
     imageFit: ImageFit.contain,
   };
   const changeHistory = () => {
-    history.push(`/products/${productDetails.mockId}`);
+    history.push(`/products/${bid.id}`);
   };
 
   return (
@@ -38,22 +36,25 @@ export const ProductCard: React.FunctionComponent<ProductDetails> = (
         styles={{ root: { flexBasis: "10rem" } }}
       >
         <Text variant="large" styles={nameOfProductTextStyles}>
-          {productDetails.name}
+          {bid.product?.name}
         </Text>
         <Text styles={descriptionTextStyles}>
-          {productDetails.description.slice(0, 200) + "..."}
+          {bid.product!.description.length > 199
+            ? bid.product!.description.slice(0, 200) + "..."
+            : bid.product!.description}
         </Text>
       </Card.Section>
       <Card.Section horizontalAlign="center" tokens={agendaCardSectionTokens}>
         <Text variant="mediumPlus" styles={priceTextStyles}>
-          Max Acceptable Price: {productDetails.maximumAcceptablePrice}₪
+          Max Acceptable Price: {bid.maxPrice}₪
         </Text>
-        <Text variant="small" styles={descriptionTextStyles}>
-          Expiration Date:{" "}
-          {productDetails.groupExpirationDate.getUTCMonth() + 1}/
-          {productDetails.groupExpirationDate.getUTCDate() + 1}/
-          {productDetails.groupExpirationDate.getUTCFullYear()}
-        </Text>
+        {bid.expirationDate && (
+          <Text variant="small" styles={descriptionTextStyles}>
+            Expiration Date: {bid.expirationDate.getUTCMonth() + 1}/
+            {bid.expirationDate.getUTCDate() + 1}/
+            {bid.expirationDate.getUTCFullYear()}
+          </Text>
+        )}
       </Card.Section>
       <Card.Section
         horizontalAlign="center"
@@ -61,7 +62,7 @@ export const ProductCard: React.FunctionComponent<ProductDetails> = (
         tokens={attendantsCardSectionTokens}
       >
         <Text variant="small" styles={amoutTextStyles}>
-          {17} Suplliers proposals
+          {17} Suppliers proposals
         </Text>
         <Text variant="small" styles={amoutTextStyles}>
           |
