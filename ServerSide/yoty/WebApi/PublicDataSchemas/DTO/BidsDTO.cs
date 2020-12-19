@@ -9,11 +9,11 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 
         public int PageSize { get; set; }
 
-        public int numberOfPages { get; set; }
+        public int NumberOfPages { get; set; }
 
         //value between 0 to n-1 when n = numberOfPages
         public int PageNumber { get; set; }
 
-        public List<BidDTO> bidsPage {get;set;}
+        public List<BidDTO> BidsPage {get;set;}
     }
 }
