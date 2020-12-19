@@ -3,14 +3,26 @@
 namespace YOTY.Service.WebApi.PublicDataSchemas
 {
     using System;
+    using Newtonsoft.Json;
 
     public class SupplierProposalRequest
     {
-        public string BidId { get; }
-        public string SupplierId { get; }
-        public DateTime PublishedTime { get; }
-        public int MinimumUnits { get; }
-        public double ProposedPrice { get; }
-        public string Description { get; }
+        [JsonProperty("bidId")]
+        public string BidId { get; set; }
+
+        [JsonProperty("supplierId")]
+        public string SupplierId { get; set; }
+
+        [JsonProperty("publishedTime")]
+        public DateTime PublishedTime { get; set; }
+
+        [JsonProperty("minimumUnits")]
+        public int MinimumUnits { get; set; }
+
+        [JsonProperty("proposedPrice")]
+        public double ProposedPrice { get; set; }
+
+        [JsonProperty("description")]
+        public string Description { get; set; }
     }
 }

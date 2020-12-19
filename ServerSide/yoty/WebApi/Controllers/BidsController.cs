@@ -70,8 +70,7 @@ namespace YOTY.Service.WebApi.Controllers
                 return response.DTOObject;
             }
             // at the moment
-            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
-            
+            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);            
         }
 
         [HttpGet]
@@ -104,8 +103,12 @@ namespace YOTY.Service.WebApi.Controllers
         
         [HttpPost]
         [Route("{bidId}/Buyers")]
-        public async Task<ActionResult<BuyerDTO>> AddBuyer(BidBuyerJoinRequest bidBuyerJoinRequest)
+        public async Task<ActionResult<BuyerDTO>> AddBuyer(string bidId, BidBuyerJoinRequest bidBuyerJoinRequest)
         {
+            if (bidBuyerJoinRequest.BidId == null)
+            {
+                bidBuyerJoinRequest.BidId = bidId;
+            }
 
             Response<BuyerDTO> response = await this.bidsManager.AddBuyer(bidBuyerJoinRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
@@ -117,9 +120,12 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpPost]
         [Route("{bidId}/Proposals")]
-        public async Task<ActionResult<SupplierProposalDTO>> AddSupplierProposal(SupplierProposalRequest supplierProposalRequest)
+        public async Task<ActionResult<SupplierProposalDTO>> AddSupplierProposal(string bidId, SupplierProposalRequest supplierProposalRequest)
         {
-
+            if (supplierProposalRequest.BidId == null)
+            {
+                supplierProposalRequest.BidId = bidId;
+            }
             Response<SupplierProposalDTO> response = await this.bidsManager.AddSupplierProposal(supplierProposalRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
@@ -129,7 +135,6 @@ namespace YOTY.Service.WebApi.Controllers
         }
 
         [HttpPut]
-        [Route("{bidId}")]
         public async Task<ActionResult<BidDTO>> EditBid(EditBidRequest editBidRequest)
         {
 
