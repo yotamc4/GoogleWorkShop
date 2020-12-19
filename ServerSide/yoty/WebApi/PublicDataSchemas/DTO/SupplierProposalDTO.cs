@@ -7,8 +7,6 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
     {
         public string BidId { get; set; }
 
-        public string SupplierName { get; set; }
-
         public string SupplierId { get; set; }
 
         public DateTime PublishedTime { get; set; }
