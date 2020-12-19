@@ -17,6 +17,11 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
   const cardTokens: ICardTokens = { childrenMargin: 12 };
   const agendaCardSectionTokens: ICardSectionTokens = { childrenGap: 0 };
   const attendantsCardSectionTokens: ICardSectionTokens = { childrenGap: 6 };
+
+  if (bid.id == undefined) {
+    return <div />;
+  }
+
   const imageProps: IImageProps = {
     src: bid.product?.image,
     imageFit: ImageFit.contain,

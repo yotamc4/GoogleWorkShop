@@ -8,21 +8,21 @@ export const ProductCardGrid: React.FunctionComponent<ProductCardGridProps> = ({
   bids,
 }) => {
   return (
-    <Stack>
+    <Stack styles={{ root: { minWidth: "60rem" } }}>
       <Stack horizontal tokens={genericGapStackTokens(20)}>
-        <ProductCard {...returnProductCardOrUndefined(bids[0])} />
-        <ProductCard {...returnProductCardOrUndefined(bids[1])} />
-        <ProductCard {...returnProductCardOrUndefined(bids[2])} />
+        <ProductCard {...bids[0]} />
+        <ProductCard {...bids[1]} />
+        <ProductCard {...bids[2]} />
       </Stack>
       <Stack horizontal tokens={genericGapStackTokens(20)}>
-        <ProductCard {...returnProductCardOrUndefined(bids[3])} />
-        <ProductCard {...returnProductCardOrUndefined(bids[4])} />
-        <ProductCard {...returnProductCardOrUndefined(bids[5])} />
+        <ProductCard {...bids[3]} />
+        <ProductCard {...bids[4]} />
+        <ProductCard {...bids[5]} />
       </Stack>
       <Stack horizontal tokens={genericGapStackTokens(20)}>
-        <ProductCard {...returnProductCardOrUndefined(bids[6])} />
-        <ProductCard {...returnProductCardOrUndefined(bids[7])} />
-        <ProductCard {...returnProductCardOrUndefined(bids[8])} />
+        <ProductCard {...bids[6]} />
+        <ProductCard {...bids[7]} />
+        <ProductCard {...bids[8]} />
       </Stack>
     </Stack>
   );
@@ -30,7 +30,4 @@ export const ProductCardGrid: React.FunctionComponent<ProductCardGridProps> = ({
 
 interface ProductCardGridProps {
   bids: Bid[];
-}
-function returnProductCardOrUndefined(bid: Bid) {
-  return bid ?? undefined;
 }
