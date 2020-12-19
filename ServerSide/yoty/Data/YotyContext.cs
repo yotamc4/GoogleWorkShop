@@ -13,9 +13,13 @@ namespace YOTY.Service.Data
         : base(options)
         {
         }
+        public YotyContext(){
+            //for testing
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            //for testing
             optionsBuilder.UseSqlServer(
                 "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData");
         }

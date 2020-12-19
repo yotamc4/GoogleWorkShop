@@ -12,6 +12,8 @@ namespace YOTY.Service.Data.Entities
 
         public string OfferDescription { get; set; }
 
+        public int VotesCounter { get; set; }
+
         //-----------------------------
         //Relationships
         [Required]
