@@ -12,15 +12,22 @@ import {
   Text,
   TextField,
   Image,
+  MessageBar,
+  MessageBarType,
+  Spinner,
 } from "@fluentui/react";
 import { CategoriesMap } from "../HomePage/Model/Categories";
+import { newProductRequest } from "../Modal/ProductDetails";
+import { NewBidRequest } from "../Modal/GroupDetails";
+import { submitNewGroupForm } from "../Services/BidsControllerService";
+import { useHistory } from "react-router";
 
 export const NewGroupBuyingForm: React.FunctionComponent = () => {
   const [productDetails, setProductDetails] = React.useReducer<
     (
-      prevState: Partial<ProductRequest>,
-      state: Partial<ProductRequest>
-    ) => ProductRequest
+      prevState: Partial<newProductRequest>,
+      state: Partial<newProductRequest>
+    ) => newProductRequest
   >(
     (prevState: any, state: any) => ({
       ...prevState,
@@ -58,6 +65,13 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
     SetAllRequiredFieldsAreFulfilled,
   ] = React.useState<boolean>(false);
 
+  const [requestInProcess, setRequestInProcess] = React.useState<boolean>(
+    false
+  );
+
+  const [errorMessage, setErrorMessage] = React.useState<string>();
+  const urlHistory = useHistory();
+
   React.useEffect(() => {
     const allRequiredFieldsAreFulfilledObjectTemp: boolean =
       Object.values(bidRequest).every((el) => el) &&
@@ -93,17 +107,16 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
 
   // TODO - Move the call to separate file (Services controllers)
   const onSubmitForm = async (): Promise<void> => {
-    const url = "https://localhost:5001/api/v1/Bids";
-    const options = {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json;",
-      },
-      body: JSON.stringify(bidRequest),
-    };
-
-    fetch(url, options).then((response) => {});
+    try {
+      setRequestInProcess(true);
+      await submitNewGroupForm(bidRequest);
+      urlHistory.push(`/`);
+    } catch {
+      setRequestInProcess(false);
+      setErrorMessage(
+        "An error occurred while trying to create your group. Please try again later."
+      );
+    }
   };
 
   return (
@@ -121,6 +134,14 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
         tokens={FormsStyles.verticalGapStackTokens}
       >
         <Separator styles={{ root: { width: "100%" } }} />
+        {errorMessage && (
+          <MessageBar
+            messageBarType={MessageBarType.error}
+            onDismiss={() => setErrorMessage("")}
+          >
+            {errorMessage}
+          </MessageBar>
+        )}
         <TextField
           id="Name"
           label="Product's name"
@@ -233,32 +254,19 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           styles={{ root: { margin: "auto" } }}
         >
           <DefaultButton text="Cancel" href={"/"} />
-          <PrimaryButton
-            text="Send"
-            onClick={onSubmitForm}
-            disabled={!allRequiredFieldsAreFulfilled}
-            href={`/`}
-          />
+          <Stack horizontal tokens={{ childrenGap: "1rem" }}>
+            {requestInProcess && <Spinner />}
+            <PrimaryButton
+              text="Send"
+              onClick={onSubmitForm}
+              disabled={!allRequiredFieldsAreFulfilled}
+            />
+          </Stack>
         </Stack>
       </Stack>
     </Stack>
   );
 };
-
-interface NewBidRequest {
-  OwnerId: string;
-  Category: string;
-  SubCategory: string;
-  ExpirationDate: Date | null | undefined;
-  MaxPrice: number;
-  Product: ProductRequest | undefined;
-}
-
-interface ProductRequest {
-  Name: string;
-  Image: string | undefined;
-  Description: string;
-}
 
 const DayPickerStrings: IDatePickerStrings = {
   months: [
