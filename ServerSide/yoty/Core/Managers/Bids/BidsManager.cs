@@ -431,7 +431,6 @@ namespace YOTY.Service.Core.Managers.Bids
             return true;
         }
 
-        private string getSuccessMessage([CallerMemberName] string callerName = "")
         private ProductEntity FindExistingProduct(ProductRequest productRequest)
         {
             var Products = _context.Set<ProductEntity>();
