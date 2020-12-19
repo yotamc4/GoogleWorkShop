@@ -104,7 +104,7 @@ namespace YOTY.Service.Core.Managers.Bids
             throw new NotImplementedException();
         }
 
-        public Task<Response<List<BidDTO>>> GetBids(BidsQueryOptions bidsFilters)
+        public Task<Response<BidsDTO>> GetBids(BidsQueryOptions bidsFilters)
         {
             throw new NotImplementedException();
         }
