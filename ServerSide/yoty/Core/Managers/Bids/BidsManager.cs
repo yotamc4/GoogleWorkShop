@@ -85,7 +85,7 @@ namespace YOTY.Service.Core.Managers.Bids
             return new Response<SupplierProposalDTO>() { DTOObject = supplier_dto, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
-        public async Task<Response<BidDTO>> CreateNewBid(NewBidRequst bidRequest)
+        public async Task<Response<BidDTO>> CreateNewBid(NewBidRequest bidRequest)
         {
             BidEntity bidEntity = _mapper.Map<BidEntity>(bidRequest);
             //TODO is this the time we want? (or global).

@@ -43,7 +43,7 @@ namespace YOTY.Service.WebApi.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<BidDTO>> PostNewBid(NewBidRequst bid)
+        public async Task<ActionResult<BidDTO>> PostNewBid(NewBidRequest bid)
         {
             Response<BidDTO> response = await this.bidsManager.CreateNewBid(bid).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
