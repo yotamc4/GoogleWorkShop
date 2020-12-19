@@ -37,7 +37,7 @@ ProductRequest Product { get; set; }
         [JsonProperty("expirationDate")]
         public DateTime ExpirationDate { get; set; }
 
-        [JsonProperty("Product")]
+        [JsonProperty("product")]
         public ProductRequest Product { get; set; }
     }
 }
