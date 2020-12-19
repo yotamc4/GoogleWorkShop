@@ -19,7 +19,7 @@ DateTime ExpirationDate { get; set; }
 ProductRequest Product { get; set; }
 }
 */
-    public class NewBidRequst
+    public class NewBidRequest
     {
         [JsonProperty("ownerId")]
         public string OwnerId { get; set; }

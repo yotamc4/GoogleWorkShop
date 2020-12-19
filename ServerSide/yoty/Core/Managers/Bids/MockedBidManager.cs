@@ -31,7 +31,7 @@ namespace YOTY.Service.Core.Managers.Bids
             throw new NotImplementedException();
         }
 
-        public async Task<Response<BidDTO>> CreateNewBid(NewBidRequst bidRquest)
+        public async Task<Response<BidDTO>> CreateNewBid(NewBidRequest bidRquest)
         {
             // create
             BidEntity bidEnitity = _mapper.Map<BidEntity>(bidRquest);
@@ -104,12 +104,17 @@ namespace YOTY.Service.Core.Managers.Bids
             throw new NotImplementedException();
         }
 
-        public Task<Response<BidsDTO>> GetBids(BidsQueryOptions bidsFilters)
+        public Task<Response<List<BidDTO>>> GetBids(BidsQueryOptions bidsFilters)
         {
             throw new NotImplementedException();
         }
 
         public Task<Response<List<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<Response<BidsDTO>> IBidsManager.GetBids(BidsQueryOptions bidsFilters)
         {
             throw new NotImplementedException();
         }
