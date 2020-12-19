@@ -9,7 +9,7 @@ namespace YOTY.Service.Core.Managers.Bids
     public interface IBidsManager
     {
         // create bid
-        Task<Response<BidDTO>> CreateNewBid(NewBidRequst productBid);
+        Task<Response<BidDTO>> CreateNewBid(NewBidRequest productBid);
 
         // get bid details
         Task<Response<BidDTO>> GetBid(string bidId);

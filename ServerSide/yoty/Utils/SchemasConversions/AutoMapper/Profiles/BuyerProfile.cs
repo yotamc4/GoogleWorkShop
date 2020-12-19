@@ -5,12 +5,12 @@ using YOTY.Service.WebApi.PublicDataSchemas;
 
 namespace YOTY.Service.Utils.SchemasConversions.AutoMapper.Profiles
 {
-    public class BidProfile: Profile
+    public class BuyerProfile : Profile
     {
-        public BidProfile()
+        public BuyerProfile()
         {
-            CreateMap<BidEntity, BidDTO>(MemberList.Destination);
-            CreateMap<NewBidRequest, BidEntity>(MemberList.Source);
+            CreateMap<BuyerEntity, BuyerDTO>(MemberList.Destination);
+            CreateMap<NewBuyerRequest, BuyerEntity>(MemberList.Source);
         }
     }
 }
