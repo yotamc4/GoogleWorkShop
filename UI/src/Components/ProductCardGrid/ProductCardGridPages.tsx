@@ -1,53 +1,56 @@
 import * as React from "react";
 import { Pagination } from "@material-ui/lab";
 
+import * as BidsControllerService from "../../Services/BidsControllerService";
 import { ArrayOfMockProducts } from "../../Modal/MockProducts";
 import { ProductDetails } from "../../Modal/ProductDetails";
-import { ProductPage } from "../../ProductPage/ProductPage";
 import { ProductCardGrid } from "./ProductCardGrid";
 import { Spinner, Stack } from "@fluentui/react";
 import { genericGapStackTokens } from "./ProductCardGridStyles";
+import { Bid } from "../../Modal/GroupDetails";
 
-export const ProductCardGridPages: React.FunctionComponent<ProductCardGridPagesPros> = (
-  props
-) => {
-  const [currentPageNumber, setCurrentPageNumber] = React.useState<number>(1);
-  const [currentProducts, setCurrentProducts] = React.useState<
-    ProductDetails[]
-  >();
+export const ProductCardGridPages: React.FunctionComponent<ProductCardGridPagesPros> = React.memo(
+  (props) => {
+    const [currentPageNumber, setCurrentPageNumber] = React.useState<number>(1);
+    const [currentBids, setCurrentBids] = React.useState<Bid[]>();
 
-  //TODO - We need to fetch the number of Pages from the BEPagination
-  const [numberOfPages, setNumberOfPages] = React.useState<number>(10);
+    //TODO - We need to fetch the number of Pages from the BEPagination
+    const [numberOfPages, setNumberOfPages] = React.useState<number>(10);
 
-  React.useEffect(() => {
-    async function updateCurrentProducts() {
-      const tempCurrentProducts: ProductDetails[] = await getCurrentProducts(
-        currentPageNumber
+    async function updateCurrentProductAndPageNumber() {
+      const getBidsResponse: BidsControllerService.GetBidsResponse = await BidsControllerService.getBids(
+        currentPageNumber - 1
       );
 
-      setCurrentProducts(tempCurrentProducts);
+      if (getBidsResponse.numberOfPages != numberOfPages) {
+        setNumberOfPages(getBidsResponse.numberOfPages);
+      }
+
+      setCurrentBids(getBidsResponse.bidsPage);
     }
 
-    updateCurrentProducts();
-  }, [currentPageNumber]);
+    React.useEffect(() => {
+      updateCurrentProductAndPageNumber();
+    }, [currentPageNumber]);
 
-  return (
-    <Stack horizontalAlign="center" tokens={genericGapStackTokens(20)}>
-      {currentProducts ? (
-        <ProductCardGrid {...{ productDetailsList: currentProducts }} />
-      ) : (
-        <Spinner />
-      )}
-      <Pagination
-        count={numberOfPages}
-        page={currentPageNumber}
-        onChange={(event, page) => {
-          setCurrentPageNumber(page);
-        }}
-      />
-    </Stack>
-  );
-};
+    return (
+      <Stack horizontalAlign="center" tokens={genericGapStackTokens(20)}>
+        {currentBids ? (
+          <ProductCardGrid {...{ bids: currentBids }} />
+        ) : (
+          <Spinner />
+        )}
+        <Pagination
+          count={numberOfPages}
+          page={currentPageNumber}
+          onChange={(event, page) => {
+            setCurrentPageNumber(page);
+          }}
+        />
+      </Stack>
+    );
+  }
+);
 
 interface ProductCardGridPagesPros {
   Category?: string;

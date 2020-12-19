@@ -8,10 +8,18 @@ export interface GroupDetails {
 }
 
 export interface NewBidRequest {
-  OwnerId: string;
-  Category: string;
-  SubCategory: string;
-  ExpirationDate: Date | null | undefined;
-  MaxPrice: number;
-  Product: newProductRequest | undefined;
+  ownerId: string;
+  category: string;
+  subCategory: string;
+  expirationDate: Date;
+  maxPrice: number;
+  product: newProductRequest | undefined;
+}
+
+export interface Bid extends NewBidRequest {
+  id: string;
+  ownerId: string;
+  potenialSuplliersCounter: number;
+  unitsCounter: number;
+  creationDate: Date;
 }
