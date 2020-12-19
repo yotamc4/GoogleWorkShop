@@ -1,39 +1,64 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import * as Styles from "./ProductPageStyles";
-import * as mockProducts from "../Modal/MockProducts";
 import * as MockBuyers from "../Modal/MockBuyers";
-import { useRouteMatch } from "react-router-dom";
 import {
   DefaultButton,
   FontIcon,
   Image,
   Separator,
+  Spinner,
+  SpinnerSize,
   Stack,
   Text,
 } from "@fluentui/react";
-import { SuppliersSection } from "./SupplierSection";
-import { ProductDetails } from "../Modal/ProductDetails";
-import { GroupDetails } from "../Modal/GroupDetails";
+import { SuppliersSection } from "./Suppliers/SupplierSection";
+import { BidDetails } from "../Modal/ProductDetails";
 import { useParams } from "react-router-dom";
 import { PaymentsTable } from "../PaymentTable/PaymentTable";
+import { ISupplierProposalRequest } from "./Suppliers/SupplierSection.interface";
 
-export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
-  mockProductId
-) => {
-  //TODO: delete those states not every data from the user should be
-  // state because most of the properties from the backend won't change in the productpage
-  const { id } = useParams<{ id: string }>();
-  const [productDetails, setProductDetails] = React.useState<ProductDetails>(
-    getMockProduct(id)
+export const ProductPage: React.FunctionComponent = () => {
+  const [numberOfParticipants, setnumberOfParticipants] = React.useState<
+    number
+  >(0);
+  const [
+    supplierProposalRequestList,
+    setsupplierProposalRequestList,
+  ] = React.useState<ISupplierProposalRequest[] | undefined>(undefined);
+  const [bidDetails, setBidDetails] = useState<BidDetails | undefined>(
+    undefined
   );
-  console.log(useRouteMatch());
+  const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
+  const { id } = useParams<{ id: string }>();
+  React.useEffect(() => {
+    axios
+      .all([
+        axios.get(`https://localhost:5001/api/v1/bids/${id}`),
+        axios.get(`https://localhost:5001/api/v1/bids/${id}/proposals`),
+      ])
+      .then(
+        axios.spread(
+          (bidDetailsResponse, supplierProposalRequestListResponse) => {
+            setBidDetails(bidDetailsResponse.data as BidDetails);
+            setnumberOfParticipants(bidDetailsResponse.data.unitsCounter);
+            setsupplierProposalRequestList(
+              supplierProposalRequestListResponse.data as ISupplierProposalRequest[]
+            );
+            setIsDataLoaded(true);
+          }
+        )
+      );
+  }, []);
 
-  const [groupDetails, setGroupDetails] = React.useState<GroupDetails>({
-    numberOfParticipants: 170,
-    groupExpirationDate: "",
-  });
+  //cunsome from the server needs to know that about the user
+  const [isJoinButtonCliked, setisJoinButtonCliked] = React.useState<number>(0);
 
-  return (
+  return !isDataLoaded ? (
+    <Stack horizontalAlign={"center"}>
+      <Spinner size={SpinnerSize.large} />
+    </Stack>
+  ) : (
     <Stack horizontalAlign={"center"}>
       <Stack
         horizontal
@@ -44,7 +69,7 @@ export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
         }}
       >
         <Image
-          src={productDetails.imageUrl}
+          src={bidDetails?.product.image}
           height="30rem"
           width="30rem"
         ></Image>
@@ -55,23 +80,33 @@ export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
           }}
         >
           <Text className="semiBold" variant="xLargePlus">
-            {productDetails.name}
+            {bidDetails?.product.name}
           </Text>
           <Separator />
           <Text styles={Styles.priceTextStyles}>
-            Maximum Acceptable Price: {productDetails.maximumAcceptablePrice}₪
+            Maximum Acceptable Price: {bidDetails?.maxPrice}₪
           </Text>
           <Text styles={Styles.subHeaderStyle}>
             Group's expiration date:{" "}
-            {productDetails.groupExpirationDate.getUTCMonth() + 1}/
-            {productDetails.groupExpirationDate.getUTCDate() + 1}/
-            {productDetails.groupExpirationDate.getUTCFullYear()}
+            {(new Date(
+              bidDetails?.expirationDate as string
+            ).getUTCMonth() as number) + 1}
+            /
+            {(new Date(
+              bidDetails?.expirationDate as string
+            ).getUTCDate() as number) + 1}
+            /
+            {
+              new Date(
+                bidDetails?.expirationDate as string
+              ).getUTCFullYear() as number
+            }
           </Text>
           <Text styles={Styles.subHeaderStyle} variant="large">
             Description
           </Text>
           <Text styles={Styles.descriptionStyle}>
-            {productDetails.description}
+            {bidDetails?.product.description}
           </Text>
           <Separator />
           <Stack horizontal verticalAlign="center">
@@ -80,12 +115,13 @@ export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
               className={Styles.classNames.greenYellow}
             />
             <Text styles={Styles.amoutTextStyles}>
-              {groupDetails.numberOfParticipants} pepole have joined to the
-              group
+              {numberOfParticipants} pepole have joined to the group
             </Text>
           </Stack>
           {new Date().getTime() <
-          productDetails.groupExpirationDate.getTime() ? (
+          (new Date(
+            bidDetails?.expirationDate as string
+          ).getUTCMonth() as number) ? (
             <DefaultButton
               text="Join The Group"
               primary
@@ -110,7 +146,7 @@ export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
       </Stack>
       <Stack horizontalAlign="center">
         <Separator />
-        {productDetails.supplierHasChosen ? (
+        {false ? (
           <PaymentsTable
             payers={[
               MockBuyers.Adi,
@@ -121,36 +157,12 @@ export const ProductPage: React.FunctionComponent<{ mockProductId: number }> = (
           />
         ) : (
           <SuppliersSection
-            requestedItems={groupDetails.numberOfParticipants}
-            groupExpirationDate={productDetails.groupExpirationDate}
+            supplierProposalRequestList={supplierProposalRequestList}
+            numberOfParticipants={numberOfParticipants as number}
+            expirationDate={bidDetails?.expirationDate as string}
           />
         )}
       </Stack>
     </Stack>
   );
 };
-
-function getMockProduct(id: string | undefined): ProductDetails {
-  switch (id) {
-    case "1":
-      return mockProducts.AirPodsProProduct;
-    case "2":
-      return mockProducts.AppleWatchSeries6GPSProduct;
-    case "3":
-      return mockProducts.GooglePixelProduct;
-    case "4":
-      return mockProducts.InokimMini2WhiteProduct;
-    case "5":
-      return mockProducts.LenovoThinkPadProduct;
-    case "6":
-      return mockProducts.MicrosoftSurfacePro7Product;
-    case "7":
-      return mockProducts.PowerbeatsProRedProduct;
-    case "8":
-      return mockProducts.SamsungUN70TU6980FXZAProduct;
-    case "9":
-      return mockProducts.SonyPlaystation5DigitalProduct;
-    default:
-      return mockProducts.XiaomiMiBoxProduct;
-  }
-}
