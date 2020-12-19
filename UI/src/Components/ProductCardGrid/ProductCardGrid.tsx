@@ -1,36 +1,36 @@
 import { Stack } from "@fluentui/react";
 import * as React from "react";
 import { ProductCard } from "../../HomePage/ProductCard/ProductCard";
-import { ProductDetails } from "../../Modal/ProductDetails";
+import { Bid } from "../../Modal/GroupDetails";
 import { genericGapStackTokens } from "./ProductCardGridStyles";
 
 export const ProductCardGrid: React.FunctionComponent<ProductCardGridProps> = ({
-  productDetailsList,
+  bids,
 }) => {
   return (
     <Stack>
       <Stack horizontal tokens={genericGapStackTokens(20)}>
-        <ProductCard {...returnProductCardOrUndefined(productDetailsList[0])} />
-        <ProductCard {...returnProductCardOrUndefined(productDetailsList[1])} />
-        <ProductCard {...returnProductCardOrUndefined(productDetailsList[2])} />
+        <ProductCard {...returnProductCardOrUndefined(bids[0])} />
+        <ProductCard {...returnProductCardOrUndefined(bids[1])} />
+        <ProductCard {...returnProductCardOrUndefined(bids[2])} />
       </Stack>
       <Stack horizontal tokens={genericGapStackTokens(20)}>
-        <ProductCard {...returnProductCardOrUndefined(productDetailsList[3])} />
-        <ProductCard {...returnProductCardOrUndefined(productDetailsList[4])} />
-        <ProductCard {...returnProductCardOrUndefined(productDetailsList[5])} />
+        <ProductCard {...returnProductCardOrUndefined(bids[3])} />
+        <ProductCard {...returnProductCardOrUndefined(bids[4])} />
+        <ProductCard {...returnProductCardOrUndefined(bids[5])} />
       </Stack>
       <Stack horizontal tokens={genericGapStackTokens(20)}>
-        <ProductCard {...returnProductCardOrUndefined(productDetailsList[6])} />
-        <ProductCard {...returnProductCardOrUndefined(productDetailsList[7])} />
-        <ProductCard {...returnProductCardOrUndefined(productDetailsList[8])} />
+        <ProductCard {...returnProductCardOrUndefined(bids[6])} />
+        <ProductCard {...returnProductCardOrUndefined(bids[7])} />
+        <ProductCard {...returnProductCardOrUndefined(bids[8])} />
       </Stack>
     </Stack>
   );
 };
 
 interface ProductCardGridProps {
-  productDetailsList: ProductDetails[];
+  bids: Bid[];
 }
-function returnProductCardOrUndefined(productDetails: ProductDetails) {
-  return productDetails ?? undefined;
+function returnProductCardOrUndefined(bid: Bid) {
+  return bid ?? undefined;
 }
