@@ -9,3 +9,9 @@ export interface ProductDetails {
   mockId: number;
   supplierHasChosen?: boolean;
 }
+
+export interface newProductRequest {
+  Name: string;
+  Image: string | undefined;
+  Description: string;
+}
