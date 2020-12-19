@@ -54,6 +54,7 @@ namespace YOTY.Service.WebApi.Controllers
         }
 
         [HttpGet]
+        [Route("{bidId}")]
         public async Task<ActionResult<BidDTO>> GetBid(string bidId)
         {
             /*
