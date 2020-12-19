@@ -29,6 +29,6 @@ namespace YOTY.Service.Core.Managers.Bids
         Task<Response> DeleteBid(string bidId);
 
         // get bids
-        Task<Response<List<BidDTO>>> GetBids(BidsQueryOptions bidsFilters);
+        Task<Response<BidsDTO>> GetBids(BidsQueryOptions bidsFilters);
     }
 }
