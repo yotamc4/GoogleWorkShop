@@ -11,7 +11,7 @@ export interface ProductDetails {
 }
 
 export interface newProductRequest {
-  Name: string;
-  Image: string | undefined;
-  Description: string;
+  name: string;
+  image: string | undefined;
+  description: string;
 }
