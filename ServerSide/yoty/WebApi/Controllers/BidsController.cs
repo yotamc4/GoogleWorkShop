@@ -119,7 +119,7 @@ namespace YOTY.Service.WebApi.Controllers
         }
 
         [HttpPost]
-        [Route("{bidId}/Proposals")]
+        [Route("{bidId}/proposals")]
         public async Task<ActionResult<SupplierProposalDTO>> AddSupplierProposal(string bidId, SupplierProposalRequest supplierProposalRequest)
         {
             if (supplierProposalRequest.BidId == null)
