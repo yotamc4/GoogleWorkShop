@@ -2,15 +2,17 @@
 
 namespace YOTY.Service.WebApi.PublicDataSchemas
 {
-    using Microsoft.AspNetCore.Mvc;
+    using Newtonsoft.Json;
 
     public class BidBuyerJoinRequest
     {
-        public string buyerId { get; set; }
+        [JsonProperty("buyerId")]
+        public string BuyerId { get; set; }
 
-        [FromRoute]
-        public string bidId { get; set; }
+        [JsonProperty("bidId")]
+        public string BidId { get; set; }
 
+        [JsonProperty("items")]
         public int Items { get; set; }
     }
 }
