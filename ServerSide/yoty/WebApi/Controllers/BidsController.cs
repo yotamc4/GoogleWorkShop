@@ -90,7 +90,7 @@ namespace YOTY.Service.WebApi.Controllers
         [Route("{bidId}/proposals")]
         public async Task<ActionResult<List<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId)
         {
-            Response<List<SupplierProposalDTO>> response = await this.bidsManager.GetBidSuplliersProposals(bidId).ConfigureAwait(false);
+            Response<List<SupplierProposalDTO>> response = await bidsManager.GetBidSuplliersProposals(bidId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
                 return response.DTOObject;
@@ -99,10 +99,8 @@ namespace YOTY.Service.WebApi.Controllers
             return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
         }
 
-
-        
         [HttpPost]
-        [Route("{bidId}/Buyers")]
+        [Route("{bidId}/buyers")]
         public async Task<ActionResult<BuyerDTO>> AddBuyer(string bidId, BidBuyerJoinRequest bidBuyerJoinRequest)
         {
             if (bidBuyerJoinRequest.BidId == null)
@@ -148,7 +146,7 @@ namespace YOTY.Service.WebApi.Controllers
 
 
         [HttpDelete]
-        [Route("{bidId}/Buyers/{buyerId}")]
+        [Route("{bidId}/buyers/{buyerId}")]
         public async Task<ActionResult> DeleteBuyer(string bidId, string buyerId)
         {
 
@@ -164,7 +162,7 @@ namespace YOTY.Service.WebApi.Controllers
 
 
         [HttpDelete]
-        [Route("{bidId}/Proposals/{proposalId}")]
+        [Route("{bidId}/proposals/{proposalId}")]
         public async Task<ActionResult> DeleteSupplierProposal(string bidId, string proposalId)
         {
 
