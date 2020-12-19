@@ -13,3 +13,19 @@ export async function makePostRequest<T>(
 
   return await fetch(url, options);
 }
+
+export function buildUrlWithQueryParams(
+  stringUrl: string,
+  params: queryParamsObjectType
+): string {
+  const url: URL = new URL(stringUrl);
+  Object.keys(params).forEach((key) =>
+    url.searchParams.append(key, params[key])
+  );
+
+  return url.toString();
+}
+
+export interface queryParamsObjectType {
+  [queryName: string]: string;
+}
