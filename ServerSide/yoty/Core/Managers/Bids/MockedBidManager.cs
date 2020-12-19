@@ -21,12 +21,12 @@ namespace YOTY.Service.Core.Managers.Bids
             mockedBidsSet = new Dictionary<string, BidEntity>();
         }
 
-        public Task<Response<BuyerDTO>> AddBuyer(BidBuyerJoinRequest bidBuyerJoinRequest)
+        public Task<Response> AddBuyer(BidBuyerJoinRequest bidBuyerJoinRequest)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Response<SupplierProposalDTO>> AddSupplierProposal(SupplierProposalRequest supplierProposal)
+        public Task<Response> AddSupplierProposal(SupplierProposalRequest supplierProposal)
         {
             throw new NotImplementedException();
         }
@@ -110,6 +110,11 @@ namespace YOTY.Service.Core.Managers.Bids
         }
 
         public Task<Response<List<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<Response> IBidsManager.CreateNewBid(NewBidRequest productBid)
         {
             throw new NotImplementedException();
         }

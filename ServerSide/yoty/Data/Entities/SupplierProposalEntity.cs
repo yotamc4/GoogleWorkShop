@@ -12,6 +12,8 @@ namespace YOTY.Service.Data.Entities
 
         public string Description { get; set; }
 
+        public string SupplierName { get; set; }
+
         //-----------------------------
         //Relationships
         [Required]

@@ -10,9 +10,11 @@ namespace YOTY.Service.Data.Entities
 
         public string Name { get; set; }
 
-        public FacebookAccountEntity FacebookAccount { get; set; }
+        public string Email { get; set; }
 
-        public BuyerAccountDetailsEntity BuyerAccountDetails { get;set;}
+        // public FacebookAccountEntity FacebookAccount { get; set; }
+
+        // public BuyerAccountDetailsEntity BuyerAccountDetails { get;set;}
 
         public List<ParticipancyEntity> CurrentParticipancies { get; set; }
     }

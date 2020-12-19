@@ -1,9 +1,9 @@
 export interface BidDetails {
   id: string;
-  product: ProductDetails1;
+  product: newProductRequest;
   ownerId: string;
   category: number;
-  aubCategory: Date;
+  subCategory: string;
   maxPrice: string;
   creationDate: string;
   expirationDate: string;
@@ -11,10 +11,16 @@ export interface BidDetails {
   unitsCounter: number;
 }
 
-export interface ProductDetails1 {
+export interface ProductDetails {
   name: string;
-  image: string;
+  category: string;
+  subCategory: string;
+  maximumAcceptablePrice: number;
+  groupExpirationDate: Date;
+  imageUrl: string;
   description: string;
+  mockId: number;
+  supplierHasChosen?: boolean;
 }
 
 export interface newProductRequest {
