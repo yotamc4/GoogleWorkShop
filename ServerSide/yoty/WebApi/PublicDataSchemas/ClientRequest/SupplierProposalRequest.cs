@@ -12,6 +12,9 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 
         [JsonProperty("supplierId")]
         public string SupplierId { get; set; }
+        
+        [JsonProperty("supplierName")]
+        public string SupplierName { get; set; }
 
         [JsonProperty("publishedTime")]
         public DateTime PublishedTime { get; set; }

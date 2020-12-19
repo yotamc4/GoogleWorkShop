@@ -12,7 +12,7 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
         [JsonProperty("email")]
         public string Email { get; set; }
 
-        [JsonProperty("phoneNumber")]
-        public string PhoneNumber { get; set; }
+        // [JsonProperty("phoneNumber")]
+        // public string PhoneNumber { get; set; }
     }
 }

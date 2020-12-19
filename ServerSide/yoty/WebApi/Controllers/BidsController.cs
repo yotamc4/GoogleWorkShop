@@ -43,12 +43,12 @@ namespace YOTY.Service.WebApi.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<BidDTO>> PostNewBid(NewBidRequest bid)
+        public async Task<ActionResult> PostNewBid(NewBidRequest bid)
         {
-            Response<BidDTO> response = await this.bidsManager.CreateNewBid(bid).ConfigureAwait(false);
+            Response response = await this.bidsManager.CreateNewBid(bid).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
-                return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
+                return this.StatusCode(StatusCodes.Status201Created, response.SuccessOrFailureMessage);
             }
             return this.StatusCode(StatusCodes.Status403Forbidden, response.SuccessOrFailureMessage);
         }
@@ -101,33 +101,33 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpPost]
         [Route("{bidId}/buyers")]
-        public async Task<ActionResult<BuyerDTO>> AddBuyer(string bidId, BidBuyerJoinRequest bidBuyerJoinRequest)
+        public async Task<ActionResult> AddBuyer(string bidId, BidBuyerJoinRequest bidBuyerJoinRequest)
         {
             if (bidBuyerJoinRequest.BidId == null)
             {
                 bidBuyerJoinRequest.BidId = bidId;
             }
 
-            Response<BuyerDTO> response = await this.bidsManager.AddBuyer(bidBuyerJoinRequest).ConfigureAwait(false);
+            Response response = await this.bidsManager.AddBuyer(bidBuyerJoinRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
-                return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
+                return this.StatusCode(StatusCodes.Status201Created, response.SuccessOrFailureMessage);
             }
             return this.StatusCode(StatusCodes.Status304NotModified, response.SuccessOrFailureMessage);
         }
 
         [HttpPost]
         [Route("{bidId}/proposals")]
-        public async Task<ActionResult<SupplierProposalDTO>> AddSupplierProposal(string bidId, SupplierProposalRequest supplierProposalRequest)
+        public async Task<ActionResult> AddSupplierProposal(string bidId, SupplierProposalRequest supplierProposalRequest)
         {
             if (supplierProposalRequest.BidId == null)
             {
                 supplierProposalRequest.BidId = bidId;
             }
-            Response<SupplierProposalDTO> response = await this.bidsManager.AddSupplierProposal(supplierProposalRequest).ConfigureAwait(false);
+            Response response = await this.bidsManager.AddSupplierProposal(supplierProposalRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
-                return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
+                return this.StatusCode(StatusCodes.Status201Created, response.SuccessOrFailureMessage);
             }
             return this.StatusCode(StatusCodes.Status304NotModified, response.SuccessOrFailureMessage);
         }

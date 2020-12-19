@@ -13,7 +13,9 @@ namespace YOTY.Service.Data
         : base(options)
         {
         }
-
+        public YotyContext()
+        {
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(

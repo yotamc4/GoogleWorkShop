@@ -11,6 +11,8 @@ namespace YOTY.Service.Data.Entities
 
         public string Name { get; set; }
 
+        public string Email { get; set; }
+
         public double Rating { get; set; }
 
         public int ReviewsCounter { get; set; }
