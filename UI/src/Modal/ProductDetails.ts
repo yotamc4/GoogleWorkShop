@@ -3,7 +3,7 @@ export interface BidDetails {
   product: ProductDetails1;
   ownerId: string;
   category: number;
-  aubCategory: Date;
+  subCategory: string;
   maxPrice: string;
   creationDate: string;
   expirationDate: string;
@@ -21,4 +21,16 @@ export interface newProductRequest {
   Name: string;
   Image: string | undefined;
   Description: string;
+}
+
+export interface ProductDetails {
+  name: string;
+  category: string;
+  subCategory: string;
+  maximumAcceptablePrice: number;
+  groupExpirationDate: Date;
+  imageUrl: string;
+  description: string;
+  mockId: number;
+  supplierHasChosen?: boolean;
 }
