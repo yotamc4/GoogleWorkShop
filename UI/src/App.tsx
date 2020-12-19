@@ -7,7 +7,7 @@ import { Route, Switch } from "react-router-dom";
 import { NewGroupBuyingForm } from "./NewGroupBuyingForm/NewGroupBuyingForm";
 import { ProductPage } from "./ProductPage/ProductPage";
 import { UserProfile } from "./UserProfile/UserProfile";
-import { SuppliersSurvey } from "./ProductPage/SupplierSurvey";
+import { SuppliersSurvey } from "./ProductPage/Suppliers/SupplierSurvey";
 
 initializeIcons();
 

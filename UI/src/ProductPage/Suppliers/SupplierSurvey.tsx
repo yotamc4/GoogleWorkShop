@@ -11,11 +11,11 @@ import {
   verticalGapStackTokens,
 } from "./SupplierSurveyStyles";
 
-export interface ISuppliersNamesList {
-  supliersNames: IChoiceGroupOption[];
+export interface ISuppliersSurveyProps {
+  supliersNames: IChoiceGroupOption[] | undefined;
 }
 
-export const SuppliersSurvey: React.FunctionComponent<ISuppliersNamesList> = ({
+export const SuppliersSurvey: React.FunctionComponent<ISuppliersSurveyProps> = ({
   supliersNames,
 }) => {
   const [selectedKey, setSelectedKey] = React.useState<string>();
