@@ -4,13 +4,15 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 {
     public class SupplierDTO
     {
-        string Id { get; set; }
+        public string Id { get; set; }
 
-        string Name { get; set; }
+        public string Name { get; set; }
 
-        double Rating { get; set; }
+        public double Rating { get; set; }
 
-        int ReviewsCounter { get; set; }
+        public string Email { get; set; }
+
+        public int ReviewsCounter { get; set; }
     }
 }
 

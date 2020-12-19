@@ -29,7 +29,8 @@ namespace YOTY.Service.Core.Managers.Buyers
 
         public async Task<Response> DeleteBuyer(string buyerId)
         {
-            var buyer = await _context.Buyers.Where(b => b.Id == buyerId).Include(b => b.CurrentParticipancies).Include(b => b.BuyerAccountDetails).Include(b => b.FacebookAccount).FirstOrDefaultAsync().ConfigureAwait(false);
+            var buyer = await _context.Buyers.Where(b => b.Id == buyerId).Include(b => b.CurrentParticipancies).FirstOrDefaultAsync().ConfigureAwait(false);
+            //var buyer = await _context.Buyers.Where(b => b.Id == buyerId).Include(b => b.CurrentParticipancies).Include(b => b.BuyerAccountDetails).Include(b => b.FacebookAccount).FirstOrDefaultAsync().ConfigureAwait(false);
             if (buyer == null)
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BuyerNotFoundFailString };

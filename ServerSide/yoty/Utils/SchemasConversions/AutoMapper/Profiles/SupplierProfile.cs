@@ -10,7 +10,7 @@ namespace YOTY.Service.Utils.SchemasConversions.AutoMapper.Profiles
         public SupplierProfile()
         {
             CreateMap<SupplierEntity, SupplierDTO>(MemberList.Destination);
-            // TODO match fields and CreateMap<NewSupplierRequest, SupplierEntity>(MemberList.Source);
+            CreateMap<NewSupplierRequest, SupplierEntity>(MemberList.Source);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace YOTY.Service.Core.Managers.Bids
     public interface IBidsManager
     {
         // create bid
-        Task<Response<BidDTO>> CreateNewBid(NewBidRequest productBid);
+        Task<Response> CreateNewBid(NewBidRequest productBid);
 
         // get bid details
         Task<Response<BidDTO>> GetBid(string bidId);
@@ -17,10 +17,10 @@ namespace YOTY.Service.Core.Managers.Bids
         Task<Response<List<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId);
 
         // modify bid
-        Task<Response<BuyerDTO>> AddBuyer(BidBuyerJoinRequest bidBuyerJoinRequest);
+        Task<Response> AddBuyer(BidBuyerJoinRequest bidBuyerJoinRequest);
         Task<Response> DeleteBuyer(string bidId, string buyerId);
 
-        Task<Response<SupplierProposalDTO>> AddSupplierProposal(SupplierProposalRequest supplierProposal);
+        Task<Response> AddSupplierProposal(SupplierProposalRequest supplierProposal);
         Task<Response> DeleteSupplierProposal(string bidId, string supplierId);
 
         Task<Response<BidDTO>> EditBid(EditBidRequest editBidRequest);
