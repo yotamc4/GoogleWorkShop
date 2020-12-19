@@ -236,87 +236,87 @@ namespace YOTY.Service.Core.Managers.Bids
             bid_ent.CurrentParticipancies.ForEach(p => buyers.Add(_mapper.Map<BuyerDTO>(p.Buyer)));
             return new Response<List<BuyerDTO>>() { DTOObject = buyers, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
+        public async Task<Response<List<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId)
+        {
+            BidEntity bid_ent = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.CurrentProposals).FirstOrDefaultAsync().ConfigureAwait(false);
+            if (bid_ent == null)
+            {
+                return new Response<List<SupplierProposalDTO>>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
+            }
+            List<SupplierProposalDTO> proposals = new List<SupplierProposalDTO>();
+            foreach (SupplierProposalEntity proposal_ent in bid_ent.CurrentProposals)
+            {
+                proposals.Add(_mapper.Map<SupplierProposalDTO>(proposal_ent));
+            }
 
-        public async Task<Response<List<BidDTO>>> GetBids(BidsQueryOptions bidsFilters)
+            return new Response<List<SupplierProposalDTO>>() { DTOObject = proposals, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+        }
+
+        public async Task<Response<BidsDTO>> GetBids(BidsQueryOptions bidsFilters)
         {
 
             // firts category and sub category 
             // then 
-            if (bidsFilters.Category == null && bidsFilters.Search == null)
+            string bidsSearchString = bidsFilters.Search;
+            if (bidsFilters.Category == null && bidsSearchString == null)
             {
-                return this.GetDefaultHomePageBids(bidsFilters.Page);
+                return await this.GetDefaultHomePageBids(bidsFilters.Page);
             }
-            else if (!ValidateBidsFilters(bidsFilters, out string validationErorrString))
+            else if (!ValidateBidsFilters(bidsFilters, out string validationErrorString))
             {
-                return new Response<List<BidDTO>>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = validationErorrString };
+                return new Response<BidsDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = validationErrorString };
             }
             else // TODO : extract to sub methods
             {
-                IEnumerable<BidEntity> filteredBids = _context.Bids
-                    // filter by Categories
-                    .Where(bid => bid.Category == null ?
-                                true :
-                                bid.Category.Equals(bidsFilters.Category) &&
-                                (bidsFilters.SubCategory == null) ?
-                                    true :
-                                    bid.SubCategory != null && bid.SubCategory.Equals(bidsFilters.Category))
-                    //filter by prices
-                    .Where(bid => bidsFilters.MaxPrice < Int32.MaxValue ? bid.MaxPrice < bidsFilters.MaxPrice : true &&
-                            bidsFilters.MinPrice > 0 ? bid.MaxPrice > bidsFilters.MinPrice : true)
-                    // filter by query string
-                    .Where(bid => bid.Product.Name.Contains(bidsFilters.Search) || bid.Product.Description.Contains(bidsFilters.Search));
-                
-                //sort
-                IEnumerable<BidEntity> sortedBids;
-                BidsSortByOrder sortOrder = bidsFilters.SortOrder;
-                switch (bidsFilters.SortBy)
-                {
-                    case BidsSortByOptions.CreationDate:
-                        sortedBids = filteredBids.Sort(bid => bid.CreationDate, sortOrder);
-                        break;
-                    case BidsSortByOptions.ExpirationDate:
-                        sortedBids = filteredBids.Sort(bid => bid.ExpirationDate, sortOrder);
-                        break;
-                    case BidsSortByOptions.SupplierProposals:
-                        sortedBids = filteredBids.Sort(bid => bid.PotenialSuplliersCounter, sortOrder);
-                        break;
-                    case BidsSortByOptions.DemandedItems:
-                        sortedBids = filteredBids.Sort(bid => bid.UnitsCounter, sortOrder);
-                        break;
-                    case BidsSortByOptions.Price:
-                        sortedBids = filteredBids.Sort(bid => bid.MaxPrice, sortOrder);
-                        break;
-                    default:
-                        sortedBids = filteredBids.Sort(bid => bid.MaxPrice, sortOrder);
-                        break;
-                }
+                IQueryable<BidEntity> filteredBids = this.GetFilteredBids(bidsFilters);
+
+                IEnumerable<BidEntity> sortedBids = this.GetSortBids(filteredBids, bidsFilters.SortOrder , bidsFilters.SortBy);
 
                 // return page
                 int pageSize = bidsFilters.Limit == 0 || bidsFilters.Limit > _maxPageSize ? _pageDefaultSize : bidsFilters.Limit;
-
+  
                 var bidsPage = sortedBids
                     .Skip(bidsFilters.Page * pageSize)
                     .Take(pageSize)
                     .Select (bidEntity => _mapper.Map<BidDTO>(bidEntity))
                     .ToList();
 
-                return new Response<List<BidDTO>>() { DTOObject = bidsPage, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+                BidsDTO bidsDTO = new BidsDTO {
+                    PageNumber = bidsFilters.Page,
+                    NumberOfPages = (int)Math.Ceiling((double)sortedBids.Count() / pageSize),
+                    PageSize = pageSize,
+                    BidsPage = bidsPage,
+                };
+
+                return new Response<BidsDTO>() { DTOObject = bidsDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
 
             }
         }
 
-        private Response<List<BidDTO>> GetDefaultHomePageBids (int page)
+        private async Task<Response<BidsDTO>> GetDefaultHomePageBids (int page)
         {
-            List<BidDTO> bids =  _context.Bids
+            List<BidDTO> bidsTask = await _context.Bids
                 .OrderByDescending(bid => bid.UnitsCounter)
                 .OrderByDescending(bid => bid.PotenialSuplliersCounter)
                 .OrderBy(bid => bid.ExpirationDate)
                 .Skip(page * _pageDefaultSize)
                 .Take(_pageDefaultSize)
+                .Include(bidEntity => bidEntity.Product)
                 .Select(bidEntitiy => _mapper.Map<BidDTO>(bidEntitiy))
-                .ToList();
+                .ToListAsync().ConfigureAwait(false);
 
-            return new Response<List<BidDTO>>() { DTOObject = bids, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+            
+            int numberOfBids = await _context.Bids.CountAsync().ConfigureAwait(false);
+
+
+            BidsDTO bidsDTO = new BidsDTO {
+                PageNumber = page,
+                NumberOfPages = (int)Math.Ceiling((double)numberOfBids / _pageDefaultSize),
+                PageSize = _pageDefaultSize,
+                BidsPage = bidsTask,
+            };
+
+            return new Response<BidsDTO>() { DTOObject = bidsDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
         private bool  ValidateBidsFilters(BidsQueryOptions bidsFilters, out string validationErorrString)
@@ -341,25 +341,62 @@ namespace YOTY.Service.Core.Managers.Bids
             return true;
         }
 
-        public async Task<Response<List<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId)
-        {
-            BidEntity bid_ent = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.CurrentProposals).FirstOrDefaultAsync().ConfigureAwait(false);
-            if (bid_ent == null)
-            {
-                return new Response<List<SupplierProposalDTO>>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
-            }
-            List<SupplierProposalDTO> proposals = new List<SupplierProposalDTO>();
-            foreach(SupplierProposalEntity proposal_ent in bid_ent.CurrentProposals)
-            {
-                proposals.Add(_mapper.Map<SupplierProposalDTO>(proposal_ent));
-            }
-
-            return new Response<List<SupplierProposalDTO>>() { DTOObject = proposals, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
-        }
-
         private string getSuccessMessage([CallerMemberName] string callerName = "")
         {
             return $"{callerName} success";
         }
+        private static bool FilterByCategories(BidEntity bid, string category, string subCategory)
+        {
+            return category == null ?
+                        true :
+                        bid.Category.Equals(category) &&
+                        (subCategory == null) ?
+                            true :
+                            bid.SubCategory != null && bid.SubCategory.Equals(subCategory);
+        }
+        private static bool FilterByPrices(BidEntity bid, int maxPriceFilter, int minPriceFilter)
+        {
+            return
+                (maxPriceFilter < Int32.MaxValue) ? bid.MaxPrice < maxPriceFilter : true
+                &&
+                (minPriceFilter > 0) ? bid.MaxPrice > minPriceFilter : true;
+        }
+
+        private static bool FilterByQueryString(BidEntity bid, string queryString)
+        {
+            return
+                queryString == null ?
+                true :
+                bid.Product.Name.Contains(queryString) || bid.Product.Description.Contains(queryString);
+        }
+
+        private IQueryable<BidEntity> GetFilteredBids(BidsQueryOptions bidsFilters)
+        {
+            return _context.Bids
+                    .Where(bid => FilterByCategories(bid, bidsFilters.Category, bidsFilters.SubCategory))
+                    .Where(bid => FilterByPrices(bid, bidsFilters.MaxPrice, bidsFilters.MinPrice))
+                    .Include(bid => bid.Product)
+                    .Where(bid => FilterByQueryString(bid, bidsFilters.Search));
+        }
+
+        private IEnumerable<BidEntity> GetSortBids(IQueryable<BidEntity> bids, BidsSortByOrder sortOrder, BidsSortByOptions sortByyParameter)
+        {
+            switch (sortByyParameter)
+            {
+                case BidsSortByOptions.CreationDate:
+                    return bids.Sort(bid => bid.CreationDate, sortOrder);
+                case BidsSortByOptions.ExpirationDate:
+                    return bids.Sort(bid => bid.ExpirationDate, sortOrder);
+                case BidsSortByOptions.SupplierProposals:
+                    return bids.Sort(bid => bid.PotenialSuplliersCounter, sortOrder);
+                case BidsSortByOptions.DemandedItems:
+                    return bids.Sort(bid => bid.UnitsCounter, sortOrder);
+                case BidsSortByOptions.Price:
+                    return bids.Sort(bid => bid.MaxPrice, sortOrder);
+                default:
+                    return bids.Sort(bid => bid.MaxPrice, sortOrder);
+            }
+        }
+
     }
 }
