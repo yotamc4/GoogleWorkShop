@@ -1,4 +1,5 @@
 import {
+  FontWeights,
   IButtonStyles,
   IChoiceGroupStyles,
   IStackTokens,
@@ -29,4 +30,14 @@ export const defaultButtonVoteStyles: IButtonStyles = {
     marginLeft: "-10rem",
   },
   textContainer: { padding: "1rem", fontSize: "1.5rem" },
+};
+
+export const thankForYourVote: ITextStyles = {
+  root: {
+    fontSize: "1.2rem",
+    marginTop: "1rem",
+    color: "#8b002a",
+    fontWeight: FontWeights.semibold,
+    paddingBottom:"5rem"
+  },
 };
