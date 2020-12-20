@@ -28,3 +28,9 @@ export interface newProductRequest {
   image: string | undefined;
   description: string;
 }
+
+export interface BidBuyerJoinRequest {
+  buyerId: string;
+  bidId: string;
+  items: number;
+}
