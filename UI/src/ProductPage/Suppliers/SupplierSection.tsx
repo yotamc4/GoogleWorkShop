@@ -12,6 +12,9 @@ import {
   ISupplierProposalRequest,
   ISuppliersSectionProps,
 } from "./SupplierSection.interface";
+import { deleteIcon } from "./SupplierSectionStyles";
+import axios from "axios";
+import { useParams } from "react-router";
 
 export interface ISuppliersListState {
   items: ISupplierProposalRequest[];
@@ -51,9 +54,10 @@ _columns = [
     name: "Date",
     fieldName: "publishedTime",
     minWidth: 140,
-    maxWidth: 190,
+    maxWidth: 140,
     isResizable: true,
     className: classNames.fileIconCellDate,
+    styles: { cellTitle: { marginLeft: "0.4rem" } },
   },
   {
     key: "column6",
@@ -62,18 +66,19 @@ _columns = [
     minWidth: 150,
     maxWidth: 150,
     isResizable: true,
-    styles: { cellTitle: { marginLeft: "0.4rem" } },
+    className: classNames.fileIconCellProgressBar,
+    styles: { cellTitle: { marginLeft: "-0.8rem" } },
   },
   {
     key: "column7",
     name: "Description",
     fieldName: "description",
-    minWidth: 150,
-    maxWidth: 150,
+    minWidth: 100,
+    maxWidth: 100,
     isResizable: true,
     isMultiline: true,
     className: classNames.fileIconCellDescription,
-    styles: { cellTitle: { marginLeft: "1rem" } },
+    styles: { cellTitle: { marginLeft: "0.2rem" } },
   },
 ];
 
@@ -82,7 +87,13 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
   numberOfParticipants,
   expirationDate,
 }) => {
+  const { id } = useParams<{ id: string }>();
   const [open, setOpen] = React.useState(false);
+  //TODO: we should consume it from the context!!!!!
+  const [
+    isAddPropposalToSupplierListClicked,
+    setIsAddPropposalToSupplierListClicked,
+  ] = React.useState<boolean>(false);
   const [listItems, setListItems] = React.useState<
     ISupplierProposalRequest[] | undefined
   >(supplierProposalRequestList);
@@ -184,18 +195,53 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
       newSupplierProposalFormDetails,
       ...(listItems as ISupplierProposalRequest[]),
     ]);
+    setIsAddPropposalToSupplierListClicked(true);
   };
+
+  const deletePropposalFromSupplierList = () => {
+    axios
+      .delete(
+        //TODO: the buyerId should be taken from the context!
+        `https://localhost:5001/api/v1/bids/${id}/proposals/Istore@gmail.com`
+      )
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    //TODO: consume the supplier from the contextId!!!
+    const newListItems = listItems?.filter(
+      (proposal) => proposal.supplierId != "Istore@gmail.com"
+    );
+    setListItems(newListItems);
+  };
+
   return new Date().getTime() < new Date(expirationDate).getTime() ? (
     <Stack styles={stackStyles}>
-      <ActionButton
-        iconProps={addIcon}
-        allowDisabledFocus
-        disabled={false}
-        checked={false}
-        onClick={handleClickOpen}
-      >
-        Add a new Supplier proposal
-      </ActionButton>
+      {isAddPropposalToSupplierListClicked ? (
+        <Stack horizontal>
+          <ActionButton
+            iconProps={deleteIcon}
+            allowDisabledFocus
+            disabled={false}
+            checked={false}
+            onClick={deletePropposalFromSupplierList}
+          >
+            Delete your supplier proposal
+          </ActionButton>
+        </Stack>
+      ) : (
+        <ActionButton
+          iconProps={addIcon}
+          allowDisabledFocus
+          disabled={false}
+          checked={false}
+          onClick={handleClickOpen}
+        >
+          Add a new Supplier proposal
+        </ActionButton>
+      )}
       <Dialog
         open={open}
         onClose={handleClose}

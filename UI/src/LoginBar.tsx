@@ -59,7 +59,7 @@ export default function ButtonAppBar() {
         />
       </StackItem>
       <Stack>
-        <Separator theme={theme} styles={{ content: { width: "69rem" } }} />
+        <Separator theme={theme} styles={{ content: { width: "75rem" } }} />
         {picture == "" ? (
           <Stack horizontal horizontalAlign="space-between" styles={StacStyles}>
             <Label>Hello Guest!</Label>

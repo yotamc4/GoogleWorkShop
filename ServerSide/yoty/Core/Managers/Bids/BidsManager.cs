@@ -324,13 +324,14 @@ namespace YOTY.Service.Core.Managers.Bids
                 validationErorrString = $"Sub catergory has set to :{bidsFilters.SubCategory } while category is null";
                 return false;
             }
-
+            /*
             // should implement it smarter with creating categories table and with kind of index on it 
             if (!_context.Bids.Select(bid =>bid.Category).ToHashSet().Contains(demandedCategory))
             {
                 validationErorrString = $"Catergory has set to :{demandedCategory } while category is not exist in DB";
                 return false;
             }
+            */
             // should implemnt also table of Category-SubCategory with many to one relationship to vaildate....
 
             return true;
@@ -360,17 +361,14 @@ namespace YOTY.Service.Core.Managers.Bids
         private static bool FilterByPrices(BidEntity bid, int maxPriceFilter, int minPriceFilter)
         {
             return
-                (maxPriceFilter < Int32.MaxValue) ? bid.MaxPrice < maxPriceFilter : true
-                &&
-                (minPriceFilter > 0) ? bid.MaxPrice > minPriceFilter : true;
+                (maxPriceFilter < Int32.MaxValue) ? bid.MaxPrice < maxPriceFilter : false
+                ||
+                minPriceFilter <= 0 || bid.MaxPrice > minPriceFilter;
         }
 
         private static bool FilterByQueryString(BidEntity bid, string queryString)
         {
-            return
-                queryString == null ?
-                true :
-                bid.Product.Name.Contains(queryString) || bid.Product.Description.Contains(queryString);
+            return queryString == null || bid.Product.Name.Contains(queryString) || bid.Product.Description.Contains(queryString);
         }
 
         private IEnumerable<BidEntity> GetFilteredBids(BidsQueryOptions bidsFilters)
@@ -402,5 +400,46 @@ namespace YOTY.Service.Core.Managers.Bids
             }
         }
 
+        public async Task<Response> VoteForSupplier(VotingRequest votingRequest)
+        {
+            BidEntity bid = await _context.Bids.Where(b => b.Id == votingRequest.BidId).Include(b => b.CurrentProposals).Include(b => b.CurrentParticipancies).FirstOrDefaultAsync().ConfigureAwait(false);
+            if (bid == null)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
+            }
+
+            ParticipancyEntity participancy = bid.CurrentParticipancies.Where(p => p.BuyerId == votingRequest.BuyerId).FirstOrDefault();
+            if (participancy == null)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = $"Buyer {votingRequest.BuyerId} is not part of the bids buyers." };
+            }
+            else if (participancy.HasVoted)
+            {
+                // TODO enable change after vote
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = $"Buyer {votingRequest.BuyerId} has already voted" };
+            }
+
+            SupplierProposalEntity proposal = bid.CurrentProposals.Where(p => p.SupplierId == votingRequest.VotedSupplierId).FirstOrDefault();
+            if (proposal == null)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = $"no proposal for supplier: {votingRequest.VotedSupplierId} has found for the bid." };
+            }
+
+            participancy.HasVoted = true;
+            proposal.Votes += 1;
+
+            try
+            {
+                _context.Set<ParticipancyEntity>().Update(participancy);
+                _context.Set<SupplierProposalEntity>().Update(proposal);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
+            }
+
+            return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+        }
     }
 }
