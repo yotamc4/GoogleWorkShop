@@ -17,7 +17,7 @@ namespace YOTY.Service.Utils
 
         public static bool IsValidId(this string id)
         {
-            if (IsValidString(id) && Guid.TryParse(id, out Guid guidOutput)) {
+            if (IsValidString(id) /*&& Guid.TryParse(id, out Guid guidOutput)*/) {
                 return true;
             }
             return false;
