@@ -16,7 +16,7 @@ export const StacStyles2: IStackStyles = {
 export const StackItemStyles: IStackItemStyles = {
   root: {
     width: "7rem",
-    marginLeft: "28rem",
+    marginLeft: "32rem",
     marginTop: "-3rem",
     ":hover": { cursor: "pointer" },
   },
