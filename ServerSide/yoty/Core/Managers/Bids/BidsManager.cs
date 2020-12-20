@@ -263,7 +263,7 @@ namespace YOTY.Service.Core.Managers.Bids
             }
             else // TODO : extract to sub methods
             {
-                IQueryable<BidEntity> filteredBids = this.GetFilteredBids(bidsFilters);
+                IEnumerable<BidEntity> filteredBids = this.GetFilteredBids(bidsFilters);
 
                 IEnumerable<BidEntity> sortedBids = this.GetSortBids(filteredBids, bidsFilters.SortOrder , bidsFilters.SortBy);
 
@@ -278,7 +278,7 @@ namespace YOTY.Service.Core.Managers.Bids
 
                 BidsDTO bidsDTO = new BidsDTO {
                     PageNumber = bidsFilters.Page,
-                    NumberOfPages = (int)Math.Ceiling((double)sortedBids.Count() / pageSize),
+                    NumberOfPages = (int)Math.Ceiling((double)filteredBids.Count() / pageSize),
                     PageSize = pageSize,
                     BidsPage = bidsPage,
                 };
@@ -342,12 +342,20 @@ namespace YOTY.Service.Core.Managers.Bids
         }
         private static bool FilterByCategories(BidEntity bid, string category, string subCategory)
         {
-            return category == null ?
-                        true :
-                        bid.Category.Equals(category) &&
-                        (subCategory == null) ?
-                            true :
-                            bid.SubCategory != null && bid.SubCategory.Equals(subCategory);
+            if(category == null)
+            {
+                return true;
+            }
+            else if (bid.Category.Equals(category) && subCategory == null)
+            {
+                return true;
+            }
+            else if (bid.SubCategory != null)
+            {
+                return  bid.Category.Equals(category) && bid.SubCategory.Equals(subCategory);
+            }
+
+            return false;
         }
         private static bool FilterByPrices(BidEntity bid, int maxPriceFilter, int minPriceFilter)
         {
@@ -365,16 +373,17 @@ namespace YOTY.Service.Core.Managers.Bids
                 bid.Product.Name.Contains(queryString) || bid.Product.Description.Contains(queryString);
         }
 
-        private IQueryable<BidEntity> GetFilteredBids(BidsQueryOptions bidsFilters)
+        private IEnumerable<BidEntity> GetFilteredBids(BidsQueryOptions bidsFilters)
         {
             return _context.Bids
-                    .Where(bid => FilterByCategories(bid, bidsFilters.Category, bidsFilters.SubCategory))
-                    .Where(bid => FilterByPrices(bid, bidsFilters.MaxPrice, bidsFilters.MinPrice))
-                    .Include(bid => bid.Product)
-                    .Where(bid => FilterByQueryString(bid, bidsFilters.Search));
+                .Include(bid => bid.Product)
+                .AsEnumerable()
+                .Where(bid => FilterByCategories(bid, bidsFilters.Category, bidsFilters.SubCategory))
+                .Where(bid => FilterByPrices(bid, bidsFilters.MaxPrice, bidsFilters.MinPrice))
+                .Where(bid => FilterByQueryString(bid, bidsFilters.Search));                  
         }
 
-        private IEnumerable<BidEntity> GetSortBids(IQueryable<BidEntity> bids, BidsSortByOrder sortOrder, BidsSortByOptions sortByyParameter)
+        private IEnumerable<BidEntity> GetSortBids(IEnumerable<BidEntity> bids, BidsSortByOrder sortOrder, BidsSortByOptions sortByyParameter)
         {
             switch (sortByyParameter)
             {
