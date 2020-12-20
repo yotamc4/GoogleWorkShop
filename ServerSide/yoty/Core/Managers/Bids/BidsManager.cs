@@ -360,17 +360,14 @@ namespace YOTY.Service.Core.Managers.Bids
         private static bool FilterByPrices(BidEntity bid, int maxPriceFilter, int minPriceFilter)
         {
             return
-                (maxPriceFilter < Int32.MaxValue) ? bid.MaxPrice < maxPriceFilter : true
-                &&
-                (minPriceFilter > 0) ? bid.MaxPrice > minPriceFilter : true;
+                (maxPriceFilter < Int32.MaxValue) ? bid.MaxPrice < maxPriceFilter : false
+                ||
+                minPriceFilter <= 0 || bid.MaxPrice > minPriceFilter;
         }
 
         private static bool FilterByQueryString(BidEntity bid, string queryString)
         {
-            return
-                queryString == null ?
-                true :
-                bid.Product.Name.Contains(queryString) || bid.Product.Description.Contains(queryString);
+            return queryString == null || bid.Product.Name.Contains(queryString) || bid.Product.Description.Contains(queryString);
         }
 
         private IEnumerable<BidEntity> GetFilteredBids(BidsQueryOptions bidsFilters)

@@ -162,11 +162,11 @@ namespace YOTY.Service.WebApi.Controllers
 
 
         [HttpDelete]
-        [Route("{bidId}/proposals/{proposalId}")]
-        public async Task<ActionResult> DeleteSupplierProposal(string bidId, string proposalId)
+        [Route("{bidId}/proposals/{supplierId}")]
+        public async Task<ActionResult> DeleteSupplierProposal(string bidId, string supplierId)
         {
 
-            Response response = await this.bidsManager.DeleteSupplierProposal(bidId, proposalId).ConfigureAwait(false);
+            Response response = await this.bidsManager.DeleteSupplierProposal(bidId, supplierId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
