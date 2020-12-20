@@ -202,7 +202,7 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
     axios
       .delete(
         //TODO: the buyerId should be taken from the context!
-        `https://localhost:5001/api/v1/bids/${id}/proposals/Ivory`
+        `https://localhost:5001/api/v1/bids/${id}/proposals/Istore@gmail.com`
       )
       .then((response) => {
         console.log(response);
@@ -212,7 +212,7 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
       });
     //TODO: consume the supplier from the contextId!!!
     const newListItems = listItems?.filter(
-      (proposal) => proposal.supplierId != "1234"
+      (proposal) => proposal.supplierId != "Istore@gmail.com"
     );
     setListItems(newListItems);
   };

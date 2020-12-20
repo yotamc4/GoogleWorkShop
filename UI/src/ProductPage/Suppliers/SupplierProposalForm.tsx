@@ -53,14 +53,14 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
         publishedTime: String(date),
         bidId: id,
         supplierId: "1234",
-        supplierName: "Ivory",
+        supplierName: "Istore",
         ...formInputs,
       });
       //TODO: needs to consume from the context the bidId and the supplierId
       postSupplierPropposal({
         publishedTime: date,
         bidId: id,
-        supplierId: "Ksp",
+        supplierId: "Istore@gmail.com",
         ...formInputs,
       });
     }
