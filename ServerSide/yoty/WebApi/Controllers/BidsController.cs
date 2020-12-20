@@ -162,7 +162,7 @@ namespace YOTY.Service.WebApi.Controllers
 
 
         [HttpDelete]
-        [Route("{bidId}/proposals/{proposalId}")]
+        [Route("{bidId}/proposals/{supplierId}")]
         public async Task<ActionResult> DeleteSupplierProposal(string bidId, string supplierId)
         {
 
