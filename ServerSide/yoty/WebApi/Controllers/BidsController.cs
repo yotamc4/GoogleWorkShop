@@ -8,6 +8,7 @@ namespace YOTY.Service.WebApi.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Routing;
     using YOTY.Service.Core.Managers.Bids;
+    using YOTY.Service.Utils;
     using YOTY.Service.WebApi.PublicDataSchemas;
 
     // The controller has designed by the API best-practises doc here:https://hackernoon.com/restful-api-designing-guidelines-the-best-practices-60e1d954e7c9
@@ -162,11 +163,11 @@ namespace YOTY.Service.WebApi.Controllers
 
 
         [HttpDelete]
-        [Route("{bidId}/proposals/{proposalId}")]
-        public async Task<ActionResult> DeleteSupplierProposal(string bidId, string proposalId)
+        [Route("{bidId}/proposals/{supplierId}")]
+        public async Task<ActionResult> DeleteSupplierProposal(string bidId, string supplierId)
         {
 
-            Response response = await this.bidsManager.DeleteSupplierProposal(bidId, proposalId).ConfigureAwait(false);
+            Response response = await this.bidsManager.DeleteSupplierProposal(bidId, supplierId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
@@ -175,6 +176,25 @@ namespace YOTY.Service.WebApi.Controllers
 
             return this.StatusCode(StatusCodes.Status405MethodNotAllowed, response.SuccessOrFailureMessage);
         }
+
+        [HttpPost]
+        [Route("{bidId}/vote")]
+        public async Task<ActionResult> VoteForSupplier(VotingRequest votingRequest)
+        {
+            if (!votingRequest.BidId.IsValidId() || !votingRequest.BuyerId.IsValidId() || !votingRequest.VotedSupplierId.IsValidId())
+            {
+                return this.StatusCode(StatusCodes.Status400BadRequest, $"one of the follwing: bidId: {votingRequest.BidId}, buyerId: {votingRequest.BuyerId} supplierId: {votingRequest.VotedSupplierId} are not legal id");
+            }
+
+            Response response = await this.bidsManager.VoteForSupplier(votingRequest).ConfigureAwait(false);
+            if (response.IsOperationSucceeded)
+            {
+                return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
+            }
+
+            return this.StatusCode(StatusCodes.Status405MethodNotAllowed, response.SuccessOrFailureMessage);
+        }
+
 
         [HttpGet]
         [Route("Ping")]

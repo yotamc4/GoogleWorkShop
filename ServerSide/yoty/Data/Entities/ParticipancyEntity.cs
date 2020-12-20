@@ -7,6 +7,8 @@ namespace YOTY.Service.Data.Entities
     {
         public int NumOfUnits { get; set; }
 
+        public bool HasVoted { get; set; }
+
         //-----------------------------
         //Relationships
         [Required]
