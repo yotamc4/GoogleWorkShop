@@ -163,10 +163,10 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpDelete]
         [Route("{bidId}/proposals/{proposalId}")]
-        public async Task<ActionResult> DeleteSupplierProposal(string bidId, string proposalId)
+        public async Task<ActionResult> DeleteSupplierProposal(string bidId, string supplierId)
         {
 
-            Response response = await this.bidsManager.DeleteSupplierProposal(bidId, proposalId).ConfigureAwait(false);
+            Response response = await this.bidsManager.DeleteSupplierProposal(bidId, supplierId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
@@ -175,6 +175,29 @@ namespace YOTY.Service.WebApi.Controllers
 
             return this.StatusCode(StatusCodes.Status405MethodNotAllowed, response.SuccessOrFailureMessage);
         }
+
+        [HttpPost]
+        [Route("{bidId}/vote")]
+        public async Task<ActionResult> VoteForSupplier(VotingRequest votingRequest)
+        {
+            if (votingRequest.BidId == null || votingRequest.BuyerId == null)
+            {
+                return this.StatusCode(StatusCodes.Status400BadRequest, $"bidId: {votingRequest.BidId} and buyerId{votingRequest.BuyerId} can't be null");
+            }
+            else if (votingRequest.VotedSuppliersIds?.Length == 0 )
+            {
+                return this.StatusCode(StatusCodes.Status400BadRequest, $"VotedSuppliersIds: null or empty");
+            }
+
+            Response response = await this.bidsManager.VoteForSupplier(votingRequest).ConfigureAwait(false);
+            if (response.IsOperationSucceeded)
+            {
+                return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
+            }
+
+            return this.StatusCode(StatusCodes.Status405MethodNotAllowed, response.SuccessOrFailureMessage);
+        }
+
 
         [HttpGet]
         [Route("Ping")]

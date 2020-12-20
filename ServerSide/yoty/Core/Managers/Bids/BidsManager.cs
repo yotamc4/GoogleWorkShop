@@ -402,5 +402,21 @@ namespace YOTY.Service.Core.Managers.Bids
             }
         }
 
+        public async Task<Response> VoteForSupplier(VotingRequest votingRequest)
+        {
+            BidEntity bid = await _context.Bids.Where(b => b.Id == votingRequest.BidId).Include(b => b.CurrentProposals).FirstOrDefaultAsync().ConfigureAwait(false);
+            if (bid == null)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
+            }
+
+            IEnumerable<SupplierProposalEntity> propsalsToUpdate = bid.CurrentProposals.Where(propsal => votingRequest.VotedSuppliersIds.Contains(propsal.SupplierId));
+            foreach (SupplierProposalEntity proposal in propsalsToUpdate)
+            {
+                proposal.Votes += 1;
+            }
+
+            return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+        }
     }
 }
