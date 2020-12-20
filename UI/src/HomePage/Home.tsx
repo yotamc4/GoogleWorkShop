@@ -9,7 +9,7 @@ import {
 } from "@fluentui/react";
 
 import { NavigationPane } from "./NavigationPane/NavigationPane";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import { ProductCardGridPages } from "../Components/ProductCardGrid/ProductCardGridPages";
 import { AuthContextProvider } from "../Context/AuthContext";
 import {
@@ -26,7 +26,10 @@ const imagePropsSubLogo: IImageProps = {
 
 export const Home: React.FunctionComponent = () => {
   const history = useHistory();
+  const location = useLocation();
 
+  //The home component is also been used for the categories and subCategories view
+  const isHomePage: boolean = location.pathname === "/";
   const changeHistory = () => {
     history.push("/createNewGroup");
   };
@@ -35,7 +38,9 @@ export const Home: React.FunctionComponent = () => {
     <AuthContextProvider>
       <Stack tokens={verticalGapStackTokens}>
         <Stack horizontal horizontalAlign="center">
-          <Image {...imagePropsSubLogo} width="71rem" height="20rem" />
+          {isHomePage && (
+            <Image {...imagePropsSubLogo} width="71rem" height="20rem" />
+          )}
         </Stack>
         <Stack tokens={genericGapStackTokens(20)}>
           <Stack
@@ -58,8 +63,12 @@ export const Home: React.FunctionComponent = () => {
               placeholder="Search for group"
             />
           </Stack>
-          <Stack horizontal horizontalAlign="center">
-            <Stack tokens={{ childrenGap: 5 }}>
+          <Stack
+            horizontal
+            horizontalAlign="center"
+            tokens={{ childrenGap: "2rem" }}
+          >
+            <Stack tokens={{ childrenGap: "5rem" }}>
               <NavigationPane />
             </Stack>
             <ProductCardGridPages />

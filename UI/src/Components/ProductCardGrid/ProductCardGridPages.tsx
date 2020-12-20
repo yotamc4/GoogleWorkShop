@@ -2,24 +2,29 @@ import * as React from "react";
 import { Pagination } from "@material-ui/lab";
 
 import * as BidsControllerService from "../../Services/BidsControllerService";
-import { ArrayOfMockProducts } from "../../Modal/MockProducts";
-import { ProductDetails } from "../../Modal/ProductDetails";
 import { ProductCardGrid } from "./ProductCardGrid";
 import { Spinner, Stack } from "@fluentui/react";
 import { genericGapStackTokens } from "./ProductCardGridStyles";
 import { Bid } from "../../Modal/GroupDetails";
+import { useLocation, useParams } from "react-router-dom";
 
 export const ProductCardGridPages: React.FunctionComponent<ProductCardGridPagesPros> = React.memo(
   (props) => {
     const [currentPageNumber, setCurrentPageNumber] = React.useState<number>(1);
     const [currentBids, setCurrentBids] = React.useState<Bid[]>();
+    const [numberOfPages, setNumberOfPages] = React.useState<number>(1);
+    const category = React.useRef<string | null>(null);
+    const subCategory = React.useRef<string | null>(null);
 
-    //TODO - We need to fetch the number of Pages from the BEPagination
-    const [numberOfPages, setNumberOfPages] = React.useState<number>(10);
+    const searchParams = new URLSearchParams(useLocation().search);
+    category.current = searchParams.get("category");
+    subCategory.current = searchParams.get("subCategory");
 
     async function updateCurrentProductAndPageNumber() {
       const getBidsResponse: BidsControllerService.GetBidsResponse = await BidsControllerService.getBids(
-        currentPageNumber - 1
+        currentPageNumber - 1,
+        category.current,
+        subCategory.current
       );
 
       if (getBidsResponse.numberOfPages != numberOfPages) {
@@ -31,7 +36,7 @@ export const ProductCardGridPages: React.FunctionComponent<ProductCardGridPagesP
 
     React.useEffect(() => {
       updateCurrentProductAndPageNumber();
-    }, [currentPageNumber]);
+    }, [currentPageNumber, category.current, subCategory.current]);
 
     return (
       <Stack horizontalAlign="center" tokens={genericGapStackTokens(20)}>
@@ -55,14 +60,4 @@ export const ProductCardGridPages: React.FunctionComponent<ProductCardGridPagesP
 interface ProductCardGridPagesPros {
   Category?: string;
   SubCategory?: string;
-}
-
-// TODO - We need to implement a function that fetch from the BE the matching product according
-// To the function's arguments
-async function getCurrentProducts(
-  pageNumber: number,
-  category?: string,
-  subCategory?: string
-): Promise<ProductDetails[]> {
-  return ArrayOfMockProducts;
 }
