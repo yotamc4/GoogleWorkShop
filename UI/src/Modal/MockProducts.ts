@@ -91,7 +91,7 @@ export const MicrosoftSurfacePro7Product: ProductDetails = {
 export const InokimMini2WhiteProduct: ProductDetails = {
   mockId: 4,
   name: "Inokim Mini 2 - White",
-  category: "Transportations",
+  category: "Transportation",
   subCategory: "Electronic scooters",
   maximumAcceptablePrice: 1700,
   groupExpirationDate: new Date(2020, 10, 26, 0, 0, 0, 0),

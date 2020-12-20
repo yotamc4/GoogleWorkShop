@@ -25,6 +25,10 @@ const imagePropsSubLogo: IImageProps = {
 };
 
 export const Home: React.FunctionComponent = () => {
+  const [showWelcomeBanner, setShowWelcomeBanner] = React.useState<boolean>(
+    true
+  );
+
   const history = useHistory();
   const location = useLocation();
 
@@ -34,11 +38,17 @@ export const Home: React.FunctionComponent = () => {
     history.push("/createNewGroup");
   };
 
+  React.useEffect(() => {
+    setTimeout(() => {
+      setShowWelcomeBanner(false);
+    }, 15000);
+  });
+
   return (
     <AuthContextProvider>
       <Stack tokens={verticalGapStackTokens}>
         <Stack horizontal horizontalAlign="center">
-          {isHomePage && (
+          {isHomePage && showWelcomeBanner && (
             <Image {...imagePropsSubLogo} width="71rem" height="20rem" />
           )}
         </Stack>
