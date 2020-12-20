@@ -3,12 +3,12 @@ import { Nav, INavLinkGroup } from "office-ui-fabric-react/lib/Nav";
 import { INavLink, Label, Stack, Text } from "@fluentui/react";
 import { CategoriesMap } from "../Model/Categories";
 import { boldStyle } from "../../TextStyles";
+import { useHistory } from "react-router-dom";
 
-function createINavLinkFromString(name: string): INavLink {
+function createINavLinkFromString(name: string, parentName: string): INavLink {
   return {
     name: name,
-    url: `http://example.com/${name}`,
-    target: "_blank",
+    url: `/groups?category=${parentName}&subCategory=${name}`,
   };
 }
 
@@ -17,9 +17,9 @@ function navLinkGroups(map: Map<string, string[]>): INavLinkGroup[] {
   map.forEach((value: string[], key: string) => {
     links.push({
       name: key,
-      url: `http://example.com/${key}`,
-      target: "_blank",
-      links: value.map(createINavLinkFromString),
+      url: `/groups?category=${key}`,
+      onClick: () => {},
+      links: value.map((value) => createINavLinkFromString(value, key)),
     });
   });
 
@@ -31,6 +31,7 @@ function navLinkGroups(map: Map<string, string[]>): INavLinkGroup[] {
 }
 
 export const NavigationPane: React.FunctionComponent = () => {
+  const history = useHistory();
   return (
     <Stack>
       <Label>
@@ -41,6 +42,9 @@ export const NavigationPane: React.FunctionComponent = () => {
       <Nav
         ariaLabel="Nav with nested links"
         groups={navLinkGroups(CategoriesMap)}
+        onLinkClick={(ev?: React.MouseEvent<HTMLElement>, item?: INavLink) =>
+          history.push(item?.link)
+        }
       />
     </Stack>
   );

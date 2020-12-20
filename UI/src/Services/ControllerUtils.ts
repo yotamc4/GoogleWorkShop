@@ -16,12 +16,10 @@ export async function makePostRequest<T>(
 
 export function buildUrlWithQueryParams(
   stringUrl: string,
-  params: queryParamsObjectType
+  params: Map<string, string>
 ): string {
   const url: URL = new URL(stringUrl);
-  Object.keys(params).forEach((key) =>
-    url.searchParams.append(key, params[key])
-  );
+  params.forEach((value, key) => url.searchParams.append(key, value));
 
   return url.toString();
 }
