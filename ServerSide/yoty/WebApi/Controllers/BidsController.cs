@@ -8,6 +8,7 @@ namespace YOTY.Service.WebApi.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Routing;
     using YOTY.Service.Core.Managers.Bids;
+    using YOTY.Service.Utils;
     using YOTY.Service.WebApi.PublicDataSchemas;
 
     // The controller has designed by the API best-practises doc here:https://hackernoon.com/restful-api-designing-guidelines-the-best-practices-60e1d954e7c9
@@ -180,13 +181,9 @@ namespace YOTY.Service.WebApi.Controllers
         [Route("{bidId}/vote")]
         public async Task<ActionResult> VoteForSupplier(VotingRequest votingRequest)
         {
-            if (votingRequest.BidId == null || votingRequest.BuyerId == null)
+            if (!votingRequest.BidId.IsValidId() || !votingRequest.BuyerId.IsValidId() || !votingRequest.VotedSupplierId.IsValidId())
             {
-                return this.StatusCode(StatusCodes.Status400BadRequest, $"bidId: {votingRequest.BidId} and buyerId{votingRequest.BuyerId} can't be null");
-            }
-            else if (votingRequest.VotedSuppliersIds?.Length == 0 )
-            {
-                return this.StatusCode(StatusCodes.Status400BadRequest, $"VotedSuppliersIds: null or empty");
+                return this.StatusCode(StatusCodes.Status400BadRequest, $"one of the follwing: bidId: {votingRequest.BidId}, buyerId: {votingRequest.BuyerId} supplierId: {votingRequest.VotedSupplierId} are not legal id");
             }
 
             Response response = await this.bidsManager.VoteForSupplier(votingRequest).ConfigureAwait(false);

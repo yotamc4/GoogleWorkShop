@@ -10,8 +10,8 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
         [JsonProperty("buyerId")]
         public string BuyerId { get; set; }
 
-        [JsonProperty("chosenSuppliersIds")]
-        public string[] VotedSuppliersIds { get; set; }
+        [JsonProperty("votedSupplierId")]
+        public string VotedSupplierId { get; set; }
 
         [FromRoute]
         public string BidId { get; set; }

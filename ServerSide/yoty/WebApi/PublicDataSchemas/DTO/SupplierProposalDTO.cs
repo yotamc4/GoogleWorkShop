@@ -19,5 +19,7 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 
         public string Description { get; set; }
 
+        public int Votes { get; set; }
+
     }
 }

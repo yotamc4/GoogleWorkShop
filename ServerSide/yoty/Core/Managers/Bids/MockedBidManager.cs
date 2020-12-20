@@ -114,6 +114,11 @@ namespace YOTY.Service.Core.Managers.Bids
             throw new NotImplementedException();
         }
 
+        public Task<Response> VoteForSupplier(VotingRequest votingRequest)
+        {
+            throw new NotImplementedException();
+        }
+
         Task<Response> IBidsManager.CreateNewBid(NewBidRequest productBid)
         {
             throw new NotImplementedException();

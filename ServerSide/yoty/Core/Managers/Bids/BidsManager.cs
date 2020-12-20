@@ -324,13 +324,14 @@ namespace YOTY.Service.Core.Managers.Bids
                 validationErorrString = $"Sub catergory has set to :{bidsFilters.SubCategory } while category is null";
                 return false;
             }
-
+            /*
             // should implement it smarter with creating categories table and with kind of index on it 
             if (!_context.Bids.Select(bid =>bid.Category).ToHashSet().Contains(demandedCategory))
             {
                 validationErorrString = $"Catergory has set to :{demandedCategory } while category is not exist in DB";
                 return false;
             }
+            */
             // should implemnt also table of Category-SubCategory with many to one relationship to vaildate....
 
             return true;
@@ -404,18 +405,31 @@ namespace YOTY.Service.Core.Managers.Bids
 
         public async Task<Response> VoteForSupplier(VotingRequest votingRequest)
         {
-            BidEntity bid = await _context.Bids.Where(b => b.Id == votingRequest.BidId).Include(b => b.CurrentProposals).FirstOrDefaultAsync().ConfigureAwait(false);
+            BidEntity bid = await _context.Bids.Where(b => b.Id == votingRequest.BidId).Include(b => b.CurrentProposals).Include(b => b.CurrentParticipancies).FirstOrDefaultAsync().ConfigureAwait(false);
             if (bid == null)
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
             }
 
-            IEnumerable<SupplierProposalEntity> propsalsToUpdate = bid.CurrentProposals.Where(propsal => votingRequest.VotedSuppliersIds.Contains(propsal.SupplierId));
-            foreach (SupplierProposalEntity proposal in propsalsToUpdate)
+            ParticipancyEntity participancy = bid.CurrentParticipancies.Where(p => p.BuyerId == votingRequest.BuyerId).FirstOrDefault();
+            if (participancy == null)
             {
-                proposal.Votes += 1;
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = $"Buyer {votingRequest.BuyerId} is not part of the bids buyers." };
+            }
+            else if (participancy.HasVoted)
+            {
+                // TODO enable change after vote
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = $"Buyer {votingRequest.BuyerId} has already voted" };
             }
 
+            SupplierProposalEntity proposal = bid.CurrentProposals.Where(p => p.SupplierId == votingRequest.VotedSupplierId).FirstOrDefault();
+            if (proposal == null)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = $"no proposal for supplier: {votingRequest.VotedSupplierId} has found for the bid." };
+            }
+
+            participancy.HasVoted = true;
+            proposal.Votes += 1;
             return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
     }
