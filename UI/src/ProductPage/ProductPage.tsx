@@ -95,7 +95,6 @@ export const ProductPage: React.FunctionComponent = () => {
     setnumberOfParticipants(numberOfParticipants - 1);
   }, [numberOfParticipants]);
 
-
   return !isDataLoaded ? (
     <Stack horizontalAlign={"center"}>
       <Spinner size={SpinnerSize.large} />
@@ -158,7 +157,7 @@ export const ProductPage: React.FunctionComponent = () => {
               className={Styles.classNames.greenYellow}
             />
             <Text styles={Styles.amoutTextStyles}>
-              {numberOfParticipants} pepole have joined to the group
+              {numberOfParticipants} people have joined to the group
             </Text>
           </Stack>
           {new Date().getTime() >
@@ -194,7 +193,7 @@ export const ProductPage: React.FunctionComponent = () => {
             )
           ) : (
             <Text styles={Styles.newBuyersCantJoinTheGroup}>
-              New Buyers can't Join the group, The Expirtaion date setted by the
+              New Buyers can't Join the group, The Expiration date set by the
               group's creator has reached.
             </Text>
           )}

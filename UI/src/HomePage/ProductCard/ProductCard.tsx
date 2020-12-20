@@ -67,13 +67,13 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
         tokens={attendantsCardSectionTokens}
       >
         <Text variant="small" styles={amoutTextStyles}>
-          {17} Suppliers proposals
+          {bid.potenialSuplliersCounter} Suppliers proposals
         </Text>
         <Text variant="small" styles={amoutTextStyles}>
           |
         </Text>
         <Text variant="small" styles={amoutTextStyles}>
-          {118} Requested items
+          {bid.unitsCounter} Requested items
         </Text>
       </Card.Section>
     </Card>

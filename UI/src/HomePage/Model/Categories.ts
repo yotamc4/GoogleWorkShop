@@ -5,11 +5,12 @@ CategoriesMap.set("Electronics", [
   "Headphones",
   "Television",
   "Media Streamer",
+  "Smart Watches",
 ]);
 
 CategoriesMap.set("Computers", ["Computers", "Laptops", "Monitors", "Tablets"]);
 
-CategoriesMap.set("Transportations", [
+CategoriesMap.set("Transportation", [
   "Bicycle",
   "Electronic scooters",
   "Electric bicycle",
