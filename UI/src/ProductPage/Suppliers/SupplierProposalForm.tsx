@@ -7,7 +7,7 @@ import {
   Text,
   TextField,
 } from "@fluentui/react";
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import * as FormsStyles from "../../FormStyles/FormsStyles";
 import { ISupplierProposalFormProps } from "./SupplierProposalForm.interface";
 import { useParams } from "react-router";
@@ -47,10 +47,10 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
 
   //TODO: fix when the input isn't correct (wrong value or hasn't set)
   const onClickSend = () => {
-    const date = Date();
+    const date = new Date();
     if (!(!formInputs.proposedPrice && !formInputs.minimumUnits)) {
       addPropposalToSupplierList({
-        publishedTime: date,
+        publishedTime: String(date),
         bidId: id,
         supplierId: "1234",
         supplierName: "Ivory",
@@ -60,7 +60,7 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
       postSupplierPropposal({
         publishedTime: date,
         bidId: id,
-        supplierId: "1234",
+        supplierId: "Ksp",
         ...formInputs,
       });
     }

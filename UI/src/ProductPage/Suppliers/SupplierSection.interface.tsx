@@ -2,7 +2,7 @@ export interface ISupplierProposalRequest {
   bidId?: string;
   supplierName?: string;
   supplierId?: string;
-  publishedTime?: string;
+  publishedTime?: string | Date;
   minimumUnits?: number;
   proposedPrice?: number;
   description?: string;
