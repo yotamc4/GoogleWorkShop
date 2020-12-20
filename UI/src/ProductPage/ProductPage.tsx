@@ -94,8 +94,6 @@ export const ProductPage: React.FunctionComponent = () => {
     setnumberOfParticipants(numberOfParticipants - 1);
   }, [numberOfParticipants]);
 
-  //cunsome from the server needs to know that about the user
-  const [isJoinButtonCliked, setisJoinButtonCliked] = React.useState<number>(0);
 
   return !isDataLoaded ? (
     <Stack horizontalAlign={"center"}>

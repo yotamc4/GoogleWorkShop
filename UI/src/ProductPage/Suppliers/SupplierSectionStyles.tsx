@@ -19,6 +19,8 @@ export const classNames = mergeStyleSets({
 
 export const addIcon: IIconProps = { iconName: "Add" };
 
+export const deleteIcon: IIconProps = { iconName: "Delete" };
+
 export const stackStyles: Partial<IStackStyles> = { root: { width: "68rem" } };
 
 export const detailsListStyles: Partial<IDetailsColumnStyles> = {
