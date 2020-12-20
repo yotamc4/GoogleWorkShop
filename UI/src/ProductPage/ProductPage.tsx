@@ -17,6 +17,7 @@ import { BidDetails } from "../Modal/ProductDetails";
 import { useParams } from "react-router-dom";
 import { PaymentsTable } from "../PaymentTable/PaymentTable";
 import { ISupplierProposalRequest } from "./Suppliers/SupplierSection.interface";
+import { ShareProductBar } from "./ShareProductBar";
 
 export const ProductPage: React.FunctionComponent = () => {
   const [numberOfParticipants, setnumberOfParticipants] = React.useState<
@@ -82,6 +83,7 @@ export const ProductPage: React.FunctionComponent = () => {
           <Text className="semiBold" variant="xLargePlus">
             {bidDetails?.product.name}
           </Text>
+          <ShareProductBar />
           <Separator />
           <Text styles={Styles.priceTextStyles}>
             Maximum Acceptable Price: {bidDetails?.maxPrice}₪
