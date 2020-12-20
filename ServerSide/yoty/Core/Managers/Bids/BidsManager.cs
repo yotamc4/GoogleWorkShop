@@ -430,6 +430,18 @@ namespace YOTY.Service.Core.Managers.Bids
 
             participancy.HasVoted = true;
             proposal.Votes += 1;
+
+            try
+            {
+                _context.Set<ParticipancyEntity>().Update(participancy);
+                _context.Set<SupplierProposalEntity>().Update(proposal);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
+            }
+
             return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
     }
