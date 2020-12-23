@@ -7,16 +7,21 @@ export const classNames = mergeStyleSets({
     marginLeft: "1.4rem",
   },
   fileIconCellDate: {
-    marginLeft: "-2rem",
+    marginLeft: "-1.5rem",
   },
   fileIconCellDescription: {
-    marginLeft: "1.8rem",
+    marginLeft: "0.8rem",
+  },
+  fileIconCellProgressBar: {
+    marginLeft: "-1.8rem",
   },
 });
 
 export const addIcon: IIconProps = { iconName: "Add" };
 
-export const stackStyles: Partial<IStackStyles> = { root: { width: "75rem" } };
+export const deleteIcon: IIconProps = { iconName: "Delete" };
+
+export const stackStyles: Partial<IStackStyles> = { root: { width: "68rem" } };
 
 export const detailsListStyles: Partial<IDetailsColumnStyles> = {
   root: { textAlign: "right" },

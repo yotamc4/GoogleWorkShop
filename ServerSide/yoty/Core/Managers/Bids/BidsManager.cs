@@ -257,91 +257,6 @@ namespace YOTY.Service.Core.Managers.Bids
             return $"{callerName} success";
         }
 
-        // enhancements (will not be private)
-        private async Task<bool> IsBuyerParticipating(string buyerId, string bidId)
-        {
-            var p = await _context.Set<ParticipancyEntity>().FindAsync(bidId, buyerId).ConfigureAwait(false);
-            return p != null;
-        }
-
-        private async Task<Response> VoteForProposal(string votingBuyerId, string bidId, string chosenSupplierId)
-        {
-            BidEntity bid_ent = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.CurrentProposals).Include(b => b.CurrentParticipancies).FirstOrDefaultAsync().ConfigureAwait(false);
-            if (bid_ent == null)
-            {
-                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = "bid not found" };
-            }
-            ParticipancyEntity participancy = bid_ent.CurrentParticipancies.Where(p => p.BuyerId == votingBuyerId).FirstOrDefault();
-            if (participancy == null)
-            {
-                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = "participancy not found" };
-            }
-            SupplierProposalEntity proposal = bid_ent.CurrentProposals.Where(p => p.SupplierId == chosenSupplierId).FirstOrDefault();
-            if (proposal == null)
-            {
-                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = "proposal not found" };
-            }
-            if (participancy.HasVoted)
-            {
-                // TODO enable change after vote
-                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = "participant has voted" };
-            }
-
-            proposal.VotesCounter += 1;
-            participancy.HasVoted = true;
-            return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
-        }
-
-        private SupplierProposalEntity GetProposalWithMaxVotes(string bidId)
-        {
-            SupplierProposalEntity proposalEntity = _context.Set<SupplierProposalEntity>().Where(p => p.BidId == bidId).Include(p => p.Supplier).Aggregate(
-                (currWinner, x) => (currWinner == null || x.VotesCounter > currWinner.VotesCounter ? x : currWinner));
-            // TODO set the chosen proposal?
-            return proposalEntity;
-        }
-
-        private SupplierEntity GetSupplierWithMaxVotes(string bidId)
-        {
-            // TODO set the chosen supplier?
-            return this.GetProposalWithMaxVotes(bidId).Supplier;
-        }
-
-        private async Task<Response> MarkPaid(string bidId, string buyerId, string markingUserId, bool hasPaid = true)
-        {
-            // TODO add validation that the marking user is the chosen supplier
-            DbSet<ParticipancyEntity> participancies_db = _context.Set<ParticipancyEntity>();
-            var p = await participancies_db.FindAsync(bidId, buyerId).ConfigureAwait(false);
-            if (p == null)
-            {
-                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = "participation not found" };
-            }
-            p.HasPaid = hasPaid;
-            try
-            {
-                participancies_db.Update(p);
-                await _context.SaveChangesAsync().ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
-            }
-            return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
-        }
-
-        private async Task<Response<List<SupplierProposalDTO>>> GetBidParticipations(string bidId)
-        {
-            try
-            {
-                List<ParticipancyEntity> participancies = await _context.Set<ParticipancyEntity>().Where(p => p.BidId == bidId).Select(p => _mapper.Map<ParticipancyEntity>(p)).ToListAsync().ConfigureAwait(false);
-                // todo add participation DTO ------------------------------ here ------------------------------------------------------------------------and here ^
-                return new Response<List<SupplierProposalDTO>>() { DTOObject = null, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
-            }
-            catch
-            {
-                return new Response<List<SupplierProposalDTO>>() { IsOperationSucceeded = false, SuccessOrFailureMessage = "error querying for proposals" };
-            }
-        }
-
         public async Task<Response<BidsDTO>> GetBids(BidsQueryOptions bidsFilters)
         {
 
@@ -358,7 +273,7 @@ namespace YOTY.Service.Core.Managers.Bids
             }
             else // TODO : extract to sub methods
             {
-                IQueryable<BidEntity> filteredBids = this.GetFilteredBids(bidsFilters);
+                IEnumerable<BidEntity> filteredBids = this.GetFilteredBids(bidsFilters);
 
                 IEnumerable<BidEntity> sortedBids = this.GetSortBids(filteredBids, bidsFilters.SortOrder , bidsFilters.SortBy);
 
@@ -373,7 +288,7 @@ namespace YOTY.Service.Core.Managers.Bids
 
                 BidsDTO bidsDTO = new BidsDTO {
                     PageNumber = bidsFilters.Page,
-                    NumberOfPages = (int)Math.Ceiling((double)sortedBids.Count() / pageSize),
+                    NumberOfPages = (int)Math.Ceiling((double)filteredBids.Count() / pageSize),
                     PageSize = pageSize,
                     BidsPage = bidsPage,
                 };
@@ -419,13 +334,14 @@ namespace YOTY.Service.Core.Managers.Bids
                 validationErorrString = $"Sub catergory has set to :{bidsFilters.SubCategory } while category is null";
                 return false;
             }
-
+            /*
             // should implement it smarter with creating categories table and with kind of index on it 
             if (!_context.Bids.Select(bid =>bid.Category).ToHashSet().Contains(demandedCategory))
             {
                 validationErorrString = $"Catergory has set to :{demandedCategory } while category is not exist in DB";
                 return false;
             }
+            */
             // should implemnt also table of Category-SubCategory with many to one relationship to vaildate....
 
             return true;
@@ -442,39 +358,45 @@ namespace YOTY.Service.Core.Managers.Bids
         }
         private static bool FilterByCategories(BidEntity bid, string category, string subCategory)
         {
-            return category == null ?
-                        true :
-                        bid.Category.Equals(category) &&
-                        (subCategory == null) ?
-                            true :
-                            bid.SubCategory != null && bid.SubCategory.Equals(subCategory);
+            if(category == null)
+            {
+                return true;
+            }
+            else if (bid.Category.Equals(category) && subCategory == null)
+            {
+                return true;
+            }
+            else if (bid.SubCategory != null)
+            {
+                return  bid.Category.Equals(category) && bid.SubCategory.Equals(subCategory);
+            }
+
+            return false;
         }
         private static bool FilterByPrices(BidEntity bid, int maxPriceFilter, int minPriceFilter)
         {
             return
-                (maxPriceFilter < Int32.MaxValue) ? bid.MaxPrice < maxPriceFilter : true
-                &&
-                (minPriceFilter > 0) ? bid.MaxPrice > minPriceFilter : true;
+                (maxPriceFilter < Int32.MaxValue) ? bid.MaxPrice < maxPriceFilter : false
+                ||
+                minPriceFilter <= 0 || bid.MaxPrice > minPriceFilter;
         }
 
         private static bool FilterByQueryString(BidEntity bid, string queryString)
         {
-            return
-                queryString == null ?
-                true :
-                bid.Product.Name.Contains(queryString) || bid.Product.Description.Contains(queryString);
+            return queryString == null || bid.Product.Name.Contains(queryString) || bid.Product.Description.Contains(queryString);
         }
 
-        private IQueryable<BidEntity> GetFilteredBids(BidsQueryOptions bidsFilters)
+        private IEnumerable<BidEntity> GetFilteredBids(BidsQueryOptions bidsFilters)
         {
             return _context.Bids
-                    .Where(bid => FilterByCategories(bid, bidsFilters.Category, bidsFilters.SubCategory))
-                    .Where(bid => FilterByPrices(bid, bidsFilters.MaxPrice, bidsFilters.MinPrice))
-                    .Include(bid => bid.Product)
-                    .Where(bid => FilterByQueryString(bid, bidsFilters.Search));
+                .Include(bid => bid.Product)
+                .AsEnumerable()
+                .Where(bid => FilterByCategories(bid, bidsFilters.Category, bidsFilters.SubCategory))
+                .Where(bid => FilterByPrices(bid, bidsFilters.MaxPrice, bidsFilters.MinPrice))
+                .Where(bid => FilterByQueryString(bid, bidsFilters.Search));                  
         }
 
-        private IEnumerable<BidEntity> GetSortBids(IQueryable<BidEntity> bids, BidsSortByOrder sortOrder, BidsSortByOptions sortByyParameter)
+        private IEnumerable<BidEntity> GetSortBids(IEnumerable<BidEntity> bids, BidsSortByOrder sortOrder, BidsSortByOptions sortByyParameter)
         {
             switch (sortByyParameter)
             {
@@ -493,5 +415,102 @@ namespace YOTY.Service.Core.Managers.Bids
             }
         }
 
+        public async Task<Response> VoteForSupplier(VotingRequest votingRequest)
+        {
+            BidEntity bid = await _context.Bids.Where(b => b.Id == votingRequest.BidId).Include(b => b.CurrentProposals).Include(b => b.CurrentParticipancies).FirstOrDefaultAsync().ConfigureAwait(false);
+            if (bid == null)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
+            }
+
+            ParticipancyEntity participancy = bid.CurrentParticipancies.Where(p => p.BuyerId == votingRequest.BuyerId).FirstOrDefault();
+            if (participancy == null)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = $"Buyer {votingRequest.BuyerId} is not part of the bids buyers." };
+            }
+            else if (participancy.HasVoted)
+            {
+                // TODO enable change after vote
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = $"Buyer {votingRequest.BuyerId} has already voted" };
+            }
+
+            SupplierProposalEntity proposal = bid.CurrentProposals.Where(p => p.SupplierId == votingRequest.VotedSupplierId).FirstOrDefault();
+            if (proposal == null)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = $"no proposal for supplier: {votingRequest.VotedSupplierId} has found for the bid." };
+            }
+
+            participancy.HasVoted = true;
+            proposal.Votes += 1;
+
+            try
+            {
+                _context.Set<ParticipancyEntity>().Update(participancy);
+                _context.Set<SupplierProposalEntity>().Update(proposal);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
+            }
+
+            return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+        }
+
+        // enhancements (will not be private)
+        private async Task<bool> IsBuyerParticipating(string buyerId, string bidId)
+        {
+            var p = await _context.Set<ParticipancyEntity>().FindAsync(bidId, buyerId).ConfigureAwait(false);
+            return p != null;
+        }
+
+        private SupplierProposalEntity GetProposalWithMaxVotes(string bidId)
+        {
+            SupplierProposalEntity proposalEntity = _context.Set<SupplierProposalEntity>().Where(p => p.BidId == bidId).Include(p => p.Supplier).Aggregate(
+                (currWinner, x) => (currWinner == null || x.Votes > currWinner.Votes ? x : currWinner));
+            // TODO set the chosen proposal?
+            return proposalEntity;
+        }
+
+        private SupplierEntity GetSupplierWithMaxVotes(string bidId)
+        {
+            // TODO set the chosen supplier?
+            return this.GetProposalWithMaxVotes(bidId).Supplier;
+        }
+
+        private async Task<Response> MarkPaid(string bidId, string buyerId, string markingUserId, bool hasPaid = true)
+        {
+            // TODO add validation that the marking user is the chosen supplier
+            DbSet<ParticipancyEntity> participancies_db = _context.Set<ParticipancyEntity>();
+            var p = await participancies_db.FindAsync(bidId, buyerId).ConfigureAwait(false);
+            if (p == null)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = "participation not found" };
+            }
+            p.HasPaid = hasPaid;
+            try
+            {
+                participancies_db.Update(p);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
+            }
+            return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+        }
+
+        private async Task<Response<List<ParticipancyDTO>>> GetBidParticipations(string bidId)
+        {
+            try
+            {
+                List<ParticipancyDTO> participancies = await _context.Set<ParticipancyEntity>().Where(p => p.BidId == bidId).Select(p => _mapper.Map<ParticipancyDTO>(p)).ToListAsync().ConfigureAwait(false);
+                return new Response<List<ParticipancyDTO>>() { DTOObject = participancies, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+            }
+            catch
+            {
+                return new Response<List<ParticipancyDTO>>() { IsOperationSucceeded = false, SuccessOrFailureMessage = "error querying for proposals" };
+            }
+        }
     }
 }

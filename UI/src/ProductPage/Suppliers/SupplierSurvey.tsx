@@ -8,8 +8,12 @@ import {
   choiceGroupStyles,
   defaultButtonVoteStyles,
   textStyles,
+  thankForYourVote,
   verticalGapStackTokens,
 } from "./SupplierSurveyStyles";
+import axios from "axios";
+import { useParams } from "react-router";
+import { IVotingRequest } from "./SupplierSurvey.interface";
 
 export interface ISuppliersSurveyProps {
   supliersNames: IChoiceGroupOption[] | undefined;
@@ -18,6 +22,11 @@ export interface ISuppliersSurveyProps {
 export const SuppliersSurvey: React.FunctionComponent<ISuppliersSurveyProps> = ({
   supliersNames,
 }) => {
+  const { id } = useParams<{ id: string }>();
+  //TODO: consume the supplier from the contextId!!!
+  const [isVoteButtonClicked, setIsVoteButtonClicked] = React.useState<boolean>(
+    false
+  );
   const [selectedKey, setSelectedKey] = React.useState<string>();
 
   const onChange = React.useCallback(
@@ -29,8 +38,26 @@ export const SuppliersSurvey: React.FunctionComponent<ISuppliersSurveyProps> = (
     },
     []
   );
+  const onClickVoteButton = (): void => {
+    const voteData: IVotingRequest = {
+      bidId: id,
+      buyerId: "EliLeherId",
+      votedSupplierId: selectedKey as string,
+    };
+    axios
+      .post(`https://localhost:5001/api/v1/bids/${id}/vote`, voteData)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    setIsVoteButtonClicked(true);
+  };
 
-  return (
+  return isVoteButtonClicked ? (
+    <Text styles={thankForYourVote}>Thank you for your Vote!</Text>
+  ) : (
     <Stack tokens={verticalGapStackTokens}>
       <Text
         block={true}
@@ -47,6 +74,7 @@ export const SuppliersSurvey: React.FunctionComponent<ISuppliersSurveyProps> = (
         onChange={onChange}
       />
       <DefaultButton
+        onClick={onClickVoteButton}
         text={"Vote"}
         primary
         styles={defaultButtonVoteStyles}

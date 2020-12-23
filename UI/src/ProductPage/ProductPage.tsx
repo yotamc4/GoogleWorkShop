@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import axios from "axios";
 import * as Styles from "./ProductPageStyles";
 import * as MockBuyers from "../Modal/MockBuyers";
@@ -13,10 +13,11 @@ import {
   Text,
 } from "@fluentui/react";
 import { SuppliersSection } from "./Suppliers/SupplierSection";
-import { BidDetails } from "../Modal/ProductDetails";
+import { BidBuyerJoinRequest, BidDetails } from "../Modal/ProductDetails";
 import { useParams } from "react-router-dom";
 import { PaymentsTable } from "../PaymentTable/PaymentTable";
 import { ISupplierProposalRequest } from "./Suppliers/SupplierSection.interface";
+import { ShareProductBar } from "./ShareProductBar";
 
 export const ProductPage: React.FunctionComponent = () => {
   const [numberOfParticipants, setnumberOfParticipants] = React.useState<
@@ -30,6 +31,11 @@ export const ProductPage: React.FunctionComponent = () => {
     undefined
   );
   const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
+  //TODO: depends on the context if the user has clicked on the buttom before
+  const [
+    isJoinTheGroupButtomClicked,
+    setIsJoinTheGroupButtomClicked,
+  ] = useState<boolean>(false);
   const { id } = useParams<{ id: string }>();
   React.useEffect(() => {
     axios
@@ -51,8 +57,43 @@ export const ProductPage: React.FunctionComponent = () => {
       );
   }, []);
 
-  //cunsome from the server needs to know that about the user
-  const [isJoinButtonCliked, setisJoinButtonCliked] = React.useState<number>(0);
+  const onClickJoinTheGroupButton = React.useCallback(() => {
+    const bidBuyerJoinRequest: BidBuyerJoinRequest = {
+      //TODO: take the buyerId from the context
+      buyerId: "OfekDavid123",
+      bidId: id,
+      items: 1,
+    };
+    axios
+      .post(
+        `https://localhost:5001/api/v1/bids/${id}/buyers`,
+        bidBuyerJoinRequest
+      )
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    setIsJoinTheGroupButtomClicked(true);
+    setnumberOfParticipants(numberOfParticipants + 1);
+  }, [numberOfParticipants]);
+
+  const onClickCancelButton = React.useCallback(() => {
+    axios
+      .delete(
+        //TODO: the buyerId should be taken from the context!
+        `https://localhost:5001/api/v1/bids/${id}/buyers/OfekDavid123`
+      )
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    setIsJoinTheGroupButtomClicked(false);
+    setnumberOfParticipants(numberOfParticipants - 1);
+  }, [numberOfParticipants]);
 
   return !isDataLoaded ? (
     <Stack horizontalAlign={"center"}>
@@ -82,6 +123,7 @@ export const ProductPage: React.FunctionComponent = () => {
           <Text className="semiBold" variant="xLargePlus">
             {bidDetails?.product.name}
           </Text>
+          <ShareProductBar />
           <Separator />
           <Text styles={Styles.priceTextStyles}>
             Maximum Acceptable Price: {bidDetails?.maxPrice}₪
@@ -115,29 +157,43 @@ export const ProductPage: React.FunctionComponent = () => {
               className={Styles.classNames.greenYellow}
             />
             <Text styles={Styles.amoutTextStyles}>
-              {numberOfParticipants} pepole have joined to the group
+              {numberOfParticipants} people have joined to the group
             </Text>
           </Stack>
-          {new Date().getTime() <
+          {new Date().getTime() >
           (new Date(
             bidDetails?.expirationDate as string
           ).getUTCMonth() as number) ? (
-            <DefaultButton
-              text="Join The Group"
-              primary
-              iconProps={{
-                iconName: "AddFriend",
-                styles: { root: { fontSize: "1.5rem" } },
-              }}
-              styles={{
-                root: { borderRadius: 25, height: "4rem" },
-                textContainer: { padding: "1rem", fontSize: "1.5rem" },
-              }}
-              height={"4rem"}
-            />
+            isJoinTheGroupButtomClicked ? (
+              <DefaultButton
+                text="Cancel bid participation"
+                primary
+                styles={{
+                  root: { borderRadius: 25, height: "4rem" },
+                  textContainer: { padding: "1rem", fontSize: "1.5rem" },
+                }}
+                height={"4rem"}
+                onClick={onClickCancelButton}
+              />
+            ) : (
+              <DefaultButton
+                text="Join The Group"
+                primary
+                iconProps={{
+                  iconName: "AddFriend",
+                  styles: { root: { fontSize: "1.5rem" } },
+                }}
+                styles={{
+                  root: { borderRadius: 25, height: "4rem" },
+                  textContainer: { padding: "1rem", fontSize: "1.5rem" },
+                }}
+                height={"4rem"}
+                onClick={onClickJoinTheGroupButton}
+              />
+            )
           ) : (
             <Text styles={Styles.newBuyersCantJoinTheGroup}>
-              New Buyers can't Join the group, The Expirtaion date setted by the
+              New Buyers can't Join the group, The Expiration date set by the
               group's creator has reached.
             </Text>
           )}

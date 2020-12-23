@@ -17,6 +17,11 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
   const cardTokens: ICardTokens = { childrenMargin: 12 };
   const agendaCardSectionTokens: ICardSectionTokens = { childrenGap: 0 };
   const attendantsCardSectionTokens: ICardSectionTokens = { childrenGap: 6 };
+
+  if (bid.id == undefined) {
+    return <div />;
+  }
+
   const imageProps: IImageProps = {
     src: bid.product?.image,
     imageFit: ImageFit.contain,
@@ -62,13 +67,13 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
         tokens={attendantsCardSectionTokens}
       >
         <Text variant="small" styles={amoutTextStyles}>
-          {17} Suppliers proposals
+          {bid.potenialSuplliersCounter} Suppliers proposals
         </Text>
         <Text variant="small" styles={amoutTextStyles}>
           |
         </Text>
         <Text variant="small" styles={amoutTextStyles}>
-          {118} Requested items
+          {bid.unitsCounter} Requested items
         </Text>
       </Card.Section>
     </Card>

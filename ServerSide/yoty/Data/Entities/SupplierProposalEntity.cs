@@ -14,7 +14,7 @@ namespace YOTY.Service.Data.Entities
 
         public string SupplierName { get; set; }
 
-        public int VotesCounter { get; set; }
+        public int Votes { get; set; }
 
         //-----------------------------
         //Relationships

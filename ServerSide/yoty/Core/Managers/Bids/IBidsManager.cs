@@ -30,5 +30,7 @@ namespace YOTY.Service.Core.Managers.Bids
 
         // get bids
         Task<Response<BidsDTO>> GetBids(BidsQueryOptions bidsFilters);
+
+        Task<Response> VoteForSupplier(VotingRequest votingRequest);
     }
 }
