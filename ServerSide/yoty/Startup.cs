@@ -11,9 +11,10 @@ namespace yoty
     using YOTY.Service.Core.Managers;
     using YOTY.Service.WebApi.Middlewares;
     using YOTY.Service.WebApi.Middlewares.CorrelationId;
-    using Newtonsoft.Json;
     using YOTY.Service.Data;
     using Microsoft.EntityFrameworkCore;
+    using YOTY.Service.Core.Services.Mail;
+    using System;
 
     public class Startup
     {
@@ -39,6 +40,9 @@ namespace yoty
             services.AddCorrelationIdOptions();
             services.AddManagers();
             services.AddDbContext<YotyContext>(options => options.UseSqlServer("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData"));
+            services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
+            services.AddTransient<IMailService, MailService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
