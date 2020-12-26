@@ -4,7 +4,6 @@ namespace YOTY.Service.WebApi.Controllers
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Hangfire;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Routing;
@@ -25,6 +24,7 @@ namespace YOTY.Service.WebApi.Controllers
         {
             this.bidsManager = bidsManager;
             this.notificationsManager = notificationsManager;
+
         }
 
         [HttpGet]
@@ -51,20 +51,11 @@ namespace YOTY.Service.WebApi.Controllers
         public async Task<ActionResult> PostNewBid(NewBidRequest bid)
         {
             Response response = await this.bidsManager.CreateNewBid(bid).ConfigureAwait(false);
-            BackgroundJob.Enqueue(() => this.notificationsManager.Ping().ConfigureAwait(false));
             if (response.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status201Created, response.SuccessOrFailureMessage);
             }
             return this.StatusCode(StatusCodes.Status403Forbidden, response.SuccessOrFailureMessage);
-            /*
-            Response response = await this.bidsManager.CreateNewBid(bid).ConfigureAwait(false);
-            if (response.IsOperationSucceeded)
-            {
-                return this.StatusCode(StatusCodes.Status201Created, response.SuccessOrFailureMessage);
-            }
-            return this.StatusCode(StatusCodes.Status403Forbidden, response.SuccessOrFailureMessage);
-            */
         }
 
         [HttpGet]
