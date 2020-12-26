@@ -45,25 +45,14 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpGet]
         [Route("{buyerId}/bids")]
-        public async Task<ActionResult<BidsDTO>> GetBidsCreatedByBuyer(string buyerId, [FromQuery] string bidsSelector)
+        public async Task<ActionResult<BidsDTO>> GetBidsCreatedByBuyer(string buyerId, [FromQuery] BuyerBidsRequestOptions buyerBidsRequestOptions)
         {
-            Response<BidsDTO> response;
-            switch (bidsSelector)
-            {
-                case "old":
-                    response= await this.buyersManager.GetBuyerOldBids(buyerId).ConfigureAwait(false);
-                    break;
-                case "live":
-                    response = await this.buyersManager.GetBuyerLiveBids(buyerId).ConfigureAwait(false);
-                    break;
-                default: //null
-                    response =await this.buyersManager.GetBuyerBids(buyerId).ConfigureAwait(false);
-                    break;
-            }
+            Response<BidsDTO> response = buyerBidsRequestOptions.IsCreatedByBuyer ?
+                await this.buyersManager.GetBidsCreatedByBuyer(buyerId, buyerBidsRequestOptions.BidsTime).ConfigureAwait(false) :
+                await this.buyersManager.GetBuyerBids(buyerId, buyerBidsRequestOptions.BidsTime).ConfigureAwait(false);
 
             if (response.IsOperationSucceeded)
             {
-
                 return response.DTOObject;
             }
 
