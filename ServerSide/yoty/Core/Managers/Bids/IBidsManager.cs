@@ -4,9 +4,7 @@ namespace YOTY.Service.Core.Managers.Bids
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using YOTY.Service.Data;
     using YOTY.Service.WebApi.PublicDataSchemas;
-    using YOTY.Service.WebApi.PublicDataSchemas.ClientRequest;
 
     public interface IBidsManager
     {
@@ -34,15 +32,5 @@ namespace YOTY.Service.Core.Managers.Bids
         Task<Response<BidsDTO>> GetBids(BidsQueryOptions bidsFilters);
 
         Task<Response> VoteForSupplier(VotingRequest votingRequest);
-
-        Task<Response> GetProposalWithMaxVotes(string bidId);
-
-        Task<Response<BidPhase>> TryUpdatePhase(string bidId);
-
-        Task<Response> UpdateBidProposalsToRelevant(string bidId);
-
-        Task<Response> CancelBid(CancellationRequest cancellationRequest);
-
-        Task<Response> CompleteBid(CompletionRequest completionRequest);
     }
 }

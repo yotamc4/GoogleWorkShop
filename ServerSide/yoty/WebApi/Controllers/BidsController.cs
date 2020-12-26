@@ -9,10 +9,8 @@ namespace YOTY.Service.WebApi.Controllers
     using Microsoft.AspNetCore.Routing;
     using YOTY.Service.Core.Managers.Bids;
     using YOTY.Service.Core.Managers.Notifications;
-    using YOTY.Service.Data;
     using YOTY.Service.Utils;
     using YOTY.Service.WebApi.PublicDataSchemas;
-    using YOTY.Service.WebApi.PublicDataSchemas.ClientRequest;
 
     // The controller has designed by the API best-practises doc here:https://hackernoon.com/restful-api-designing-guidelines-the-best-practices-60e1d954e7c9
     [ApiController]
@@ -26,6 +24,7 @@ namespace YOTY.Service.WebApi.Controllers
         {
             this.bidsManager = bidsManager;
             this.notificationsManager = notificationsManager;
+
         }
 
         [HttpGet]
@@ -37,6 +36,14 @@ namespace YOTY.Service.WebApi.Controllers
                 return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
             }
             return this.StatusCode(StatusCodes.Status403Forbidden, response.SuccessOrFailureMessage);
+            /*
+            return new List<BidDTO> {
+                new BidDTO {
+                    Id = " first bid in list",
+                    Category = bidsFilters.Category,
+                },
+            };
+            */
         }
 
 
@@ -55,6 +62,12 @@ namespace YOTY.Service.WebApi.Controllers
         [Route("{bidId}")]
         public async Task<ActionResult<BidDTO>> GetBid(string bidId)
         {
+            /*
+            return new BidDTO {
+                Id = "onebid",
+            };
+            */
+            
             Response<BidDTO> response = await this.bidsManager.GetBid(bidId).ConfigureAwait(false);
             if (response.IsOperationSucceeded )
             {
@@ -174,7 +187,7 @@ namespace YOTY.Service.WebApi.Controllers
         {
             if (!votingRequest.BidId.IsValidId() || !votingRequest.BuyerId.IsValidId() || !votingRequest.VotedSupplierId.IsValidId())
             {
-                return this.StatusCode(StatusCodes.Status400BadRequest, $"one of the following: bidId: {votingRequest.BidId}, buyerId: {votingRequest.BuyerId} supplierId: {votingRequest.VotedSupplierId} are not legal id");
+                return this.StatusCode(StatusCodes.Status400BadRequest, $"one of the follwing: bidId: {votingRequest.BidId}, buyerId: {votingRequest.BuyerId} supplierId: {votingRequest.VotedSupplierId} are not legal id");
             }
 
             Response response = await this.bidsManager.VoteForSupplier(votingRequest).ConfigureAwait(false);
@@ -186,84 +199,12 @@ namespace YOTY.Service.WebApi.Controllers
             return this.StatusCode(StatusCodes.Status405MethodNotAllowed, response.SuccessOrFailureMessage);
         }
 
-        [HttpPost]
-        [Route("{bidId}/cancel")]
-        public async Task<ActionResult> CancelBid(CancellationRequest cancellationRequest)
-        {
-            if (!cancellationRequest.BidId.IsValidId() || !cancellationRequest.SupplierId.IsValidId())
-            {
-                return this.StatusCode(StatusCodes.Status400BadRequest, $"one of the following: bidId: {cancellationRequest.BidId}, supplierId: {cancellationRequest.SupplierId} are not legal id");
-            }
-
-            Response response = await this.bidsManager.CancelBid(cancellationRequest).ConfigureAwait(false);
-            if (response.IsOperationSucceeded)
-            {
-                return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
-            }
-            Response notificationResponse = await this.notificationsManager.NotifyBidParticipantsSupplierCancellation(cancellationRequest.BidId).ConfigureAwait(false);
-            if (notificationResponse.IsOperationSucceeded)
-            {
-                return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
-            }
-            return this.StatusCode(StatusCodes.Status405MethodNotAllowed, notificationResponse.SuccessOrFailureMessage);
-        }
-
-        [HttpPost]
-        [Route("{bidId}/complete")]
-        public async Task<ActionResult> CompleteBid(CompletionRequest completionRequest)
-        {
-            if (!completionRequest.BidId.IsValidId() || !completionRequest.SupplierId.IsValidId())
-            {
-                return this.StatusCode(StatusCodes.Status400BadRequest, $"one of the following: bidId: {completionRequest.BidId}, supplierId: {completionRequest.SupplierId} are not legal id");
-            }
-
-            Response response = await this.bidsManager.CompleteBid(completionRequest).ConfigureAwait(false);
-            if (response.IsOperationSucceeded)
-            {
-                return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
-            }
-            Response notificationResponse = await this.notificationsManager.NotifyBidAllCompletion(completionRequest.BidId).ConfigureAwait(false);
-            if (notificationResponse.IsOperationSucceeded)
-            {
-                return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
-            }
-            return this.StatusCode(StatusCodes.Status405MethodNotAllowed, notificationResponse.SuccessOrFailureMessage);
-        }
-
 
         [HttpGet]
         [Route("Ping")]
         public async Task<string> Ping()
         {
             return "Hi";
-        }
-
-        // TODO run this every 24 hours or by schedule
-        private async Task<Response> TryUpdateBidPhaseAndNotify(string bidId)
-        {
-            var updatePhaseResponse = await this.bidsManager.TryUpdatePhase(bidId).ConfigureAwait(false);
-            
-            Response notificationResponse;
-            Response updateProposalsResponse;
-            if (!updatePhaseResponse.IsOperationSucceeded)
-            {
-                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = updatePhaseResponse.SuccessOrFailureMessage };
-            }
-            switch (updatePhaseResponse.DTOObject)
-            {
-                case BidPhase.Vote:
-                    notificationResponse = await this.notificationsManager.NotifyBidTimeToVote(bidId).ConfigureAwait(false);
-                    updateProposalsResponse = await this.bidsManager.UpdateBidProposalsToRelevant(bidId).ConfigureAwait(false);
-                    break;
-                case BidPhase.Payment:
-                    notificationResponse = await this.notificationsManager.NotifyBidTimeToPay(bidId).ConfigureAwait(false);
-                    updateProposalsResponse = await this.bidsManager.UpdateBidProposalsToRelevant(bidId).ConfigureAwait(false);
-                    break;
-                case BidPhase.CancelledSupplierNotFound:
-                    notificationResponse = await this.notificationsManager.NotifyBidParticipantsSupplierNotFoundCancellation(bidId).ConfigureAwait(false);
-                    break;
-            }
-            return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = "blabla" };
         }
     }
 }

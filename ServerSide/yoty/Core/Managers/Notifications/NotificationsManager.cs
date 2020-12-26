@@ -14,16 +14,12 @@ namespace YOTY.Service.Core.Managers.Notifications
 {
     public class NotificationsManager : INotificationsManager
     {
-        private const string TimeToVoteForSuppliersToParticipantsBody = "Great news! There are more than one optional proposals for the group-buy you are participating in! <br /><br />You have 48 hours to vote for your preferred proposal, <br /><b>please visit the groups page during this time and vote.</b>";
-        private const string TimeToVoteForSuppliersToParticipantsSubject = "Time To Vote - UniBuy";
-        private const string VoteStartedToSuppliersBody = "In the next 48 hours participants will vote between proposals,<br /><br />Your proposal might be selected, stay tuned!";
-        private const string VoteStartedToSuppliersSubject = "Voting Started - UniBuy";
+        private const string TimeToVoteForSuppliersBody = "Great news! There are more than one optional proposals for the group-buy you are participating in! <br /><br />You have 48 hours to vote for your preferred proposal, <br /><b>please visit the groups page during this time and vote.</b>";
+        private const string TimeToVoteForSuppliersSubject = "Time To Vote - UniBuy";
         private const string TimeToPayBody = "A supplier proposal for the group-buy you are participating in has been chosen! <br /><br /><b>please visit the groups page during this time and complete payment.</b>";
         private const string TimeToPaySubject = "Time To Pay - UniBuy";
         private const string SupplierCancellationBody = "We are sorry to inform you that the supplier has canceled the deal for now,  <br />as other participants canceled their participations.";
         private const string SupplierCancellationSubject = "Deal Cancellation - UniBuy";
-        private const string SupplierNotFoundCancellationBody = "We are sorry to inform you that no supplier has made a proposal to a group-buy you are participating in. <br />Better luck next time.";
-        private const string SupplierNotFoundCancellationSubject = "Supplier Not Found - UniBuy";
         private const string GroupCompletionBody = "The group-buy you participated in has come to completion <br /><br />We hope you had a satisfying experience, always at your service.";
         private const string GroupCompletionSubject = "Group-Buy Completed - UniBuy";
         private const string ProgressBarCompletionToParticipantsBody = "A group-buy you are participating in has fulfilled a new proposal requirements!";
@@ -33,7 +29,6 @@ namespace YOTY.Service.Core.Managers.Notifications
         private const string FoundChosenSupplierToChosenSuppliersBody = "Congrats! your proposal has been selected by majority of the group-buy participants,  <br />They group is now entering the payment phase.";
         private const string FoundChosenSupplierSubject = "Proposal Selected - UniBuy";
 
-        private const string domain = "https://localhost:3000";
         private readonly YotyContext _context;
         private readonly IMapper _mapper;
         private readonly IMailService _mail;
@@ -49,8 +44,8 @@ namespace YOTY.Service.Core.Managers.Notifications
         public async Task<Response> Ping()
         {
             MailRequest request = new MailRequest() {
-                Body = this.personalizeBody(VoteStartedToSuppliersBody, "Yotam Cohen", "fakeBidId"),
-                Subject = VoteStartedToSuppliersSubject,
+                Body = this.personalizeBody(TimeToVoteForSuppliersBody, "Yotam Cohen"),
+                Subject = TimeToVoteForSuppliersSubject,
                 ToEmail = "yotamc4@gmail.com",
             };
             try
@@ -77,7 +72,7 @@ namespace YOTY.Service.Core.Managers.Notifications
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
             }
-            return await NotifyList(body, subject, emailNamePairs, bidId);
+            return await NotifyList(body, subject, emailNamePairs);
         }
 
         public async Task<Response> NotifyBidParticipants(string bidId, string body, string subject)
@@ -92,7 +87,7 @@ namespace YOTY.Service.Core.Managers.Notifications
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
             }
-            return await NotifyList(body, subject, emailNamePairs, bidId);
+            return await NotifyList(body, subject, emailNamePairs);
         }
 
         public async Task<Response> NotifyBidAll(string bidId, string body, string subject)
@@ -107,7 +102,7 @@ namespace YOTY.Service.Core.Managers.Notifications
 
         }
 
-        private async Task<Response> NotifyList(string body, string subject, IEnumerable<KeyValuePair<string, string>> emailNamePairs, string bidId)
+        private async Task<Response> NotifyList(string body, string subject, IEnumerable<KeyValuePair<string, string>> emailNamePairs)
         {
             MailRequest request = new MailRequest() {
                 Body = body,
@@ -116,7 +111,7 @@ namespace YOTY.Service.Core.Managers.Notifications
             foreach (var emailNamePair in emailNamePairs)
             {
                 request.ToEmail = emailNamePair.Key;
-                request.Body = this.personalizeBody(body, emailNamePair.Value, bidId);
+                request.Body = this.personalizeBody(body, emailNamePair.Value);
                 try
                 {
                     await _mail.SendEmailAsync(request);
@@ -133,14 +128,9 @@ namespace YOTY.Service.Core.Managers.Notifications
         {
             return $"{callerName} success";
         }
-        private string personalizeBody(string body, string name, string bidId)
+        private string personalizeBody(string body, string name)
         {
-            string bidUrl = this.getBidUrl(bidId);
-            return $"<b>Hello {name}</b>,<br /><br /> {body} <br />visit <a href='{bidUrl}'>the group page</a> for more info <br /><br />  Thanks <br />The UniBuy Team!";
-        }
-
-        private string getBidUrl(string bidId) {
-            return $"{domain}/groups/{bidId}";
+            return $"<b>Hello {name}</b>,<br /><br /> {body} <br /><br /> Thanks <br />The UniBuy Team!";
         }
 
         public async Task<Response> NotifyBidChosenSupplier(string bidId, string body, string subject)
@@ -156,7 +146,7 @@ namespace YOTY.Service.Core.Managers.Notifications
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
             }
-            return await NotifyList(body, subject, emailNamePairs, bidId);
+            return await NotifyList(body, subject, emailNamePairs);
         }
 
         public Task<Response> NotifyBidAllCompletion(string bidId)
@@ -166,16 +156,7 @@ namespace YOTY.Service.Core.Managers.Notifications
 
         public Task<Response> NotifyBidParticipantsTimeToVote(string bidId)
         {
-            return this.NotifyBidParticipants(bidId, TimeToVoteForSuppliersToParticipantsBody, TimeToVoteForSuppliersToParticipantsSubject);
-        }
-        public async Task<Response> NotifyBidTimeToVote(string bidId)
-        {
-            var res1 = await this.NotifyBidParticipantsTimeToVote(bidId);
-            if (!res1.IsOperationSucceeded)
-            {
-                return res1;
-            }
-            return await this.NotifyBidSuppliers(bidId, VoteStartedToSuppliersBody, VoteStartedToSuppliersSubject);
+            return this.NotifyBidParticipants(bidId, TimeToVoteForSuppliersBody, TimeToVoteForSuppliersSubject);
         }
 
         public Task<Response> NotifyBidParticipantsTimeToPay(string bidId)
@@ -196,11 +177,6 @@ namespace YOTY.Service.Core.Managers.Notifications
                 return res2;
             }
             return await this.NotifyBidChosenSupplier(bidId, FoundChosenSupplierToChosenSuppliersBody, FoundChosenSupplierSubject);
-        }
-
-        public Task<Response> NotifyBidParticipantsSupplierNotFoundCancellation(string bidId)
-        {
-            return this.NotifyBidParticipants(bidId, SupplierNotFoundCancellationBody, SupplierNotFoundCancellationSubject);
         }
 
         public Task<Response> NotifyBidParticipantsSupplierCancellation(string bidId)
