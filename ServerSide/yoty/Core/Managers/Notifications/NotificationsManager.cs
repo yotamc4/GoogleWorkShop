@@ -18,13 +18,16 @@ namespace YOTY.Service.Core.Managers.Notifications
         private const string TimeToVoteForSuppliersSubject = "Time To Vote - UniBuy";
         private const string TimeToPayBody = "A supplier proposal for the group-buy you are participating in has been chosen! <br /><br /><b>please visit the groups page during this time and complete payment.</b>";
         private const string TimeToPaySubject = "Time To Pay - UniBuy";
-        private const string SupplierCancellationBody = "We are sorry to inform you that the supplier has canceled the deal for now, as other participants canceled their participations.";
+        private const string SupplierCancellationBody = "We are sorry to inform you that the supplier has canceled the deal for now,  <br />as other participants canceled their participations.";
         private const string SupplierCancellationSubject = "Deal Cancellation - UniBuy";
         private const string GroupCompletionBody = "The group-buy you participated in has come to completion <br /><br />We hope you had a satisfying experience, always at your service.";
         private const string GroupCompletionSubject = "Group-Buy Completed - UniBuy";
         private const string ProgressBarCompletionToParticipantsBody = "A group-buy you are participating in has fulfilled a new proposal requirements!";
-        private const string ProgressBarCompletionToSuppliersBody = "A proposal to a group-buy you've made a proposal in has just reached its requirements.";
+        private const string ProgressBarCompletionToSuppliersBody = "A proposal to a group-buy you've also made a proposal to has just reached its requirements.";
         private const string ProgressBarCompletionSubject = "Group Met Proposal Terms - UniBuy";
+        private const string FoundChosenSupplierToSuppliersBody = "A proposal to a group-buy you've also made a proposal to has been selected.";
+        private const string FoundChosenSupplierToChosenSuppliersBody = "Congrats! your proposal has been selected by majority of the group-buy participants,  <br />They group is now entering the payment phase.";
+        private const string FoundChosenSupplierSubject = "Proposal Selected - UniBuy";
 
         private readonly YotyContext _context;
         private readonly IMapper _mapper;
@@ -130,9 +133,20 @@ namespace YOTY.Service.Core.Managers.Notifications
             return $"<b>Hello {name}</b>,<br /><br /> {body} <br /><br /> Thanks <br />The UniBuy Team!";
         }
 
-        public Task<Response> NotifyBidChosenSupplier(string bidId, string body, string subject)
+        public async Task<Response> NotifyBidChosenSupplier(string bidId, string body, string subject)
         {
-            throw new NotImplementedException();
+            IEnumerable<KeyValuePair<string, string>> emailNamePairs;
+
+            try
+            { 
+            var supplier = _context.Bids.Where(bid => bid.Id == bidId).Include(bid => bid.ChosenProposal).ThenInclude(p => p.Supplier).Select(bid => bid.ChosenProposal.Supplier);
+            emailNamePairs = await supplier.Select(s => new KeyValuePair<string, string>(s.Email, s.Name)).ToListAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
+            }
+            return await NotifyList(body, subject, emailNamePairs);
         }
 
         public Task<Response> NotifyBidAllCompletion(string bidId)
@@ -150,15 +164,34 @@ namespace YOTY.Service.Core.Managers.Notifications
             return this.NotifyBidParticipants(bidId, TimeToPayBody, TimeToPaySubject);
         }
 
+        public async Task<Response> NotifyBidTimeToPay(string bidId)
+        {
+            var res1 = await this.NotifyBidParticipantsTimeToPay(bidId);
+            if (!res1.IsOperationSucceeded)
+            {
+                return res1;
+            }
+            var res2 = await this.NotifyBidSuppliers(bidId, FoundChosenSupplierToSuppliersBody, FoundChosenSupplierSubject);
+            if (!res2.IsOperationSucceeded)
+            {
+                return res2;
+            }
+            return await this.NotifyBidChosenSupplier(bidId, FoundChosenSupplierToChosenSuppliersBody, FoundChosenSupplierSubject);
+        }
+
         public Task<Response> NotifyBidParticipantsSupplierCancellation(string bidId)
         {
             return this.NotifyBidParticipants(bidId, SupplierCancellationBody, SupplierCancellationSubject);
         }
 
-        public Task<Response> NotifyBidAllProgressBarCompletion(string bidId)
+        public async Task<Response> NotifyBidAllProgressBarCompletion(string bidId)
         {
-            this.NotifyBidSuppliers(bidId, ProgressBarCompletionToSuppliersBody, ProgressBarCompletionSubject);
-            return this.NotifyBidParticipants(bidId, ProgressBarCompletionToParticipantsBody, ProgressBarCompletionSubject);
+            var res1 = await this.NotifyBidSuppliers(bidId, ProgressBarCompletionToSuppliersBody, ProgressBarCompletionSubject);
+            if (!res1.IsOperationSucceeded)
+            {
+                return res1;
+            }
+            return await this.NotifyBidParticipants(bidId, ProgressBarCompletionToParticipantsBody, ProgressBarCompletionSubject);
         }
     }
 }

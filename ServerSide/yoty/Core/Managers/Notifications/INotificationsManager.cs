@@ -18,7 +18,9 @@ namespace YOTY.Service.Core.Managers.Notifications
 
         Task<Response> NotifyBidParticipantsTimeToVote(string bidId);
 
-        Task<Response> NotifyBidParticipantsTimeToPay(string bidId)
+        Task<Response> NotifyBidTimeToPay(string bidId);
+
+        Task<Response> NotifyBidParticipantsTimeToPay(string bidId);
 
         Task<Response> NotifyBidParticipantsSupplierCancellation(string bidId);
 

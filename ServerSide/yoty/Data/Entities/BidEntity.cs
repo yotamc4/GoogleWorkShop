@@ -10,7 +10,6 @@ namespace YOTY.Service.Data.Entities
     // data structure represents product bit with crud
     public class BidEntity
     {
-
         [Key]
         public string Id { get; set; }
 
@@ -35,5 +34,7 @@ namespace YOTY.Service.Data.Entities
         public List<SupplierProposalEntity> CurrentProposals { get; set; }
 
         public List<ParticipancyEntity> CurrentParticipancies { get; set; }
+
+        public SupplierProposalEntity ChosenProposal { get; set; }
     }
 }
