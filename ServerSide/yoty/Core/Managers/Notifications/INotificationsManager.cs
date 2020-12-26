@@ -14,20 +14,12 @@ namespace YOTY.Service.Core.Managers.Notifications
 
         Task<Response> NotifyBidAllProgressBarCompletion(string bidId);
 
-        Task<Response> NotifyBidSuppliers(string bidId, string body, string subject);
-
-        Task<Response> NotifyBidParticipantsTimeToVote(string bidId);
+        Task<Response> NotifyBidTimeToVote(string bidId);
 
         Task<Response> NotifyBidTimeToPay(string bidId);
 
-        Task<Response> NotifyBidParticipantsTimeToPay(string bidId);
+        Task<Response> NotifyBidParticipantsSupplierNotFoundCancellation(string bidId);
 
         Task<Response> NotifyBidParticipantsSupplierCancellation(string bidId);
-
-        Task<Response> NotifyBidParticipants(string bidId, string body, string subject);
-
-        Task<Response> NotifyBidAll(string bidId, string body, string subject);
-
-        Task<Response> NotifyBidChosenSupplier(string bidId, string body, string subject);
     }
 } 

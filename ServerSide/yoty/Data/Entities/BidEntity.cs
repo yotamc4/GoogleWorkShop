@@ -36,5 +36,7 @@ namespace YOTY.Service.Data.Entities
         public List<ParticipancyEntity> CurrentParticipancies { get; set; }
 
         public SupplierProposalEntity ChosenProposal { get; set; }
+
+        public BidPhase Phase { get; set; }
     }
 }

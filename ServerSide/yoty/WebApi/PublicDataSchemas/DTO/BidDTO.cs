@@ -3,6 +3,7 @@
 namespace YOTY.Service.WebApi.PublicDataSchemas
 {
     using System;
+    using YOTY.Service.Data;
 
     // data structure represents product bit with crud
     public class BidDTO: BaseDTO
@@ -27,6 +28,7 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 
         public int UnitsCounter { get; set; }
 
+        public BidPhase Phase { get; set; }
     }
 
     public enum BidStatus
