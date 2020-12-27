@@ -4,6 +4,7 @@ namespace YOTY.Service.WebApi.Controllers
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Routing;
@@ -12,6 +13,7 @@ namespace YOTY.Service.WebApi.Controllers
     using YOTY.Service.WebApi.PublicDataSchemas;
 
     // The controller has designed by the API best-practises doc here:https://hackernoon.com/restful-api-designing-guidelines-the-best-practices-60e1d954e7c9
+    [Authorize]
     [ApiController]
     [Route("api/v1/[controller]")]
     public class BidsController: ControllerBase
