@@ -1,13 +1,13 @@
 ﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
-namespace YOTY.Service.WebApi.Controllers
+namespace UniBuy.WebApi.Controllers
 {
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Routing;
-    using YOTY.Service.Core.Managers.Buyers;
-    using YOTY.Service.WebApi.PublicDataSchemas;
+    using UniBuy.Core.Managers.Buyers;
+    using UniBuy.WebApi.PublicDataSchemas;
 
     [ApiController]
     [Route("api/v1/[controller]")]

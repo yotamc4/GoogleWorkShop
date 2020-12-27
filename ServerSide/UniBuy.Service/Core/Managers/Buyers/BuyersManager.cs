@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using YOTY.Service.Data;
-using YOTY.Service.Data.Entities;
-using YOTY.Service.WebApi.PublicDataSchemas;
+﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
-namespace YOTY.Service.Core.Managers.Buyers
+namespace UniBuy.Service.Core.Managers.Buyers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
+    using AutoMapper;
+    using Microsoft.EntityFrameworkCore;
+    using UniBuy.Service.Data;
+    using UniBuy.Service.Data.Entities;
+    using UniBuy.Service.WebApi.PublicDataSchemas;
+
     public class BuyersManager : IBuyersManager
     {
         private const string BuyerNotFoundFailString = "Failed, Buyer not found";

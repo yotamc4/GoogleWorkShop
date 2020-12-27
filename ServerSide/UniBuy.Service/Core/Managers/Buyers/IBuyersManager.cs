@@ -1,10 +1,10 @@
 ﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
-namespace YOTY.Service.Core.Managers.Buyers
+namespace UniBuy.Service.Core.Managers.Buyers
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using YOTY.Service.WebApi.PublicDataSchemas;
+    using UniBuy.Service.WebApi.PublicDataSchemas;
 
     public interface IBuyersManager
     {
