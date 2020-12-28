@@ -42,5 +42,22 @@ namespace YOTY.Service.WebApi.Controllers
             // at the moment
             return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);           
         }
+
+        [HttpGet]
+        [Route("{buyerId}/bids")]
+        public async Task<ActionResult<BidsDTO>> GetBidsCreatedByBuyer(string buyerId, [FromQuery] BuyerBidsRequestOptions buyerBidsRequestOptions)
+        {
+            Response<BidsDTO> response = buyerBidsRequestOptions.IsCreatedByBuyer ?
+                await this.buyersManager.GetBidsCreatedByBuyer(buyerId, buyerBidsRequestOptions.BidsTime).ConfigureAwait(false) :
+                await this.buyersManager.GetBuyerBids(buyerId, buyerBidsRequestOptions.BidsTime).ConfigureAwait(false);
+
+            if (response.IsOperationSucceeded)
+            {
+                return response.DTOObject;
+            }
+
+            // at the moment
+            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
+        }
     }
 }

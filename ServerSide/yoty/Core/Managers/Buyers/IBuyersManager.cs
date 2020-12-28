@@ -13,11 +13,9 @@ namespace YOTY.Service.Core.Managers.Buyers
         Task<Response> DeleteBuyer(string buyerId); // c0
         Task<Response<BuyerDTO>> GetBuyer(string buyerId); //c0
 
-        Task<Response<List<BidDTO>>> GetBuyerLiveBids(string buyerId); //c1
+        Task<Response<BidsDTO>> GetBuyerBids(string buyerId, BidsTime timeFiler);
 
-        Task<Response<List<BidDTO>>> GetBuyerOldBids(string buyerId); //c1
-
-        Task<Response<List<BidDTO>>> GetBidsCreatedByBuyer(string buyerId);//c1
+        Task<Response<BidsDTO>> GetBidsCreatedByBuyer(string buyerId, BidsTime timeFiler);//c1
 
     }
 }

@@ -277,12 +277,10 @@ namespace YOTY.Service.Core.Managers.Bids
                     .Select(bidEntity => _mapper.Map<BidDTO>(bidEntity))
                     .ToList();
 
-                BidsDTO bidsDTO = new BidsDTO {
-                    PageNumber = bidsFilters.Page,
-                    NumberOfPages = (int)Math.Ceiling((double)filteredBids.Count() / pageSize),
-                    PageSize = pageSize,
-                    BidsPage = bidsPage,
-                };
+                BidsDTO bidsDTO = new BidsDTO(
+                    pageNumber: bidsFilters.Page,
+                    numberOfPages: (int)Math.Ceiling((double)filteredBids.Count() / pageSize),
+                    bidsPage: bidsPage);
 
                 return new Response<BidsDTO>() { DTOObject = bidsDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
 
@@ -291,7 +289,7 @@ namespace YOTY.Service.Core.Managers.Bids
 
         private async Task<Response<BidsDTO>> GetDefaultHomePageBids(int page)
         {
-            List<BidDTO> bidsTask = await _context.Bids
+            List<BidDTO> bids = await _context.Bids
                 .OrderByDescending(bid => bid.UnitsCounter)
                 .OrderByDescending(bid => bid.PotenialSuplliersCounter)
                 .OrderBy(bid => bid.ExpirationDate)
@@ -305,12 +303,10 @@ namespace YOTY.Service.Core.Managers.Bids
             int numberOfBids = await _context.Bids.CountAsync().ConfigureAwait(false);
 
 
-            BidsDTO bidsDTO = new BidsDTO {
-                PageNumber = page,
-                NumberOfPages = (int)Math.Ceiling((double)numberOfBids / _pageDefaultSize),
-                PageSize = _pageDefaultSize,
-                BidsPage = bidsTask,
-            };
+            BidsDTO bidsDTO = new BidsDTO(
+                pageNumber: page,
+                numberOfPages: (int)Math.Ceiling((double)numberOfBids / _pageDefaultSize),
+                bidsPage: bids);
 
             return new Response<BidsDTO>() { DTOObject = bidsDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }

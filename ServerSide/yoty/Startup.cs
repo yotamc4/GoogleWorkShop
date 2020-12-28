@@ -17,6 +17,7 @@ namespace yoty
     using System;
     using Hangfire;
     using Hangfire.SqlServer;
+    using Microsoft.AspNetCore.Authentication;
 
     public class Startup
     {
@@ -72,6 +73,8 @@ namespace yoty
             app.UseRouting();
 
             app.UseCors();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
