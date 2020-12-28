@@ -44,12 +44,10 @@ namespace YOTY.Service.Core.Managers.Notifications
         }
 
         // FOR TESTING canceled 
-        public async static Task<Response> Ping(string bidId)
+        public async static Task<Response> Ping(string bidId, IMailService mail, YotyContext context)
         {
             try
             {
-                IMailService mail = new MailService(new MailSettings() { DisplayName = "UniBuy", Host = "smtp.gmail.com", Password = "UniBuyIsTheBest", Mail = "unibuy.notifications@gmail.com", Port = 587 });
-                YotyContext context = new YotyContext();
                 var bid = await context.Bids.FindAsync(bidId).ConfigureAwait(false);
                 MailRequest request = new MailRequest() {
                     Body = personalizeBody(VoteStartedToSuppliersBody, $"Yotam Cohen {bid.Category}", "fakeBidId"),

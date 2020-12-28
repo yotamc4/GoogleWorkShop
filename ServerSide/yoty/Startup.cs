@@ -17,7 +17,7 @@ namespace yoty
     using System;
     using Hangfire;
     using Hangfire.SqlServer;
-    using Microsoft.AspNetCore.Authentication;
+    using YOTY.Service.Core.Services.Scheduling;
 
     public class Startup
     {
@@ -45,6 +45,7 @@ namespace yoty
             services.AddDbContext<YotyContext>(options => options.UseSqlServer("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData"));
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.AddTransient<IMailService, MailService>();
+            services.AddSingleton<IScheduler, Scheduler>();
             services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
@@ -54,7 +55,7 @@ namespace yoty
                     SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
                     QueuePollInterval = TimeSpan.Zero,
                     UseRecommendedIsolationLevel = true,
-                    DisableGlobalLocks = true // Migration to Schema 7 is required
+                    DisableGlobalLocks = true
                 }));
         }
 

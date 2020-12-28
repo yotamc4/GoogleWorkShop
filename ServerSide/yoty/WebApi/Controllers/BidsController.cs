@@ -59,8 +59,6 @@ namespace YOTY.Service.WebApi.Controllers
         [Route("{bidId}")]
         public async Task<ActionResult<BidDTO>> GetBid(string bidId)
         {
-            RecurringJob.AddOrUpdate(() => NotificationsManager.Ping(bidId), Cron.Hourly, TimeZoneInfo.Local);
-            Console.WriteLine("InGetBid");
             Response<BidDTO> response = await this.bidsManager.GetBid(bidId).ConfigureAwait(false);
             if (response.IsOperationSucceeded )
             {
@@ -242,34 +240,6 @@ namespace YOTY.Service.WebApi.Controllers
         public async Task<string> Ping()
         {
             return "Hi";
-        }
-
-        // TODO run this every 24 hours or by schedule
-        private async Task<Response> TryUpdateBidPhaseAndNotify(string bidId)
-        {
-            var updatePhaseResponse = await this.bidsManager.TryUpdatePhase(bidId).ConfigureAwait(false);
-            
-            Response notificationResponse;
-            Response updateProposalsResponse;
-            if (!updatePhaseResponse.IsOperationSucceeded)
-            {
-                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = updatePhaseResponse.SuccessOrFailureMessage };
-            }
-            switch (updatePhaseResponse.DTOObject)
-            {
-                case BidPhase.Vote:
-                    notificationResponse = await this.notificationsManager.NotifyBidTimeToVote(bidId).ConfigureAwait(false);
-                    updateProposalsResponse = await this.bidsManager.UpdateBidProposalsToRelevant(bidId).ConfigureAwait(false);
-                    break;
-                case BidPhase.Payment:
-                    notificationResponse = await this.notificationsManager.NotifyBidTimeToPay(bidId).ConfigureAwait(false);
-                    updateProposalsResponse = await this.bidsManager.UpdateBidProposalsToRelevant(bidId).ConfigureAwait(false);
-                    break;
-                case BidPhase.CancelledSupplierNotFound:
-                    notificationResponse = await this.notificationsManager.NotifyBidParticipantsSupplierNotFoundCancellation(bidId).ConfigureAwait(false);
-                    break;
-            }
-            return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = "blabla" };
         }
     }
 }
