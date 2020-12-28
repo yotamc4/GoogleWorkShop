@@ -15,6 +15,8 @@ namespace yoty
     using Microsoft.EntityFrameworkCore;
     using YOTY.Service.Core.Services.Mail;
     using System;
+    using Hangfire;
+    using Hangfire.SqlServer;
 
     public class Startup
     {
@@ -42,7 +44,17 @@ namespace yoty
             services.AddDbContext<YotyContext>(options => options.UseSqlServer("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData"));
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.AddTransient<IMailService, MailService>();
-
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData", new SqlServerStorageOptions {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                    QueuePollInterval = TimeSpan.Zero,
+                    UseRecommendedIsolationLevel = true,
+                    DisableGlobalLocks = true // Migration to Schema 7 is required
+                }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,6 +81,9 @@ namespace yoty
             });
 
             app.UseMiddleware<CorrelationIdMiddleware>();
+
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();
         }
     }
 }

@@ -17,6 +17,11 @@ namespace YOTY.Service.Core.Services.Mail
             _mailSettings = mailSettings.Value;
         }
 
+        public MailService(MailSettings mailSettings)
+        {
+            _mailSettings = mailSettings;
+        }
+
         public async Task SendEmailAsync(MailRequest mailRequest)
         {
             var email = new MimeMessage();

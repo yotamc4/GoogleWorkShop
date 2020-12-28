@@ -2,8 +2,10 @@
 
 namespace YOTY.Service.WebApi.Controllers
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Hangfire;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Routing;
@@ -55,6 +57,8 @@ namespace YOTY.Service.WebApi.Controllers
         [Route("{bidId}")]
         public async Task<ActionResult<BidDTO>> GetBid(string bidId)
         {
+            RecurringJob.AddOrUpdate(() => NotificationsManager.Ping(bidId), Cron.Hourly, TimeZoneInfo.Local);
+            Console.WriteLine("InGetBid");
             Response<BidDTO> response = await this.bidsManager.GetBid(bidId).ConfigureAwait(false);
             if (response.IsOperationSucceeded )
             {

@@ -8,8 +8,6 @@ namespace YOTY.Service.Core.Managers.Notifications
 {
     public interface INotificationsManager
     {
-        Task<Response> Ping();
-
         Task<Response> NotifyBidAllCompletion(string bidId);
 
         Task<Response> NotifyBidAllProgressBarCompletion(string bidId);

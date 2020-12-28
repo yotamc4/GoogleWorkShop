@@ -35,33 +35,34 @@ namespace YOTY.Service.Core.Managers.Notifications
 
         private const string domain = "https://localhost:3000";
         private readonly YotyContext _context;
-        private readonly IMapper _mapper;
         private readonly IMailService _mail;
 
-        public NotificationsManager(IMapper mapper, YotyContext context, IMailService mail)
+        public NotificationsManager(YotyContext context, IMailService mail)
         {
-            _mapper = mapper;
             _context = context;
             _mail = mail;
         }
 
         // FOR TESTING canceled 
-        public async Task<Response> Ping()
+        public async static Task<Response> Ping(string bidId)
         {
-            MailRequest request = new MailRequest() {
-                Body = this.personalizeBody(VoteStartedToSuppliersBody, "Yotam Cohen", "fakeBidId"),
-                Subject = VoteStartedToSuppliersSubject,
-                ToEmail = "yotamc4@gmail.com",
-            };
             try
             {
-                await _mail.SendEmailAsync(request);
+                IMailService mail = new MailService(new MailSettings() { DisplayName = "UniBuy", Host = "smtp.gmail.com", Password = "UniBuyIsTheBest", Mail = "unibuy.notifications@gmail.com", Port = 587 });
+                YotyContext context = new YotyContext();
+                var bid = await context.Bids.FindAsync(bidId).ConfigureAwait(false);
+                MailRequest request = new MailRequest() {
+                    Body = personalizeBody(VoteStartedToSuppliersBody, $"Yotam Cohen {bid.Category}", "fakeBidId"),
+                    Subject = VoteStartedToSuppliersSubject,
+                    ToEmail = "yotamc4@gmail.com",
+                };
+                await mail.SendEmailAsync(request);
             }
             catch (Exception ex)
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
             }
-            return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+            return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = "Ping Pong" };
         }
 
         public async Task<Response> NotifyBidSuppliers(string bidId, string body, string subject)
@@ -116,7 +117,7 @@ namespace YOTY.Service.Core.Managers.Notifications
             foreach (var emailNamePair in emailNamePairs)
             {
                 request.ToEmail = emailNamePair.Key;
-                request.Body = this.personalizeBody(body, emailNamePair.Value, bidId);
+                request.Body = personalizeBody(body, emailNamePair.Value, bidId);
                 try
                 {
                     await _mail.SendEmailAsync(request);
@@ -133,13 +134,13 @@ namespace YOTY.Service.Core.Managers.Notifications
         {
             return $"{callerName} success";
         }
-        private string personalizeBody(string body, string name, string bidId)
+        private static string personalizeBody(string body, string name, string bidId)
         {
-            string bidUrl = this.getBidUrl(bidId);
+            string bidUrl = getBidUrl(bidId);
             return $"<b>Hello {name}</b>,<br /><br /> {body} <br />visit <a href='{bidUrl}'>the group page</a> for more info <br /><br />  Thanks <br />The UniBuy Team!";
         }
 
-        private string getBidUrl(string bidId) {
+        private static string getBidUrl(string bidId) {
             return $"{domain}/groups/{bidId}";
         }
 
