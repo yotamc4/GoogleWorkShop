@@ -17,6 +17,7 @@ namespace YOTY.Service.Core.Managers.Bids
         Task<Response<BidDTO>> GetBid(string bidId);
         Task<Response<List<BuyerDTO>>> GetBidBuyers(string bidId);
         Task<Response<List<SupplierProposalDTO>>> GetBidSuppliersProposals(string bidId);
+        Task<Response<List<ParticipancyDTO>>> GetBidParticipations(string bidId);
 
         // modify bid
         Task<Response> AddBuyer(BidBuyerJoinRequest bidBuyerJoinRequest);

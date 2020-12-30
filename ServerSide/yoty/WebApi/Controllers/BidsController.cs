@@ -93,6 +93,19 @@ namespace YOTY.Service.WebApi.Controllers
             return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
         }
 
+        [HttpGet]
+        [Route("{bidId}/participants")]
+        public async Task<ActionResult<List<ParticipancyDTO>>> GetBidParticipations(string bidId)
+        {
+            Response<List<ParticipancyDTO>> response = await bidsManager.GetBidParticipations(bidId).ConfigureAwait(false);
+            if (response.IsOperationSucceeded)
+            {
+                return response.DTOObject;
+            }
+            // at the moment
+            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
+        }
+
         [HttpPost]
         [Route("{bidId}/buyers")]
         public async Task<ActionResult> AddBuyer(string bidId, BidBuyerJoinRequest bidBuyerJoinRequest)
@@ -180,6 +193,24 @@ namespace YOTY.Service.WebApi.Controllers
             }
 
             Response response = await this.bidsManager.VoteForSupplier(votingRequest).ConfigureAwait(false);
+            if (response.IsOperationSucceeded)
+            {
+                return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
+            }
+
+            return this.StatusCode(StatusCodes.Status405MethodNotAllowed, response.SuccessOrFailureMessage);
+        }
+
+        [HttpPost]
+        [Route("{bidId}/vote")]
+        public async Task<ActionResult> VoteForSupplier(MarkPaidRequest markPaidRequest)
+        {
+            if (!markPaidRequest.BidId.IsValidId() || !markPaidRequest.BuyerId.IsValidId() || !markPaidRequest.MarkingUserId.IsValidId())
+            {
+                return this.StatusCode(StatusCodes.Status400BadRequest, $"one of the following: bidId: {markPaidRequest.BidId}, buyerId: {markPaidRequest.BuyerId} supplierId: {markPaidRequest.MarkingUserId} are not legal id");
+            }
+
+            Response response = await this.bidsManager.MarkPaid(markPaidRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
