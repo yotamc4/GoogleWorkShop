@@ -30,16 +30,4 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 
         public BidPhase Phase { get; set; }
     }
-
-    public enum BidStatus
-    {
-        OpenToRegistration,
-        SupplierSelection,
-        BuyersPayments,
-        CompletedSuccssesfully,
-        FailedSupplierNotFound,
-        FailedNotReachedItemsNumberGoal,
-        ClosedByOwner,
-        // failed in payments bacause buyers didn't fullfill their commitment?
-    }
 }

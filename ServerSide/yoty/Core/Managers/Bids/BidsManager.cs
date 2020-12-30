@@ -42,7 +42,9 @@ namespace YOTY.Service.Core.Managers.Bids
             bid.CurrentParticipancies.Add(new ParticipancyEntity {
                 BidId = bidBuyerJoinRequest.BidId,
                 BuyerId = bidBuyerJoinRequest.BuyerId,
-                NumOfUnits = bidBuyerJoinRequest.Items
+                NumOfUnits = bidBuyerJoinRequest.Items,
+                HasPaid = false,
+                HasVoted = false,
             });
             bid.UnitsCounter += bidBuyerJoinRequest.Items;
             try
@@ -232,20 +234,31 @@ namespace YOTY.Service.Core.Managers.Bids
             bid_ent.CurrentParticipancies.ForEach(p => buyers.Add(_mapper.Map<BuyerDTO>(p.Buyer)));
             return new Response<List<BuyerDTO>>() { DTOObject = buyers, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
-        public async Task<Response<List<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId)
-        {
-            BidEntity bid_ent = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.CurrentProposals).FirstOrDefaultAsync().ConfigureAwait(false);
-            if (bid_ent == null)
-            {
-                return new Response<List<SupplierProposalDTO>>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
-            }
-            List<SupplierProposalDTO> proposals = new List<SupplierProposalDTO>();
-            foreach (SupplierProposalEntity proposal_ent in bid_ent.CurrentProposals)
-            {
-                proposals.Add(_mapper.Map<SupplierProposalDTO>(proposal_ent));
-            }
 
-            return new Response<List<SupplierProposalDTO>>() { DTOObject = proposals, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+        public async Task<Response<List<SupplierProposalDTO>>> GetBidSuppliersProposals(string bidId)
+        {
+            try
+            {
+                List<SupplierProposalDTO> proposals = await _context.Set<SupplierProposalEntity>().Where(p => p.BidId == bidId).Select(p => _mapper.Map<SupplierProposalDTO>(p)).ToListAsync().ConfigureAwait(false);
+                return new Response<List<SupplierProposalDTO>>() { DTOObject = proposals, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+            }
+            catch
+            {
+                return new Response<List<SupplierProposalDTO>>() { IsOperationSucceeded = false, SuccessOrFailureMessage = "error querying for proposals" };
+            }
+        }
+
+        public async Task<Response<List<ParticipancyDTO>>> GetBidParticipations(string bidId)
+        {
+            try
+            {
+                List<ParticipancyDTO> participancies = await _context.Set<ParticipancyEntity>().Where(p => p.BidId == bidId).Select(p => _mapper.Map<ParticipancyDTO>(p)).ToListAsync().ConfigureAwait(false);
+                return new Response<List<ParticipancyDTO>>() { DTOObject = participancies, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+            }
+            catch
+            {
+                return new Response<List<ParticipancyDTO>>() { IsOperationSucceeded = false, SuccessOrFailureMessage = "error querying for proposals" };
+            }
         }
 
         public async Task<Response<BidsDTO>> GetBids(BidsQueryOptions bidsFilters)
@@ -338,6 +351,7 @@ namespace YOTY.Service.Core.Managers.Bids
         {
             return $"{callerName} success";
         }
+
         private static bool FilterByCategories(BidEntity bid, string category, string subCategory)
         {
             if (category == null)
@@ -355,6 +369,7 @@ namespace YOTY.Service.Core.Managers.Bids
 
             return false;
         }
+        
         private static bool FilterByPrices(BidEntity bid, int maxPriceFilter, int minPriceFilter)
         {
             return
@@ -438,6 +453,7 @@ namespace YOTY.Service.Core.Managers.Bids
 
             return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
+
         public async Task<Response> GetProposalWithMaxVotes(string bidId)
         {
             BidEntity bid = await _context.Bids.Where(bid => bid.Id == bidId).Include(bid => bid.CurrentProposals).FirstOrDefaultAsync().ConfigureAwait(false);
@@ -458,6 +474,28 @@ namespace YOTY.Service.Core.Managers.Bids
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
             }
 
+            return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+        }
+
+        public async Task<Response> MarkPaid(MarkPaidRequest request)
+        {
+            // TODO add validation that the marking user is the chosen supplier
+            DbSet<ParticipancyEntity> participancies_db = _context.Set<ParticipancyEntity>();
+            var p = await participancies_db.FindAsync(request.BidId, request.BuyerId).ConfigureAwait(false);
+            if (p == null)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = "participation not found" };
+            }
+            p.HasPaid = request.HasPaid;
+            try
+            {
+                participancies_db.Update(p);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
+            }
             return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 

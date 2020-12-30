@@ -82,9 +82,9 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpGet]
         [Route("{bidId}/proposals")]
-        public async Task<ActionResult<List<SupplierProposalDTO>>> GetBidSuplliersProposals(string bidId)
+        public async Task<ActionResult<List<SupplierProposalDTO>>> GetBidSuppliersProposals(string bidId)
         {
-            Response<List<SupplierProposalDTO>> response = await bidsManager.GetBidSuplliersProposals(bidId).ConfigureAwait(false);
+            Response<List<SupplierProposalDTO>> response = await bidsManager.GetBidSuppliersProposals(bidId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
                 return response.DTOObject;
