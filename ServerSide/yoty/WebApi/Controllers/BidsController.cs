@@ -205,7 +205,7 @@ namespace YOTY.Service.WebApi.Controllers
             Response notificationResponse = await this.notificationsManager.NotifyBidParticipantsSupplierCancellation(cancellationRequest.BidId).ConfigureAwait(false);
             if (notificationResponse.IsOperationSucceeded)
             {
-                return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
+                return this.StatusCode(StatusCodes.Status200OK, notificationResponse.SuccessOrFailureMessage);
             }
             return this.StatusCode(StatusCodes.Status405MethodNotAllowed, notificationResponse.SuccessOrFailureMessage);
         }
@@ -227,7 +227,7 @@ namespace YOTY.Service.WebApi.Controllers
             Response notificationResponse = await this.notificationsManager.NotifyBidAllCompletion(completionRequest.BidId).ConfigureAwait(false);
             if (notificationResponse.IsOperationSucceeded)
             {
-                return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
+                return this.StatusCode(StatusCodes.Status200OK, notificationResponse.SuccessOrFailureMessage);
             }
             return this.StatusCode(StatusCodes.Status405MethodNotAllowed, notificationResponse.SuccessOrFailureMessage);
         }
