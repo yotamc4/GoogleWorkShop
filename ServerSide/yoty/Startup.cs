@@ -14,7 +14,6 @@ namespace yoty
     using Newtonsoft.Json;
     using YOTY.Service.Data;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.AspNetCore.Authentication;
 
     public class Startup
     {
@@ -40,13 +39,6 @@ namespace yoty
             services.AddCorrelationIdOptions();
             services.AddManagers();
             services.AddDbContext<YotyContext>(options => options.UseSqlServer("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData"));
-
-            services.AddAuthentication()
-                .AddFacebook(facebookOptions =>
-                {
-                    facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
-                    facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,8 +56,6 @@ namespace yoty
             app.UseRouting();
 
             app.UseCors();
-
-            app.UseAuthentication();
 
             app.UseAuthorization();
 
