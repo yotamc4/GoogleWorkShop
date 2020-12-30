@@ -463,15 +463,8 @@ namespace YOTY.Service.Core.Managers.Bids
 
         public async Task<Response<BidPhase>> TryUpdatePhase(string bidId)
         {
-            BidEntity bid_ent;
-            try
-            {
-                bid_ent = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.CurrentProposals).FirstOrDefaultAsync().ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                return new Response<BidPhase>() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
-            }
+            BidEntity bid_ent = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.CurrentProposals).FirstOrDefaultAsync().ConfigureAwait(false);
+
             if (bid_ent == null)
             {
                 return new Response<BidPhase>() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
@@ -481,7 +474,7 @@ namespace YOTY.Service.Core.Managers.Bids
             switch (currentPhase)
             {
                 case BidPhase.Join:
-                    if (bid_ent.ExpirationDate >= DateTime.Now)
+                    if (bid_ent.ExpirationDate <= DateTime.Now)
                     {
                         List<SupplierProposalEntity> relevantProposals = bid_ent.CurrentProposals.Where(proposal => proposal.MinimumUnits <= bid_ent.UnitsCounter && proposal.ProposedPrice <= bid_ent.MaxPrice).ToList();
                         int numOfProposals = relevantProposals.Count();
@@ -500,29 +493,22 @@ namespace YOTY.Service.Core.Managers.Bids
                     }
                     break;
                 case BidPhase.Vote:
-                    if (bid_ent.ExpirationDate.AddHours(48) >= DateTime.Now)
+                    if (bid_ent.ExpirationDate.AddHours(48) <= DateTime.Now)
                     {
                         newPhase = BidPhase.Payment;
                     }
                     break;
-                // All others should update syncronicly (with events)
+                // All others should update synchronously (with events)
                 default:
                     break;
             }
             if (newPhase != currentPhase)
             {
-                try
-                {
-                    bid_ent.Phase = newPhase;
-                    _context.Bids.Update(bid_ent);
-                    await _context.SaveChangesAsync().ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    return new Response<BidPhase>() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
-                }
+                bid_ent.Phase = newPhase;
+                _context.Bids.Update(bid_ent);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
             }
-            return new Response<BidPhase>() { IsOperationSucceeded = newPhase == currentPhase, SuccessOrFailureMessage = this.getSuccessMessage(), DTOObject = newPhase };
+            return new Response<BidPhase>() { IsOperationSucceeded = newPhase != currentPhase, SuccessOrFailureMessage = this.getSuccessMessage(), DTOObject = newPhase };
         }
 
         public async Task<Response> UpdateBidProposalsToRelevant(string bidId)
@@ -535,6 +521,10 @@ namespace YOTY.Service.Core.Managers.Bids
             try
             {
                 bid_ent.CurrentProposals = bid_ent.CurrentProposals.Where(proposal => proposal.MinimumUnits <= bid_ent.UnitsCounter && proposal.ProposedPrice <= bid_ent.MaxPrice).ToList();
+                if (bid_ent.CurrentProposals.Count() == 1)
+                {
+                    bid_ent.ChosenProposal = bid_ent.CurrentProposals.First();
+                }
                 _context.Bids.Update(bid_ent);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
             }

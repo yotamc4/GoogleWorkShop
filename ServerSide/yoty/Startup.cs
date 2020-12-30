@@ -57,6 +57,9 @@ namespace yoty
                     UseRecommendedIsolationLevel = true,
                     DisableGlobalLocks = true
                 }));
+
+            JobStorage.Current = new SqlServerStorage("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData");
+            RecurringJob.AddOrUpdate("UpdateBidsDaily",() => BidsUpdateJobs.UpdateBidsPhaseDaily(), Cron.Daily, TimeZoneInfo.Local);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

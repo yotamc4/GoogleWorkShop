@@ -5,14 +5,12 @@ namespace YOTY.Service.WebApi.Controllers
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Hangfire;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Routing;
     using YOTY.Service.Core.Managers.Bids;
     using YOTY.Service.Core.Managers.Notifications;
-    using YOTY.Service.Data;
     using YOTY.Service.Utils;
     using YOTY.Service.WebApi.PublicDataSchemas;
     using YOTY.Service.WebApi.PublicDataSchemas.ClientRequest;

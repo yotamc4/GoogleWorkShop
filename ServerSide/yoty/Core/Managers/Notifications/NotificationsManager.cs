@@ -70,7 +70,8 @@ namespace YOTY.Service.Core.Managers.Notifications
             {
                 emailNamePairs = await _context.Set<SupplierProposalEntity>()
                 .Where(p => p.BidId == bidId).Include(p => p.Supplier).Select(p => new KeyValuePair<string, string>(p.Supplier.Email, p.Supplier.Name)).ToListAsync().ConfigureAwait(false);
-
+                // Console.WriteLine("NotifyBidSuppliers");
+                // Console.WriteLine(string.Join(", ", emailNamePairs.Select(p => p.ToString())));
             }
             catch (Exception ex)
             {
@@ -86,6 +87,8 @@ namespace YOTY.Service.Core.Managers.Notifications
             {
                 emailNamePairs = await _context.Set<ParticipancyEntity>()
                 .Where(p => p.BidId == bidId).Include(p => p.Buyer).Select(p => new KeyValuePair<string, string>(p.Buyer.Email, p.Buyer.Name)).ToListAsync().ConfigureAwait(false);
+                // Console.WriteLine("NotifyBidParticipants");
+                // Console.WriteLine(string.Join(", ", emailNamePairs.Select(p => p.ToString())));
             }
             catch (Exception ex)
             {
@@ -142,6 +145,10 @@ namespace YOTY.Service.Core.Managers.Notifications
             return $"{domain}/groups/{bidId}";
         }
 
+        public async Task<Response> NotifyBidChosenSupplier(string bidId)
+        {
+            return await this.NotifyBidChosenSupplier(bidId, FoundChosenSupplierToChosenSuppliersBody, FoundChosenSupplierSubject);
+        }
         public async Task<Response> NotifyBidChosenSupplier(string bidId, string body, string subject)
         {
             IEnumerable<KeyValuePair<string, string>> emailNamePairs;
@@ -189,12 +196,7 @@ namespace YOTY.Service.Core.Managers.Notifications
             {
                 return res1;
             }
-            var res2 = await this.NotifyBidSuppliers(bidId, FoundChosenSupplierToSuppliersBody, FoundChosenSupplierSubject);
-            if (!res2.IsOperationSucceeded)
-            {
-                return res2;
-            }
-            return await this.NotifyBidChosenSupplier(bidId, FoundChosenSupplierToChosenSuppliersBody, FoundChosenSupplierSubject);
+            return await this.NotifyBidSuppliers(bidId, FoundChosenSupplierToSuppliersBody, FoundChosenSupplierSubject);
         }
 
         public Task<Response> NotifyBidParticipantsSupplierNotFoundCancellation(string bidId)
