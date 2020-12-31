@@ -45,7 +45,7 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpGet]
         [Route("{buyerId}/bids")]
-        public async Task<ActionResult<BidsDTO>> GetBidsCreatedByBuyer(string buyerId, [FromQuery] BuyerBidsRequestOptions buyerBidsRequestOptions)
+        public async Task<ActionResult<BidsDTO>> GetBuyerBids(string buyerId, [FromQuery] BuyerBidsRequestOptions buyerBidsRequestOptions)
         {
             Response<BidsDTO> response = buyerBidsRequestOptions.IsCreatedByBuyer ?
                 await this.buyersManager.GetBidsCreatedByBuyer(buyerId, buyerBidsRequestOptions.BidsTime).ConfigureAwait(false) :
