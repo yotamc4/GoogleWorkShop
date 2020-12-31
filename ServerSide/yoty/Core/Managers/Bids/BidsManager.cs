@@ -420,7 +420,7 @@ namespace YOTY.Service.Core.Managers.Bids
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
             }
 
-            ParticipancyEntity participancy = bid.CurrentParticipancies.Where(p => p.BuyerId == votingRequest.BuyerId).First();
+            ParticipancyEntity participancy = bid.CurrentParticipancies.Where(p => p.BuyerId == votingRequest.BuyerId).FirstOrDefault();
             if (participancy == null)
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = $"Buyer {votingRequest.BuyerId} is not part of the bids buyers." };
@@ -431,7 +431,7 @@ namespace YOTY.Service.Core.Managers.Bids
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = $"Buyer {votingRequest.BuyerId} has already voted" };
             }
 
-            SupplierProposalEntity proposal = bid.CurrentProposals.Where(p => p.SupplierId == votingRequest.VotedSupplierId).First();
+            SupplierProposalEntity proposal = bid.CurrentProposals.Where(p => p.SupplierId == votingRequest.VotedSupplierId).FirstOrDefault();
             if (proposal == null)
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = $"no proposal for supplier: {votingRequest.VotedSupplierId} has found for the bid." };
@@ -461,7 +461,7 @@ namespace YOTY.Service.Core.Managers.Bids
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
             }
-            SupplierProposalEntity chosenProposalEntity = bid.CurrentProposals.Where(p => p.BidId == bidId).Aggregate(
+            SupplierProposalEntity chosenProposalEntity = bid.CurrentProposals.Where(proposal => proposal.MinimumUnits <= bid.UnitsCounter && proposal.ProposedPrice <= bid.MaxPrice).Aggregate(
                 (currWinner, x) => (currWinner == null || x.Votes > currWinner.Votes ? x : currWinner));
             bid.ChosenProposal = chosenProposalEntity;
             try
