@@ -47,7 +47,7 @@ namespace YOTY.Service.Core.Managers.Buyers
             }
             return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
-        public async Task<Response<BidsDTO>> GetBuyerBids(string buyerId, BidsTime timeFiler)
+        public async Task<Response<BidsDTO>> GetBuyerBids(string buyerId, BidsTime timeFilter)
         {
             var buyer = await _context.Buyers.Where(b => b.Id == buyerId).Include(b => b.CurrentParticipancies).ThenInclude(p => p.Bid).FirstOrDefaultAsync().ConfigureAwait(false);
             if (buyer == null)
@@ -55,15 +55,15 @@ namespace YOTY.Service.Core.Managers.Buyers
                 return new Response<BidsDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BuyerNotFoundFailString };
             }
 
-            List<BidDTO> liveBids = buyer.CurrentParticipancies.Select(p => p.Bid).Where(bid=> FilterBuyerBids(bid, timeFiler)).Select(bid => _mapper.Map<BidDTO>(bid)).ToList();
+            List<BidDTO> liveBids = buyer.CurrentParticipancies.Select(p => p.Bid).Where(bid=> FilterBuyerBids(bid, timeFilter)).Select(bid => _mapper.Map<BidDTO>(bid)).ToList();
             return new Response<BidsDTO>() { DTOObject = BidsDTO.CreateDefaultBidsPage(liveBids), IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
 
-        public async Task<Response<BidsDTO>> GetBidsCreatedByBuyer(string buyerId, BidsTime timeFiler)
+        public async Task<Response<BidsDTO>> GetBidsCreatedByBuyer(string buyerId, BidsTime timeFilter)
         {
             //validate existence
-            var buyer = await _context.Buyers.Where(b => b.Id == buyerId).Include(b => b.CurrentParticipancies).ThenInclude(p => p.Bid).FirstOrDefaultAsync().ConfigureAwait(false);
+            var buyer = await _context.Buyers.FindAsync(buyerId).ConfigureAwait(false);
             if (buyer == null)
             {
                 return new Response<BidsDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BuyerNotFoundFailString };
@@ -73,16 +73,15 @@ namespace YOTY.Service.Core.Managers.Buyers
             return new Response<BidsDTO>() { DTOObject = BidsDTO.CreateDefaultBidsPage(ownedBids), IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
-        private static bool FilterBuyerBids(BidEntity buyerBid, BidsTime timeFiler)
+        private static bool FilterBuyerBids(BidEntity buyerBid, BidsTime timeFilter)
         {
-            DateTime currentTime = DateTime.Now;
-
-            switch (timeFiler)
+            HashSet<BidPhase> livePhases = new HashSet<BidPhase>() { BidPhase.Join, BidPhase.Vote, BidPhase.Payment};
+            switch (timeFilter)
             {
                 case BidsTime.Old:
-                    return buyerBid.ExpirationDate <= currentTime;
+                    return !livePhases.Contains(buyerBid.Phase);
                 case BidsTime.Live:
-                    return buyerBid.ExpirationDate > currentTime;
+                    return livePhases.Contains(buyerBid.Phase);
                 default: //null
                     return true;
             }
