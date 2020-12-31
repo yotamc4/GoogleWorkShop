@@ -1,9 +1,5 @@
 import { Bid, NewBidRequest } from "../Modal/GroupDetails";
-import {
-  buildUrlWithQueryParams,
-  makePostRequest,
-  queryParamsObjectType,
-} from "./ControllerUtils";
+import { buildUrlWithQueryParams, makePostRequest } from "./ControllerUtils";
 
 export async function submitNewGroupForm(
   bidRequest: NewBidRequest

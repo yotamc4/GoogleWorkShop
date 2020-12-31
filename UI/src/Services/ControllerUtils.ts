@@ -14,6 +14,18 @@ export async function makePostRequest<T>(
   return await fetch(url, options);
 }
 
+export async function makeGetRequest<T>(url: string): Promise<Response> {
+  const options = {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json;",
+    },
+  };
+
+  return await fetch(url, options);
+}
+
 export function buildUrlWithQueryParams(
   stringUrl: string,
   params: Map<string, string>
