@@ -2,62 +2,158 @@ import * as React from "react";
 import { TextField } from "office-ui-fabric-react/lib/TextField";
 import { Image, ImageFit } from "office-ui-fabric-react/lib/Image";
 import { classNames } from "./GroupListStyles";
-import { Stack } from "@fluentui/react";
+import {
+  DetailsList,
+  DetailsListLayoutMode,
+  IColumn,
+  Link,
+  SelectionMode,
+  Stack,
+} from "@fluentui/react";
+import { Bid } from "../Modal/GroupDetails";
 
-export const ItemsList: React.FunctionComponent<{
-  originalItems: groupListItem[];
+export const GroupsList: React.FunctionComponent<{
+  groups: Bid[];
 }> = (props) => {
-  const [items, setItems] = React.useState<groupListItem[]>(
-    props.originalItems
-  );
+  const [currentGroups, setCurrentGroups] = React.useState<Bid[]>(props.groups);
+  const [currentColumns, setCurrentColumns] = React.useState<IColumn[]>([]);
+
+  const onColumnClick = (
+    ev: React.MouseEvent<HTMLElement>,
+    column: IColumn
+  ): void => {
+    const newColumns: IColumn[] = columns.slice();
+    const currColumn: IColumn = newColumns.filter(
+      (currCol) => column.key === currCol.key
+    )[0];
+
+    newColumns.forEach((newCol: IColumn) => {
+      if (newCol === currColumn) {
+        currColumn.isSortedDescending = !currColumn.isSortedDescending;
+        currColumn.isSorted = true;
+      } else {
+        newCol.isSorted = false;
+        newCol.isSortedDescending = true;
+      }
+    });
+
+    const newItems = _copyAndSort(
+      currentGroups,
+      currColumn.fieldName!,
+      currColumn.isSortedDescending
+    );
+
+    setCurrentGroups(newItems);
+    setCurrentColumns(newColumns);
+  };
+
+  const columns: IColumn[] = [
+    {
+      key: "column1",
+      name: "Group",
+      minWidth: 70,
+      maxWidth: 150,
+      data: "string",
+      onRender: (group: Bid) => {
+        return (
+          <Link href={`/products/${group.id}`}>{group.product!.name}</Link>
+        );
+      },
+      isResizable: true,
+    },
+    {
+      key: "column2",
+      name: "Expiration Date",
+      minWidth: 70,
+      maxWidth: 130,
+      isSorted: true,
+      isSortedDescending: false,
+      fieldName: "expirationDate",
+      onColumnClick: onColumnClick,
+      onRender: (group: Bid) => {
+        return <span>{group.expirationDate.toLocaleDateString()}</span>;
+      },
+    },
+    {
+      key: "column3",
+      name: "Creation Date",
+      minWidth: 70,
+      maxWidth: 130,
+      isSorted: true,
+      isSortedDescending: false,
+      fieldName: "creationDate",
+      onColumnClick: onColumnClick,
+      onRender: (group: Bid) => {
+        return <span>{group.creationDate.toLocaleDateString()}</span>;
+      },
+    },
+    {
+      key: "column4",
+      name: "Group stage",
+      minWidth: 70,
+      maxWidth: 100,
+      isSorted: true,
+      isSortedDescending: false,
+      fieldName: "phase",
+      onColumnClick: onColumnClick,
+      onRender: (group: Bid) => {
+        return (
+          // In the future we will get the group's stage from the BE.
+          <span>{"Temp Phase"}</span>
+        );
+      },
+    },
+  ];
 
   const resultCountText =
-    items.length === props.originalItems.length
+    currentGroups.length === props.groups.length
       ? ""
-      : ` (${items.length} of ${props.originalItems.length} shown)`;
+      : ` (${currentGroups.length} of ${props.groups.length} shown)`;
 
   const onFilterChanged = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>
   ): void => {
-    setItems(
-      props.originalItems.filter(
-        (item) =>
-          item.name
-            .toLowerCase()
+    setCurrentGroups(
+      props.groups.filter(
+        (group) =>
+          group
+            .product!.name.toLowerCase()
             .indexOf((event.target as HTMLInputElement).value.toLowerCase()) >=
           0
       )
     );
   };
 
+  React.useEffect(() => {
+    setCurrentColumns(columns);
+  }, []);
+
   return (
-    <Stack tokens={{ childrenGap: "1rem" }}>
+    <Stack tokens={{ childrenGap: "1rem" }} data-is-scrollable>
       <TextField
-        label={"Filter by name" + resultCountText}
+        label={"Filter by name:" + resultCountText}
         onChange={onFilterChanged}
       />
-      <div className={classNames.list}>
-        {items.map((item) => (
-          <div className={classNames.itemCell} data-is-focusable={true}>
-            <Image
-              className={classNames.itemImage}
-              src={item?.imageUrl}
-              width={50}
-              height={50}
-              imageFit={ImageFit.cover}
-            />
-            <div className={classNames.itemContent}>
-              <div className={classNames.itemName}>{item?.name}</div>
-            </div>
-          </div>
-        ))}
-      </div>
+      <DetailsList
+        items={currentGroups}
+        columns={currentColumns}
+        layoutMode={DetailsListLayoutMode.justified}
+        isHeaderVisible={true}
+        selectionMode={SelectionMode.none}
+      />
     </Stack>
   );
 };
 
-export interface groupListItem {
-  link: string;
-  imageUrl: string;
-  name: string;
+function _copyAndSort<T>(
+  items: T[],
+  columnKey: string,
+  isSortedDescending?: boolean
+): T[] {
+  const key = columnKey as keyof T;
+  return items
+    .slice(0)
+    .sort((a: T, b: T) =>
+      (isSortedDescending ? a[key] < b[key] : a[key] > b[key]) ? 1 : -1
+    );
 }
