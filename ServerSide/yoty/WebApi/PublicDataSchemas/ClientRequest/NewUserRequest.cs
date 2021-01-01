@@ -7,11 +7,8 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 
     public class NewUserRequest
     {
-        [JsonProperty("firstName")]
-        public string FirstName { get; set; }
-
-        [JsonProperty("lastName")]
-        public string LastName { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
 
         [JsonProperty("userId")]
         public string Id { get; set; }

@@ -69,7 +69,7 @@ namespace YOTY.Service.Core.Managers.Notifications
             try
             {
                 emailNamePairs = await _context.Set<SupplierProposalEntity>()
-                .Where(p => p.BidId == bidId).Include(p => p.Supplier).Select(p => new KeyValuePair<string, string>(p.Supplier.Email, p.Supplier.FirstName)).ToListAsync().ConfigureAwait(false);
+                .Where(p => p.BidId == bidId).Include(p => p.Supplier).Select(p => new KeyValuePair<string, string>(p.Supplier.Email, p.Supplier.Name)).ToListAsync().ConfigureAwait(false);
                 // Console.WriteLine("NotifyBidSuppliers");
                 // Console.WriteLine(string.Join(", ", emailNamePairs.Select(p => p.ToString())));
             }
@@ -86,7 +86,7 @@ namespace YOTY.Service.Core.Managers.Notifications
             try
             {
                 emailNamePairs = await _context.Set<ParticipancyEntity>()
-                .Where(p => p.BidId == bidId).Include(p => p.Buyer).Select(p => new KeyValuePair<string, string>(p.Buyer.Email, p.Buyer.FirstName)).ToListAsync().ConfigureAwait(false);
+                .Where(p => p.BidId == bidId).Include(p => p.Buyer).Select(p => new KeyValuePair<string, string>(p.Buyer.Email, p.Buyer.Name)).ToListAsync().ConfigureAwait(false);
                 // Console.WriteLine("NotifyBidParticipants");
                 // Console.WriteLine(string.Join(", ", emailNamePairs.Select(p => p.ToString())));
             }
@@ -156,7 +156,7 @@ namespace YOTY.Service.Core.Managers.Notifications
             try
             { 
             var supplier = _context.Bids.Where(bid => bid.Id == bidId).Include(bid => bid.ChosenProposal).ThenInclude(p => p.Supplier).Select(bid => bid.ChosenProposal.Supplier);
-            emailNamePairs = await supplier.Select(s => new KeyValuePair<string, string>(s.Email, s.FirstName)).ToListAsync().ConfigureAwait(false);
+            emailNamePairs = await supplier.Select(s => new KeyValuePair<string, string>(s.Email, s.Name)).ToListAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
