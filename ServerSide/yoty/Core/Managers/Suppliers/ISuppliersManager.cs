@@ -8,8 +8,8 @@ namespace YOTY.Service.Core.Managers.Suppliers
 
     public interface ISuppliersManager
     {
-        Task<Response<SupplierDTO>> CreateSupplier(NewSupplierRequest newSupplierRequest); // c0
-        Task<Response<SupplierDTO>> ModifySupplierDetails(); // c0
+        Task<Response> CreateSupplier(NewUserRequest newSupplierRequest); // c0
+        Task<Response> ModifySupplierDetails(); // c0
         Task<Response> DeleteSupplier(string supplierId); // c0
         Task<Response<SupplierDTO>> GetSupplier(string supplierId); //c0
         Task<Response<List<BidDTO>>> GetSupplierLiveBids(string supplierId); //c0
