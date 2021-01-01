@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -9,9 +10,19 @@ namespace YOTY.Service.Data.Entities
         [Key]
         public string Id { get; set; }
 
-        public string Name { get; set; }
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
 
         public string Email { get; set; }
+
+        public string Description { get; set; }
+
+        public Uri PaymentLink { get; set; }
+
+        public Uri ProfilePicture { get; set; }
+
+        public string PhoneNumber { get; set; }
 
         public double Rating { get; set; }
 

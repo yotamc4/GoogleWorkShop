@@ -8,8 +8,8 @@ namespace YOTY.Service.Core.Managers.Buyers
 
     public interface IBuyersManager
     {
-        Task<Response<BuyerDTO>> CreateBuyer(NewBuyerRequest newBuyerRequest); // c0
-        Task<Response<BuyerDTO>> ModifyBuyerDetails(); // c0
+        Task<Response> CreateBuyer(NewUserRequest newUserRequest); // c0
+        Task<Response> ModifyBuyerDetails(); // c0
         Task<Response> DeleteBuyer(string buyerId); // c0
         Task<Response<BuyerDTO>> GetBuyer(string buyerId); //c0
 

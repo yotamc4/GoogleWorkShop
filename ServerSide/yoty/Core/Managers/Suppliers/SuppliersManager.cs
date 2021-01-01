@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using YOTY.Service.Data;
+using YOTY.Service.Data.Entities;
 using YOTY.Service.WebApi.PublicDataSchemas;
 
 namespace YOTY.Service.Core.Managers.Suppliers
@@ -21,9 +22,19 @@ namespace YOTY.Service.Core.Managers.Suppliers
             _mapper = mapper;
             _context = context;
         }
-        public Task<Response<SupplierDTO>> CreateSupplier(NewSupplierRequest newSupplierRequest)
+        public async Task<Response> CreateSupplier(NewUserRequest request)
         {
-            throw new NotImplementedException();
+            SupplierEntity newSupplier = _mapper.Map<SupplierEntity>(request);
+            try
+            {
+                _context.Suppliers.Add(newSupplier);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
+            }
+            return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
         public async Task<Response> DeleteSupplier(string supplierId)
@@ -81,9 +92,29 @@ namespace YOTY.Service.Core.Managers.Suppliers
             return new Response<List<BidDTO>>() { DTOObject = liveBids, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
-        public Task<Response<SupplierDTO>> ModifySupplierDetails()
+        public async Task<Response> ModifySupplierDetails()
         {
-            throw new NotImplementedException();
+            string supplierId = "stam", description = "stam", phoneNumber = "stam", email = "stam";
+            Uri paymentLink = new Uri("stam");
+            var supplier = await _context.Suppliers.FindAsync(supplierId).ConfigureAwait(false);
+            if (supplier == null)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = SupplierNotFoundFailString };
+            }
+            supplier.Description = description;
+            supplier.PaymentLink = paymentLink;
+            supplier.PhoneNumber = phoneNumber;
+            supplier.Email = email;
+            try
+            {
+                _context.Suppliers.Update(supplier);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
+            }
+            return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
         private string getSuccessMessage([CallerMemberName] string callerName = "")

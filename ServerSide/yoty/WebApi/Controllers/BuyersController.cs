@@ -20,12 +20,12 @@ namespace YOTY.Service.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<BuyerDTO>> CreateBuyer(NewBuyerRequest newBuyerRequest)
+        public async Task<ActionResult> CreateBuyer(NewUserRequest newUserRequest)
         {
-            Response<BuyerDTO> response = await this.buyersManager.CreateBuyer(newBuyerRequest).ConfigureAwait(false);
+            Response response = await this.buyersManager.CreateBuyer(newUserRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
-                return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
+                return this.StatusCode(StatusCodes.Status201Created, response.SuccessOrFailureMessage);
             }
             return this.StatusCode(StatusCodes.Status403Forbidden, response.SuccessOrFailureMessage);
         }
