@@ -13,39 +13,60 @@ import axios from "axios";
 initializeIcons();
 
 function App() {
-  const { isAuthenticated, user } = useAuth0();
+  const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
 
   React.useEffect(() => {
-    if (
-      isAuthenticated &&
-      user["https://UniBuyClient.workshop.com/isFirstLogin"] === "true"
-    ) {
-      const newUserRequest: NewUserRequest = {
-        name: user.name,
-        email: user.email,
-        profilePicture: user.picture,
-        userId: user.sub,
-      };
-      if (user["https://UniBuyClient.workshop.com/role"] === "Consumer") {
-        axios
-          .post(`https://localhost:5001/api/v1/buyers`, newUserRequest)
-          .then((response) => {
-            console.log(response);
-          })
-          .catch((error) => {
-            console.error(error);
+    const getAccessTokenAndRegisterNewUser = async () => {
+      if (
+        isAuthenticated &&
+        user["https://UniBuyClient.workshop.com/isFirstLogin"] === "true"
+      ) {
+        try {
+          const accessToken = await getAccessTokenSilently({
+            audience: `https://UniBuyBackend.workshop.com`,
           });
-      } else {
-        axios
-          .post(`https://localhost:5001/api/v1/Suppliers`, newUserRequest)
-          .then((response) => {
-            console.log(response);
-          })
-          .catch((error) => {
-            console.error(error);
-          });
+          const config = {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          };
+          const newUserRequest: NewUserRequest = {
+            name: user.name,
+            email: user.email,
+            profilePicture: user.picture,
+            userId: user.sub,
+          };
+          if (user["https://UniBuyClient.workshop.com/role"] === "Consumer") {
+            axios
+              .post(
+                `https://localhost:5001/api/v1/buyers`,
+                newUserRequest,
+                config
+              )
+              .then((response) => {
+                console.log(response);
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          } else {
+            axios
+              .post(
+                `https://localhost:5001/api/v1/Suppliers`,
+                newUserRequest,
+                config
+              )
+              .then((response) => {
+                console.log(response);
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          }
+        } catch (e) {
+          console.log(e.message);
+        }
       }
-    }
+    };
+    getAccessTokenAndRegisterNewUser();
   }, [isAuthenticated]);
   return (
     <>

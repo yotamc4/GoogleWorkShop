@@ -15,10 +15,8 @@ namespace YOTY.Service.WebApi.Controllers
     using YOTY.Service.WebApi.PublicDataSchemas;
 
     // The controller has designed by the API best-practises doc here:https://hackernoon.com/restful-api-designing-guidelines-the-best-practices-60e1d954e7c9
-    [Authorize]
     [ApiController]
     [Route("api/v1/[controller]")]
-    [Authorize]
     public class BidsController: ControllerBase
     {
         private IBidsManager bidsManager;
