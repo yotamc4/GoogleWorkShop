@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace YOTY.Service.WebApi.PublicDataSchemas.ClientRequest
+namespace YOTY.Service.WebApi.PublicDataSchemas
 {
     public class CompletionRequest
     {

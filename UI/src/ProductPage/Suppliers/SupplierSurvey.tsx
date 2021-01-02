@@ -41,7 +41,7 @@ export const SuppliersSurvey: React.FunctionComponent<ISuppliersSurveyProps> = (
   const onClickVoteButton = (): void => {
     const voteData: IVotingRequest = {
       bidId: id,
-      buyerId: "EliLeherId",
+      buyerId: "OfekDavid123",
       votedSupplierId: selectedKey as string,
     };
     axios

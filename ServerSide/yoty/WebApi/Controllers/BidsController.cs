@@ -13,10 +13,8 @@ namespace YOTY.Service.WebApi.Controllers
     using YOTY.Service.Core.Managers.Notifications;
     using YOTY.Service.Utils;
     using YOTY.Service.WebApi.PublicDataSchemas;
-    using YOTY.Service.WebApi.PublicDataSchemas.ClientRequest;
 
     // The controller has designed by the API best-practises doc here:https://hackernoon.com/restful-api-designing-guidelines-the-best-practices-60e1d954e7c9
-    [Authorize]
     [ApiController]
     [Route("api/v1/[controller]")]
     public class BidsController: ControllerBase
@@ -55,12 +53,11 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpGet]
         [Route("{bidId}")]
-        public async Task<ActionResult<BidDTO>> GetBid(string bidId)
+        public async Task<ActionResult<BidDTO>> GetBid(string bidId, [FromQuery] string role, [FromQuery] string id = "")
         {
-            Response<BidDTO> response = await this.bidsManager.GetBid(bidId).ConfigureAwait(false);
+            Response<BidDTO> response = await this.bidsManager.GetBid(bidId, id, role).ConfigureAwait(false);
             if (response.IsOperationSucceeded )
             {
-                
                 return response.DTOObject;
             }
             // at the moment

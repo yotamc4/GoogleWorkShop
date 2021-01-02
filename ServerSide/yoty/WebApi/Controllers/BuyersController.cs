@@ -3,6 +3,7 @@
 namespace YOTY.Service.WebApi.Controllers
 {
     using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Routing;
@@ -11,6 +12,7 @@ namespace YOTY.Service.WebApi.Controllers
 
     [ApiController]
     [Route("api/v1/[controller]")]
+    [Authorize]
     public class BuyersController: ControllerBase
     {
         private IBuyersManager buyersManager;
@@ -20,12 +22,12 @@ namespace YOTY.Service.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<BuyerDTO>> CreateBuyer(NewBuyerRequest newBuyerRequest)
+        public async Task<ActionResult> CreateBuyer(NewUserRequest newUserRequest)
         {
-            Response<BuyerDTO> response = await this.buyersManager.CreateBuyer(newBuyerRequest).ConfigureAwait(false);
+            Response response = await this.buyersManager.CreateBuyer(newUserRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
-                return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
+                return this.StatusCode(StatusCodes.Status201Created, response.SuccessOrFailureMessage);
             }
             return this.StatusCode(StatusCodes.Status403Forbidden, response.SuccessOrFailureMessage);
         }
@@ -54,6 +56,21 @@ namespace YOTY.Service.WebApi.Controllers
             if (response.IsOperationSucceeded)
             {
                 return response.DTOObject;
+            }
+
+            // at the moment
+            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
+        }
+
+        [HttpPost]
+        [Route("details")]
+        public async Task<ActionResult> ModifyBuyerDetails(ModifyBuyerDetailsRequest request)
+        {
+            Response response = await this.buyersManager.ModifyBuyerDetails(request);
+
+            if (response.IsOperationSucceeded)
+            {
+                return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
             }
 
             // at the moment

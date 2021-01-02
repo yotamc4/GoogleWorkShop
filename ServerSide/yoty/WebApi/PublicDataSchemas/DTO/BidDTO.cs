@@ -29,5 +29,7 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
         public int UnitsCounter { get; set; }
 
         public BidPhase Phase { get; set; }
+
+        public bool IsUserInBid { get; set; }
     }
 }

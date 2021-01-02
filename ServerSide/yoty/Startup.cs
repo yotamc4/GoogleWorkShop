@@ -18,6 +18,7 @@ namespace yoty
     using Hangfire;
     using Hangfire.SqlServer;
     using YOTY.Service.Core.Services.Scheduling;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
 
     public class Startup
     {
@@ -31,6 +32,17 @@ namespace yoty
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.Authority = "https://dev--1o3sg23.eu.auth0.com/";
+                options.Audience = "https://UniBuyBackend.workshop.com";
+                options.RequireHttpsMetadata = false;
+            });
+            string connectionString = "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData";
             services.AddCors(option => option.AddDefaultPolicy(
                 builder => {
                     builder.AllowAnyOrigin();
@@ -42,14 +54,14 @@ namespace yoty
             services.AddControllers().AddNewtonsoftJson();
             services.AddCorrelationIdOptions();
             services.AddManagers();
-            services.AddDbContext<YotyContext>(options => options.UseSqlServer("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData"));
+            services.AddDbContext<YotyContext>(options => options.UseSqlServer(connectionString));
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.AddTransient<IMailService, MailService>();
             services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings()
-                .UseSqlServerStorage("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData", new SqlServerStorageOptions {
+                .UseSqlServerStorage(connectionString, new SqlServerStorageOptions {
                     CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
                     SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
                     QueuePollInterval = TimeSpan.Zero,
@@ -57,8 +69,9 @@ namespace yoty
                     DisableGlobalLocks = true
                 }));
 
-            JobStorage.Current = new SqlServerStorage("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData");
-            RecurringJob.AddOrUpdate("UpdateBidsDaily",() => BidsUpdateJobs.UpdateBidsPhaseDaily(), Cron.Daily, TimeZoneInfo.Local);
+            JobStorage.Current = new SqlServerStorage(connectionString);
+            // take this line out of comment when DB exists!
+            // RecurringJob.AddOrUpdate("UpdateBidsDaily",() => BidsUpdateJobs.UpdateBidsPhaseDaily(), Cron.Daily, TimeZoneInfo.Local);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -90,6 +103,7 @@ namespace yoty
 
             app.UseHangfireDashboard();
             app.UseHangfireServer();
+
         }
     }
 }

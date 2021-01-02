@@ -23,9 +23,19 @@ namespace YOTY.Service.Core.Managers.Buyers
             _context = context;
         }
 
-        public Task<Response<BuyerDTO>> CreateBuyer(NewBuyerRequest newBuyerRequest)
+        public async Task<Response> CreateBuyer(NewUserRequest request)
         {
-            throw new NotImplementedException();
+            BuyerEntity newBuyer = _mapper.Map<BuyerEntity>(request);
+            try
+            {
+                _context.Buyers.Add(newBuyer);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
+            }
+            return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
         public async Task<Response> DeleteBuyer(string buyerId)
@@ -98,9 +108,43 @@ namespace YOTY.Service.Core.Managers.Buyers
             return new Response<BuyerDTO>() { DTOObject = buyerDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
-        public Task<Response<BuyerDTO>> ModifyBuyerDetails()
+        public async Task<Response> ModifyBuyerDetails(ModifyBuyerDetailsRequest request)
         {
-            throw new NotImplementedException();
+            var buyer = await _context.Buyers.FindAsync(request.BuyerId).ConfigureAwait(false);
+            if (buyer == null)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BuyerNotFoundFailString };
+            }
+            if (request.Address != null)
+            {
+                buyer.Address = request.Address;
+            }
+            if (request.PostalCode != null)
+            {
+                buyer.PostalCode = request.PostalCode;
+            }
+            if (request.PhoneNumber != null)
+            {
+                buyer.PhoneNumber = request.PhoneNumber;
+            }
+            if (request.Email != null)
+            {
+                buyer.Email = request.Email;
+            }
+            if (request.ProfilePicture != null)
+            {
+                buyer.ProfilePicture = request.ProfilePicture;
+            }
+            try
+            {
+                _context.Buyers.Update(buyer);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
+            }
+            return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
         private string getSuccessMessage([CallerMemberName] string callerName = "")

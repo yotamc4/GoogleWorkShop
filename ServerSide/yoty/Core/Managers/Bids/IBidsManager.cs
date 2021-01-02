@@ -6,7 +6,6 @@ namespace YOTY.Service.Core.Managers.Bids
     using System.Threading.Tasks;
     using YOTY.Service.Data;
     using YOTY.Service.WebApi.PublicDataSchemas;
-    using YOTY.Service.WebApi.PublicDataSchemas.ClientRequest;
 
     public interface IBidsManager
     {
@@ -14,7 +13,7 @@ namespace YOTY.Service.Core.Managers.Bids
         Task<Response> CreateNewBid(NewBidRequest productBid);
 
         // get bid details
-        Task<Response<BidDTO>> GetBid(string bidId);
+        Task<Response<BidDTO>> GetBid(string bidId, string userId, string userRole);
         Task<Response<List<BuyerDTO>>> GetBidBuyers(string bidId);
         Task<Response<List<SupplierProposalDTO>>> GetBidSuppliersProposals(string bidId);
         Task<Response<List<ParticipancyDTO>>> GetBidParticipations(string bidId);
