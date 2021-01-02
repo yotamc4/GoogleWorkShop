@@ -52,7 +52,7 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
       addPropposalToSupplierList({
         publishedTime: String(date),
         bidId: id,
-        supplierId: "1234",
+        supplierId: "Istore@gmail.com",
         supplierName: "Istore",
         ...formInputs,
       });
@@ -61,6 +61,7 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
         publishedTime: date,
         bidId: id,
         supplierId: "Istore@gmail.com",
+        supplierName: "Istore",
         ...formInputs,
       });
     }

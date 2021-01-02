@@ -21,6 +21,9 @@ import {
   StacStyles,
   StacStyles2,
 } from "./LoginBarStyles";
+import LoginButton from "./LoginButton";
+import { useAuth0 } from "@auth0/auth0-react";
+import LogoutButton from "./LogoutButton";
 
 const theme: ITheme = getTheme();
 
@@ -30,17 +33,20 @@ const imagePropsLogo: IImageProps = {
 };
 
 export default function ButtonAppBar() {
+  const { isAuthenticated, user } = useAuth0();
+
   const [picture, setPicture] = React.useState<string>("");
   const [name, setName] = React.useState<string>("");
-  const { isLoggedIn, updateAuthContext } = React.useContext(AuthContext);
 
-  const responseFacebook = (response: any) => {
-    console.log(response);
-    setPicture(response.picture.data.url);
-    setName(response.name);
-
-    //updateAuthContext(response);
-  };
+  React.useEffect(()=>{
+    if (isAuthenticated){
+      setName(user?.name);
+      setPicture(user?.picture);
+    }
+    else{
+      
+    }
+  },[isAuthenticated]);
 
   const history = useHistory();
   const changeHistory = () => {
@@ -60,29 +66,20 @@ export default function ButtonAppBar() {
       </StackItem>
       <Stack>
         <Separator theme={theme} styles={{ content: { width: "75rem" } }} />
-        {picture == "" ? (
-          <Stack horizontal horizontalAlign="space-between" styles={StacStyles}>
-            <Label>Hello Guest!</Label>
-            <FacebookLogin
-              appId="1018527418646121"
-              autoLoad={true}
-              fields="name,email,picture"
-              callback={responseFacebook}
-              buttonStyle={{
-                width: "12rem",
-                fontSize: "0.6rem",
-                height: "2rem",
-                padding: "0.7rem",
-                paddingTop: "0.4rem",
-              }}
-            />
-          </Stack>
-        ) : (
+        {isAuthenticated ? 
+        (
           <Stack horizontal horizontalAlign="space-between" styles={StacStyles}>
             <Persona imageUrl={picture} text={name} />
-            <CommandBarButton text="Logout" disabled={false} checked={false} />
+            <LogoutButton/>
           </Stack>
-        )}
+        )
+        :
+        (
+          <Stack horizontal horizontalAlign="space-between" styles={StacStyles}>
+            <Label>Hello Guest!</Label>
+            <LoginButton/>
+          </Stack>
+        ) }
         <Separator styles={SeperatorStyles} />
       </Stack>
     </Stack>

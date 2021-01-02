@@ -3,6 +3,7 @@
 namespace YOTY.Service.WebApi.Controllers
 {
     using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Routing;
@@ -11,6 +12,7 @@ namespace YOTY.Service.WebApi.Controllers
 
     [ApiController]
     [Route("api/v1/[controller]")]
+    [Authorize]
     public class BuyersController: ControllerBase
     {
         private IBuyersManager buyersManager;
