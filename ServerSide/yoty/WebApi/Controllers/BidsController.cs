@@ -139,7 +139,6 @@ namespace YOTY.Service.WebApi.Controllers
         [HttpPut]
         public async Task<ActionResult<BidDTO>> EditBid(EditBidRequest editBidRequest)
         {
-
             Response<BidDTO> response = await this.bidsManager.EditBid(editBidRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
@@ -153,7 +152,6 @@ namespace YOTY.Service.WebApi.Controllers
         [Route("{bidId}/buyers/{buyerId}")]
         public async Task<ActionResult> DeleteBuyer(string bidId, string buyerId)
         {
-
             Response response = await this.bidsManager.DeleteBuyer(bidId, buyerId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
@@ -169,7 +167,6 @@ namespace YOTY.Service.WebApi.Controllers
         [Route("{bidId}/proposals/{supplierId}")]
         public async Task<ActionResult> DeleteSupplierProposal(string bidId, string supplierId)
         {
-
             Response response = await this.bidsManager.DeleteSupplierProposal(bidId, supplierId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
