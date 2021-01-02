@@ -18,8 +18,8 @@ export interface NewBidRequest {
 
 export interface Bid extends NewBidRequest {
   id: string;
-  ownerId: string;
   potenialSuplliersCounter: number;
   unitsCounter: number;
   creationDate: Date;
+  phase: number;
 }

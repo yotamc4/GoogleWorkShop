@@ -18,6 +18,7 @@ namespace yoty
     using Hangfire;
     using Hangfire.SqlServer;
     using YOTY.Service.Core.Services.Scheduling;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
 
     public class Startup
     {
@@ -31,6 +32,16 @@ namespace yoty
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.Authority = "https://dev--1o3sg23.eu.auth0.com/";
+                options.Audience = "https://UniBuyBackend.workshop.com";
+                options.RequireHttpsMetadata = false;
+            });
             string connectionString = "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData";
             services.AddCors(option => option.AddDefaultPolicy(
                 builder => {
@@ -79,6 +90,10 @@ namespace yoty
             app.UseRouting();
 
             app.UseCors();
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

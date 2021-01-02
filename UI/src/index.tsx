@@ -4,11 +4,20 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
+import { Auth0Provider } from "@auth0/auth0-react";
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <Auth0Provider
+        domain="dev--1o3sg23.eu.auth0.com"
+        clientId="gRDTNywjSyELPUFWi2UbapnCZ2Hs0cJf"
+        redirectUri={window.location.origin}
+        audience="https://UniBuyBackend.workshop.com"
+        cacheLocation="localstorage"
+      >
+        <App />
+      </Auth0Provider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")

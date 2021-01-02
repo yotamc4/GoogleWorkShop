@@ -3,13 +3,15 @@
 namespace YOTY.Service.WebApi.Controllers
 {
     using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using YOTY.Service.Core.Managers.Suppliers;
     using YOTY.Service.WebApi.PublicDataSchemas;
-
+    
     [ApiController]
     [Route("api/v1/[controller]")]
+    [Authorize]
     public class SuppliersController: ControllerBase
     {
         private ISuppliersManager suppliersManager;
