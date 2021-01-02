@@ -70,9 +70,8 @@ namespace yoty
                 }));
 
             JobStorage.Current = new SqlServerStorage(connectionString);
-
-            // comment this line out when trying to create DB
-            RecurringJob.AddOrUpdate("UpdateBidsDaily",() => BidsUpdateJobs.UpdateBidsPhaseDaily(), Cron.Daily, TimeZoneInfo.Local);
+            // take this line out of comment when DB exists!
+            // RecurringJob.AddOrUpdate("UpdateBidsDaily",() => BidsUpdateJobs.UpdateBidsPhaseDaily(), Cron.Daily, TimeZoneInfo.Local);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
