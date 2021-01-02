@@ -14,6 +14,8 @@ namespace yoty
     using Newtonsoft.Json;
     using YOTY.Service.Data;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.IdentityModel.Logging;
 
     public class Startup
     {
@@ -27,6 +29,16 @@ namespace yoty
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.Authority = "https://dev--1o3sg23.eu.auth0.com/";
+                options.Audience = "https://UniBuyBackend.workshop.com";
+                options.RequireHttpsMetadata = false;
+            });
             services.AddCors(option => option.AddDefaultPolicy(
                 builder => {
                     builder.AllowAnyOrigin();
@@ -56,6 +68,8 @@ namespace yoty
             app.UseRouting();
 
             app.UseCors();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

@@ -198,7 +198,7 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
     setIsAddPropposalToSupplierListClicked(true);
   };
 
-  const deletePropposalFromSupplierList = () => {
+  const deletePropposalFromSupplierList = React.useCallback(() => {
     axios
       .delete(
         //TODO: the buyerId should be taken from the context!
@@ -215,7 +215,7 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
       (proposal) => proposal.supplierId != "Istore@gmail.com"
     );
     setListItems(newListItems);
-  };
+  }, [listItems]);
 
   return new Date().getTime() < new Date(expirationDate).getTime() ? (
     <Stack styles={stackStyles}>

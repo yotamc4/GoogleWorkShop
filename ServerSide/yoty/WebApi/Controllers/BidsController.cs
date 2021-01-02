@@ -4,6 +4,7 @@ namespace YOTY.Service.WebApi.Controllers
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Routing;
@@ -14,6 +15,7 @@ namespace YOTY.Service.WebApi.Controllers
     // The controller has designed by the API best-practises doc here:https://hackernoon.com/restful-api-designing-guidelines-the-best-practices-60e1d954e7c9
     [ApiController]
     [Route("api/v1/[controller]")]
+    [Authorize]
     public class BidsController: ControllerBase
     {
         private IBidsManager bidsManager;
@@ -57,7 +59,7 @@ namespace YOTY.Service.WebApi.Controllers
         [HttpGet]
         [Route("{bidId}")]
         public async Task<ActionResult<BidDTO>> GetBid(string bidId)
-        {
+            {
             /*
             return new BidDTO {
                 Id = "onebid",
