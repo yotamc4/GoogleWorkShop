@@ -31,6 +31,7 @@ namespace yoty
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            string connectionString = "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData";
             services.AddCors(option => option.AddDefaultPolicy(
                 builder => {
                     builder.AllowAnyOrigin();
@@ -42,15 +43,14 @@ namespace yoty
             services.AddControllers().AddNewtonsoftJson();
             services.AddCorrelationIdOptions();
             services.AddManagers();
-            services.AddDbContext<YotyContext>(options => options.UseSqlServer("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData"));
+            services.AddDbContext<YotyContext>(options => options.UseSqlServer(connectionString));
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.AddTransient<IMailService, MailService>();
-            /*
             services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings()
-                .UseSqlServerStorage("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData", new SqlServerStorageOptions {
+                .UseSqlServerStorage(connectionString, new SqlServerStorageOptions {
                     CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
                     SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
                     QueuePollInterval = TimeSpan.Zero,
@@ -58,9 +58,10 @@ namespace yoty
                     DisableGlobalLocks = true
                 }));
 
-            JobStorage.Current = new SqlServerStorage("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData");
+            JobStorage.Current = new SqlServerStorage(connectionString);
+
+            // comment this line out when trying to create DB
             RecurringJob.AddOrUpdate("UpdateBidsDaily",() => BidsUpdateJobs.UpdateBidsPhaseDaily(), Cron.Daily, TimeZoneInfo.Local);
-            */
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -86,10 +87,9 @@ namespace yoty
 
             app.UseMiddleware<CorrelationIdMiddleware>();
 
-            /*
             app.UseHangfireDashboard();
             app.UseHangfireServer();
-            */
+
         }
     }
 }
