@@ -53,7 +53,7 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpGet]
         [Route("{bidId}")]
-        public async Task<ActionResult<BidDTO>> GetBid(string bidId, [FromQuery] string id, [FromQuery] string role)
+        public async Task<ActionResult<BidDTO>> GetBid(string bidId, [FromQuery] string role, [FromQuery] string id = "")
         {
             Response<BidDTO> response = await this.bidsManager.GetBid(bidId, id, role).ConfigureAwait(false);
             if (response.IsOperationSucceeded )
