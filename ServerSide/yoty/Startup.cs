@@ -56,6 +56,7 @@ namespace yoty
             services.AddDbContext<YotyContext>(options => options.UseSqlServer("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData"));
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.AddTransient<IMailService, MailService>();
+            /*
             services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
@@ -70,6 +71,7 @@ namespace yoty
 
             JobStorage.Current = new SqlServerStorage("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData");
             RecurringJob.AddOrUpdate("UpdateBidsDaily",() => BidsUpdateJobs.UpdateBidsPhaseDaily(), Cron.Daily, TimeZoneInfo.Local);
+            */
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -87,10 +89,6 @@ namespace yoty
             app.UseRouting();
 
             app.UseCors();
-
-            app.UseAuthentication();
-
-            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

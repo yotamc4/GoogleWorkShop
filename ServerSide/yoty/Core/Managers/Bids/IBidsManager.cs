@@ -6,7 +6,6 @@ namespace YOTY.Service.Core.Managers.Bids
     using System.Threading.Tasks;
     using YOTY.Service.Data;
     using YOTY.Service.WebApi.PublicDataSchemas;
-    using YOTY.Service.WebApi.PublicDataSchemas.ClientRequest;
 
     public interface IBidsManager
     {

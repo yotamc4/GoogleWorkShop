@@ -108,18 +108,33 @@ namespace YOTY.Service.Core.Managers.Buyers
             return new Response<BuyerDTO>() { DTOObject = buyerDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
-        public async Task<Response> ModifyBuyerDetails()
+        public async Task<Response> ModifyBuyerDetails(ModifyBuyerDetailsRequest request)
         {
-            string buyerId = "stam", address = "stam", postalCode = "stam", phoneNumber = "stam", email = "stam";
-            var buyer = await _context.Buyers.FindAsync(buyerId).ConfigureAwait(false);
+            var buyer = await _context.Buyers.FindAsync(request.BuyerId).ConfigureAwait(false);
             if (buyer == null)
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BuyerNotFoundFailString };
             }
-            buyer.Address = address;
-            buyer.PostalCode = postalCode;
-            buyer.PhoneNumber = phoneNumber;
-            buyer.Email = email;
+            if (request.Address != null)
+            {
+                buyer.Address = request.Address;
+            }
+            if (request.PostalCode != null)
+            {
+                buyer.PostalCode = request.PostalCode;
+            }
+            if (request.PhoneNumber != null)
+            {
+                buyer.PhoneNumber = request.PhoneNumber;
+            }
+            if (request.Email != null)
+            {
+                buyer.Email = request.Email;
+            }
+            if (request.ProfilePicture != null)
+            {
+                buyer.ProfilePicture = request.ProfilePicture;
+            }
             try
             {
                 _context.Buyers.Update(buyer);

@@ -59,5 +59,20 @@ namespace YOTY.Service.WebApi.Controllers
             // at the moment
             return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
         }
+
+        [HttpPost]
+        [Route("details")]
+        public async Task<ActionResult> ModifyBuyerDetails(ModifyBuyerDetailsRequest request)
+        {
+            Response response = await this.buyersManager.ModifyBuyerDetails(request);
+
+            if (response.IsOperationSucceeded)
+            {
+                return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
+            }
+
+            // at the moment
+            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
+        }
     }
 }
