@@ -418,7 +418,7 @@ namespace YOTY.Service.Core.Managers.Bids
 
         private static bool FilterByQueryString(BidEntity bid, string queryString)
         {
-            return queryString == null || bid.Product.Name.Contains(queryString) || bid.Product.Description.Contains(queryString);
+            return queryString == null || bid.Product.Name.Contains(queryString, StringComparison.OrdinalIgnoreCase) || bid.Product.Description.Contains(queryString, StringComparison.OrdinalIgnoreCase);
         }
 
         private IEnumerable<BidEntity> GetFilteredBids(BidsQueryOptions bidsFilters)
@@ -624,6 +624,10 @@ namespace YOTY.Service.Core.Managers.Bids
         private async Task<Response> ModifyBidPhase(string bidId, BidPhase newPhase)
         {
             BidEntity bid = await _context.Bids.FindAsync(bidId).ConfigureAwait(false);
+            if (bid == null)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
+            }
             bid.Phase = newPhase;
             try
             {
@@ -635,6 +639,29 @@ namespace YOTY.Service.Core.Managers.Bids
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
             }
             return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+        }
+
+        private async Task<Response<List<OrderDetailsDTO>>> GetPaidCustomersFullOrderDetails(string bidId, string userId)
+        {
+            BidEntity bid = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.CurrentParticipancies).ThenInclude(p=>p.Buyer).Include(b => b.ChosenProposal).FirstOrDefaultAsync();
+            if (bid == null)
+            {
+                return new Response<List<OrderDetailsDTO>>() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
+            }
+            if (userId != bid?.ChosenProposal?.SupplierId)
+            {
+                return new Response<List<OrderDetailsDTO>>() { IsOperationSucceeded = false, SuccessOrFailureMessage = "unauthorized" };
+            }
+            var x = bid.CurrentParticipancies.Where(p => p.HasPaid).Select(p => new OrderDetailsDTO{
+                BuyerName = p.Buyer.Name,
+                BuyerEmail = p.Buyer.Email,
+                BuyerAddress = p.Buyer.Address,
+                BuyerPhoneNumber = p.Buyer.PhoneNumber,
+                BuyerPostalCode = p.Buyer.PostalCode,
+                NumOfOrderedUnits = p.NumOfUnits
+            }).ToList();
+
+            return new Response<List<OrderDetailsDTO>>() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
     }
 }
