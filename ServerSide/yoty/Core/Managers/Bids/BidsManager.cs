@@ -652,7 +652,7 @@ namespace YOTY.Service.Core.Managers.Bids
             {
                 return new Response<List<OrderDetailsDTO>>() { IsOperationSucceeded = false, SuccessOrFailureMessage = "unauthorized" };
             }
-            var x = bid.CurrentParticipancies.Where(p => p.HasPaid).Select(p => new OrderDetailsDTO{
+            List<OrderDetailsDTO> orderDetailsList = bid.CurrentParticipancies.Where(p => p.HasPaid).Select(p => new OrderDetailsDTO{
                 BuyerName = p.Buyer.Name,
                 BuyerEmail = p.Buyer.Email,
                 BuyerAddress = p.Buyer.Address,
@@ -661,7 +661,7 @@ namespace YOTY.Service.Core.Managers.Bids
                 NumOfOrderedUnits = p.NumOfUnits
             }).ToList();
 
-            return new Response<List<OrderDetailsDTO>>() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+            return new Response<List<OrderDetailsDTO>>() { DTOObject = orderDetailsList, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
     }
 }
