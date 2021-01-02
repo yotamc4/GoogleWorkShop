@@ -92,19 +92,33 @@ namespace YOTY.Service.Core.Managers.Suppliers
             return new Response<List<BidDTO>>() { DTOObject = liveBids, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
-        public async Task<Response> ModifySupplierDetails()
+        public async Task<Response> ModifySupplierDetails(ModifySupplierDetailsRequest request)
         {
-            string supplierId = "stam", description = "stam", phoneNumber = "stam", email = "stam";
-            Uri paymentLink = new Uri("stam");
-            var supplier = await _context.Suppliers.FindAsync(supplierId).ConfigureAwait(false);
+            var supplier = await _context.Suppliers.FindAsync(request.SupplierId).ConfigureAwait(false);
             if (supplier == null)
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = SupplierNotFoundFailString };
             }
-            supplier.Description = description;
-            supplier.PaymentLink = paymentLink;
-            supplier.PhoneNumber = phoneNumber;
-            supplier.Email = email;
+            if (request.Description != null)
+            {
+                supplier.Description = request.Description;
+            }
+            if (request.PaymentLink != null)
+            {
+                supplier.PaymentLink = request.PaymentLink;
+            }
+            if (request.PhoneNumber != null)
+            {
+                supplier.PhoneNumber = request.PhoneNumber;
+            }
+            if (request.Email != null)
+            {
+                supplier.Email = request.Email;
+            }
+            if (request.ProfilePicture != null)
+            {
+                supplier.ProfilePicture = request.ProfilePicture;
+            }
             try
             {
                 _context.Suppliers.Update(supplier);

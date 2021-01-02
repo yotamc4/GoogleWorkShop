@@ -2,14 +2,13 @@
 
 namespace YOTY.Service.Core.Managers.Buyers
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using YOTY.Service.WebApi.PublicDataSchemas;
 
     public interface IBuyersManager
     {
         Task<Response> CreateBuyer(NewUserRequest newUserRequest); // c0
-        Task<Response> ModifyBuyerDetails(); // c0
+        Task<Response> ModifyBuyerDetails(ModifyBuyerDetailsRequest request); // c0
         Task<Response> DeleteBuyer(string buyerId); // c0
         Task<Response<BuyerDTO>> GetBuyer(string buyerId); //c0
 
