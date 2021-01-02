@@ -13,7 +13,6 @@ namespace YOTY.Service.Core.Managers.Bids
     using YOTY.Service.Data.Entities;
     using YOTY.Service.Utils;
     using YOTY.Service.WebApi.PublicDataSchemas;
-    using YOTY.Service.WebApi.PublicDataSchemas.ClientRequest;
 
     public class BidsManager : IBidsManager
     {

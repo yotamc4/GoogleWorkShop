@@ -6,7 +6,7 @@ namespace YOTY.Service.Utils.SchemasConversions.AutoMapper.Profiles
     using YOTY.Service.Data.Entities;
     using YOTY.Service.WebApi.PublicDataSchemas;
 
-    public class ParticipancyProfile
+    public class ParticipancyProfile : Profile
     {
         public ParticipancyProfile()
         {

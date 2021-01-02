@@ -1,5 +1,7 @@
 ﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
+using System;
+
 namespace YOTY.Service.WebApi.PublicDataSchemas
 {
     public class BuyerDTO: BaseDTO
@@ -10,9 +12,13 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 
         public string Email { get; set; }
 
-        // FacebookAccount FacebookAccount { get; set; }
+        public string Address { get; set; }
 
-        // public BuyerAccountDetails BuyerAccountDeatails { get;set;}
-    
+        public string PostalCode { get; set; }
+
+        public string PhoneNumber { get; set; }
+
+        public Uri ProfilePicture { get; set; }
+
     }
 }

@@ -10,7 +10,6 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
         [JsonProperty("ownerId")]
         public string OwnerId { get; set; }
 
-        //[JsonRequired]
         [JsonProperty("category")]
         public string Category { get; set; }
 
