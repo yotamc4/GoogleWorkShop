@@ -1,9 +1,9 @@
 ﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
-using Newtonsoft.Json;
-
-namespace YOTY.Service.WebApi.PublicDataSchemas
+namespace UniBuy.Service.WebApi.PublicDataSchemas
 {
+    using Newtonsoft.Json;
+
     public class NewBuyerRequest
     {
         [JsonProperty("name")]

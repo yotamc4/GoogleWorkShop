@@ -20,12 +20,12 @@ namespace YOTY.Service.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<BuyerDTO>> CreateBuyer(NewBuyerRequest newBuyerRequest)
+        public async Task<ActionResult> CreateBuyer(NewUserRequest newUserRequest)
         {
-            Response<BuyerDTO> response = await this.buyersManager.CreateBuyer(newBuyerRequest).ConfigureAwait(false);
+            Response response = await this.buyersManager.CreateBuyer(newUserRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
-                return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
+                return this.StatusCode(StatusCodes.Status201Created, response.SuccessOrFailureMessage);
             }
             return this.StatusCode(StatusCodes.Status403Forbidden, response.SuccessOrFailureMessage);
         }
@@ -41,6 +41,23 @@ namespace YOTY.Service.WebApi.Controllers
             }
             // at the moment
             return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);           
+        }
+
+        [HttpGet]
+        [Route("{buyerId}/bids")]
+        public async Task<ActionResult<BidsDTO>> GetBuyerBids(string buyerId, [FromQuery] BuyerBidsRequestOptions buyerBidsRequestOptions)
+        {
+            Response<BidsDTO> response = buyerBidsRequestOptions.IsCreatedByBuyer ?
+                await this.buyersManager.GetBidsCreatedByBuyer(buyerId, buyerBidsRequestOptions.BidsTime).ConfigureAwait(false) :
+                await this.buyersManager.GetBuyerBids(buyerId, buyerBidsRequestOptions.BidsTime).ConfigureAwait(false);
+
+            if (response.IsOperationSucceeded)
+            {
+                return response.DTOObject;
+            }
+
+            // at the moment
+            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
         }
     }
 }

@@ -1,10 +1,34 @@
 import * as React from "react";
+import * as BuyersControllerServices from "../Services/BuyersControllerServices";
+
 import { Pivot, PivotItem } from "office-ui-fabric-react/lib/Pivot";
 import { buttonHeaderProps } from "./UserProfileStyles";
-import { Stack } from "@fluentui/react";
-import { groupListItem, ItemsList } from "./GroupsList";
+import { Spinner, Stack } from "@fluentui/react";
+import { GroupsList } from "./GroupsList";
+import { Bid } from "../Modal/GroupDetails";
 
 export const UserProfile: React.FunctionComponent = () => {
+  const [groupsUserMemberIn, setGroupsUserMemberIn] = React.useState<Bid[]>();
+  const [groupsCreatedByTheUser, setGroupsCreatedByTheUser] = React.useState<
+    Bid[]
+  >();
+
+  // Replace with real user Id
+  async function updateCurrentProductAndPageNumber() {
+    //TODO - Replace "1" with real userId
+    let [groupsCreatedByTheUser, groupsUserMemberIn] = await Promise.all([
+      BuyersControllerServices.GetBidsCreatedByBuyer(/* useId */ "1"),
+      BuyersControllerServices.GetGroupsBuyerIsParticipant(/* useId */ "1"),
+    ]);
+
+    setGroupsCreatedByTheUser(groupsCreatedByTheUser.bidsPage);
+    setGroupsUserMemberIn(groupsUserMemberIn.bidsPage);
+  }
+
+  React.useEffect(() => {
+    updateCurrentProductAndPageNumber();
+  }, []);
+
   return (
     <Stack horizontalAlign="center">
       <Pivot styles={{ root: { marginBottom: "2rem" } }}>
@@ -14,7 +38,11 @@ export const UserProfile: React.FunctionComponent = () => {
             styles: buttonHeaderProps,
           }}
         >
-          <ItemsList originalItems={itemsForExmples} />
+          {groupsUserMemberIn ? (
+            <GroupsList groups={groupsUserMemberIn} />
+          ) : (
+            <Spinner />
+          )}
         </PivotItem>
         <PivotItem
           headerButtonProps={{
@@ -22,7 +50,11 @@ export const UserProfile: React.FunctionComponent = () => {
             styles: buttonHeaderProps,
           }}
         >
-          <ItemsList originalItems={itemsForExmples} />
+          {groupsCreatedByTheUser ? (
+            <GroupsList groups={groupsCreatedByTheUser} />
+          ) : (
+            <Spinner />
+          )}
         </PivotItem>
         <PivotItem
           headerButtonProps={{
@@ -30,27 +62,13 @@ export const UserProfile: React.FunctionComponent = () => {
             styles: buttonHeaderProps,
           }}
         >
-          <ItemsList originalItems={itemsForExmples} />
+          {groupsUserMemberIn ? (
+            <GroupsList groups={groupsUserMemberIn} />
+          ) : (
+            <Spinner />
+          )}
         </PivotItem>
       </Pivot>
     </Stack>
   );
 };
-
-const itemForExmple: groupListItem = {
-  link: "ynet.co.il",
-  imageUrl: "https://bstore.bezeq.co.il/media/20696/740-2-blue.jpg",
-  name: "Lenovo ThinkPad T4800",
-};
-
-const itemsForExmples: groupListItem[] = [
-  {
-    link: "ynet.co.il",
-    imageUrl: "https://bstore.bezeq.co.il/media/20696/740-2-blue.jpg",
-    name: "Lenovo ThinkPad T4800",
-  },
-];
-
-for (let i = 0; i < 40; i++) {
-  itemsForExmples.push(itemForExmple);
-}

@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace YOTY.Service.Data.Entities
 {
@@ -8,6 +7,8 @@ namespace YOTY.Service.Data.Entities
         public int NumOfUnits { get; set; }
 
         public bool HasVoted { get; set; }
+
+        public bool HasPaid{ get; set; }
 
         //-----------------------------
         //Relationships

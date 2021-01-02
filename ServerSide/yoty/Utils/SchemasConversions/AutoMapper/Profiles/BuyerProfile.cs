@@ -10,7 +10,7 @@ namespace YOTY.Service.Utils.SchemasConversions.AutoMapper.Profiles
         public BuyerProfile()
         {
             CreateMap<BuyerEntity, BuyerDTO>(MemberList.Destination);
-            CreateMap<NewBuyerRequest, BuyerEntity>(MemberList.Source);
+            CreateMap<NewUserRequest, BuyerEntity>(MemberList.Source);
         }
     }
 }

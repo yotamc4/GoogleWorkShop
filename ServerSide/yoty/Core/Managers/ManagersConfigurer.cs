@@ -6,6 +6,7 @@ namespace YOTY.Service.Core.Managers
     using YOTY.Service.Core.Managers.Bids;
     using YOTY.Service.Core.Managers.Buyers;
     using YOTY.Service.Core.Managers.Suppliers;
+    using YOTY.Service.Core.Managers.Notifications;
 
     public static class ManagersConfigurer
     {
@@ -13,7 +14,8 @@ namespace YOTY.Service.Core.Managers
         {
             return services.AddScoped<IBidsManager, BidsManager>()
                     .AddScoped<IBuyersManager, BuyersManager>()
-                    .AddScoped<ISuppliersManager, SuppliersManager>();        
+                    .AddScoped<ISuppliersManager, SuppliersManager>()
+                    .AddScoped<INotificationsManager, NotificationsManager>();
         }
     }
 }

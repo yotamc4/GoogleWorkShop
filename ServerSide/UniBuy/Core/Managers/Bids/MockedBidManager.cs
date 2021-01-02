@@ -1,14 +1,13 @@
 ﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
-namespace YOTY.Service.Core.Managers.Bids
+namespace UniBuy.Core.Managers.Bids
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
-    using YOTY.Service.Data.Entities;
-    using YOTY.Service.WebApi.PublicDataSchemas;
+    using UniBuy.Data.Entities;
+    using UniBuy.WebApi.PublicDataSchemas;
 
     public class MockedBidManager : IBidsManager
     {

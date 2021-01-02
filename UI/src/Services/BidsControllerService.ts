@@ -1,10 +1,5 @@
 import { Bid, NewBidRequest } from "../Modal/GroupDetails";
-import { ProductDetails } from "../Modal/ProductDetails";
-import {
-  buildUrlWithQueryParams,
-  makePostRequest,
-  queryParamsObjectType,
-} from "./ControllerUtils";
+import { buildUrlWithQueryParams, makePostRequest } from "./ControllerUtils";
 
 export async function submitNewGroupForm(
   bidRequest: NewBidRequest
@@ -17,7 +12,8 @@ export async function submitNewGroupForm(
 export async function getBids(
   intervalNumber: number,
   category: string | null,
-  subCategory: string | null
+  subCategory: string | null,
+  searchString: string | null
 ): Promise<GetBidsResponse> {
   const serviceUrl = BasicControllerUrl + "/api/v1/Bids";
   const queryParm: Map<string, string> = new Map([
@@ -30,6 +26,10 @@ export async function getBids(
 
   if (subCategory) {
     queryParm.set("subCategory", subCategory);
+  }
+
+  if (searchString) {
+    queryParm.set("search", searchString);
   }
 
   const options = {

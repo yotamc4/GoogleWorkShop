@@ -11,11 +11,14 @@ namespace yoty
     using YOTY.Service.Core.Managers;
     using YOTY.Service.WebApi.Middlewares;
     using YOTY.Service.WebApi.Middlewares.CorrelationId;
-    using Newtonsoft.Json;
     using YOTY.Service.Data;
     using Microsoft.EntityFrameworkCore;
+    using YOTY.Service.Core.Services.Mail;
+    using System;
+    using Hangfire;
+    using Hangfire.SqlServer;
+    using YOTY.Service.Core.Services.Scheduling;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
-    using Microsoft.IdentityModel.Logging;
 
     public class Startup
     {
@@ -51,6 +54,22 @@ namespace yoty
             services.AddCorrelationIdOptions();
             services.AddManagers();
             services.AddDbContext<YotyContext>(options => options.UseSqlServer("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData"));
+            services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
+            services.AddTransient<IMailService, MailService>();
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData", new SqlServerStorageOptions {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                    QueuePollInterval = TimeSpan.Zero,
+                    UseRecommendedIsolationLevel = true,
+                    DisableGlobalLocks = true
+                }));
+
+            JobStorage.Current = new SqlServerStorage("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData");
+            RecurringJob.AddOrUpdate("UpdateBidsDaily",() => BidsUpdateJobs.UpdateBidsPhaseDaily(), Cron.Daily, TimeZoneInfo.Local);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,6 +98,9 @@ namespace yoty
             });
 
             app.UseMiddleware<CorrelationIdMiddleware>();
+
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();
         }
     }
 }
