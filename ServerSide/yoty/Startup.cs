@@ -86,8 +86,10 @@ namespace yoty
 
             app.UseMiddleware<CorrelationIdMiddleware>();
 
+            /*
             app.UseHangfireDashboard();
             app.UseHangfireServer();
+            */
         }
     }
 }
