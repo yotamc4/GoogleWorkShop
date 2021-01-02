@@ -264,7 +264,7 @@ namespace YOTY.Service.Core.Managers.Bids
         public async Task<Response<BidsDTO>> GetBids(BidsQueryOptions bidsFilters)
         {
 
-            // firts category and sub category 
+            // first category and sub category 
             // then 
             string bidsSearchString = bidsFilters.Search;
             if (bidsFilters.Category == null && bidsSearchString == null)
@@ -324,14 +324,14 @@ namespace YOTY.Service.Core.Managers.Bids
             return new Response<BidsDTO>() { DTOObject = bidsDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
-        private bool ValidateBidsFilters(BidsQueryOptions bidsFilters, out string validationErorrString)
+        private bool ValidateBidsFilters(BidsQueryOptions bidsFilters, out string validationErrorString)
         {
-            validationErorrString = null;
+            validationErrorString = null;
             string demandedCategory = bidsFilters.Category;
             string demandedSubCategory = bidsFilters.SubCategory;
             if (demandedSubCategory != null && demandedCategory == null)
             {
-                validationErorrString = $"Sub catergory has set to :{bidsFilters.SubCategory } while category is null";
+                validationErrorString = $"Sub catergory has set to :{bidsFilters.SubCategory } while category is null";
                 return false;
             }
             /*
