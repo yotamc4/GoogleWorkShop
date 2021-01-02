@@ -9,6 +9,8 @@ export interface BidDetails {
   expirationDate: string;
   potenialSuplliersCounter: number;
   unitsCounter: number;
+  phase: number;
+  isUserInBid: boolean;
 }
 
 export interface ProductDetails {

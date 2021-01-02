@@ -18,8 +18,10 @@ import { useParams } from "react-router-dom";
 import { PaymentsTable } from "../PaymentTable/PaymentTable";
 import { ISupplierProposalRequest } from "./Suppliers/SupplierSection.interface";
 import { ShareProductBar } from "./ShareProductBar";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export const ProductPage: React.FunctionComponent = () => {
+  const { isAuthenticated, user } = useAuth0();
   const [numberOfParticipants, setnumberOfParticipants] = React.useState<
     number
   >(0);
@@ -38,9 +40,20 @@ export const ProductPage: React.FunctionComponent = () => {
   ] = useState<boolean>(false);
   const { id } = useParams<{ id: string }>();
   React.useEffect(() => {
+    let role: string;
+    let idUser: string;
+    if (isAuthenticated) {
+      role = user["https://UniBuyClient.workshop.com/role"];
+      idUser = user.sub;
+    } else {
+      role = "Anonymous";
+      idUser = "";
+    }
     axios
       .all([
-        axios.get(`https://localhost:5001/api/v1/bids/${id}`),
+        axios.get(
+          `https://localhost:5001/api/v1/bids/${id}?role=${role}&id=${id}`
+        ),
         axios.get(`https://localhost:5001/api/v1/bids/${id}/proposals`),
       ])
       .then(
@@ -55,7 +68,7 @@ export const ProductPage: React.FunctionComponent = () => {
           }
         )
       );
-  }, []);
+  }, [isAuthenticated]);
 
   const onClickJoinTheGroupButton = React.useCallback(() => {
     const bidBuyerJoinRequest: BidBuyerJoinRequest = {
