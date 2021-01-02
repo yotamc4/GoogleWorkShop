@@ -208,16 +208,55 @@ namespace YOTY.Service.Core.Managers.Bids
             return new Response<BidDTO>() { DTOObject = bidDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
-        public async Task<Response<BidDTO>> GetBid(string bidId)
+        public async Task<Response<BidDTO>> GetBid(string bidId, string userId, string userRole)
         {
-            BidEntity bid = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.Product).FirstOrDefaultAsync().ConfigureAwait(false);
-            if (bid == null)
+            BidEntity bid;
+            BidDTO bidDTO;
+            Response<BidDTO> response = null;
+            switch (userRole)
             {
-                return new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
+                case "Consumer":
+                    bid = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.Product).Include(b => b.CurrentParticipancies).FirstOrDefaultAsync().ConfigureAwait(false);
+                    if (bid == null)
+                    {
+                        response = new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
+                    }
+                    else
+                    {
+                        bidDTO = _mapper.Map<BidDTO>(bid);
+                        bidDTO.IsUserInBid = bid.CurrentParticipancies.Any(p => p.BuyerId == userId);
+                        response = new Response<BidDTO>() { DTOObject = bidDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+                    }
+                    break;
+                case "Supplier":
+                    bid = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.Product).Include(b => b.CurrentProposals).FirstOrDefaultAsync().ConfigureAwait(false);
+                    if (bid == null)
+                    {
+                        response = new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
+                    }
+                    else
+                    {
+                        bidDTO = _mapper.Map<BidDTO>(bid);
+                        bidDTO.IsUserInBid = bid.CurrentProposals.Any(proposal => proposal.SupplierId == userId);
+                        response = new Response<BidDTO>() { DTOObject = bidDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+                    }
+                    break;
+                // anonymous goes to default
+                default:
+                    bid = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.Product).FirstOrDefaultAsync().ConfigureAwait(false);
+                    if (bid == null)
+                    {
+                        response = new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
+                    }
+                    else
+                    {
+                        bidDTO = _mapper.Map<BidDTO>(bid);
+                        bidDTO.IsUserInBid = false;
+                        response = new Response<BidDTO>() { DTOObject = bidDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+                    }
+                    break;
             }
-            BidDTO bidDTO = _mapper.Map<BidDTO>(bid);
-            return new Response<BidDTO>() { DTOObject = bidDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
-
+            return response;
         }
 
         public async Task<Response<List<BuyerDTO>>> GetBidBuyers(string bidId)
