@@ -91,6 +91,20 @@ namespace YOTY.Service.WebApi.Controllers
         }
 
         [HttpGet]
+        [Route("{bidId}/orderDetails")]
+        public async Task<ActionResult<List<OrderDetailsDTO>>> GetBidOrderDetails(string bidId, [FromQuery] string userId)
+        {
+            // TODO replace manager validation with middle-ware token validation and remove userId from here
+            Response<List<OrderDetailsDTO>> response = await bidsManager.GetPaidCustomersFullOrderDetails(bidId, userId).ConfigureAwait(false);
+            if (response.IsOperationSucceeded)
+            {
+                return response.DTOObject;
+            }
+            // at the moment
+            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
+        }
+
+        [HttpGet]
         [Route("{bidId}/participants")]
         public async Task<ActionResult<List<ParticipancyDTO>>> GetBidParticipations(string bidId)
         {
