@@ -4,6 +4,7 @@ namespace YOTY.Service.WebApi.Controllers
 {
     using System;
     using System.Collections.Generic;
+    using System.Security.Claims;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
@@ -53,12 +54,21 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpGet]
         [Route("{bidId}")]
-        public async Task<ActionResult<BidDTO>> GetBid(string bidId)
+        public async Task<ActionResult<BidDTO>> GetBid(string bidId, [FromQuery] string role)
         {
-            Response<BidDTO> response = await this.bidsManager.GetBid(bidId).ConfigureAwait(false);
+            string userId = null;
+            if (User.Identity.IsAuthenticated)
+            {
+                userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            }
+            else if(role != null)
+            {
+                return this.StatusCode(StatusCodes.Status403Forbidden);
+            }
+
+            Response<BidDTO> response = await this.bidsManager.GetBid(bidId, userId, role).ConfigureAwait(false);
             if (response.IsOperationSucceeded )
             {
-                
                 return response.DTOObject;
             }
             // at the moment
@@ -83,6 +93,20 @@ namespace YOTY.Service.WebApi.Controllers
         public async Task<ActionResult<List<SupplierProposalDTO>>> GetBidSuppliersProposals(string bidId)
         {
             Response<List<SupplierProposalDTO>> response = await bidsManager.GetBidSuppliersProposals(bidId).ConfigureAwait(false);
+            if (response.IsOperationSucceeded)
+            {
+                return response.DTOObject;
+            }
+            // at the moment
+            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
+        }
+
+        [HttpGet]
+        [Route("{bidId}/orderDetails")]
+        public async Task<ActionResult<List<OrderDetailsDTO>>> GetBidOrderDetails(string bidId, [FromQuery] string userId)
+        {
+            // TODO replace manager validation with middle-ware token validation and remove userId from here
+            Response<List<OrderDetailsDTO>> response = await bidsManager.GetPaidCustomersFullOrderDetails(bidId, userId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
                 return response.DTOObject;
@@ -140,7 +164,6 @@ namespace YOTY.Service.WebApi.Controllers
         [HttpPut]
         public async Task<ActionResult<BidDTO>> EditBid(EditBidRequest editBidRequest)
         {
-
             Response<BidDTO> response = await this.bidsManager.EditBid(editBidRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
@@ -154,7 +177,6 @@ namespace YOTY.Service.WebApi.Controllers
         [Route("{bidId}/buyers/{buyerId}")]
         public async Task<ActionResult> DeleteBuyer(string bidId, string buyerId)
         {
-
             Response response = await this.bidsManager.DeleteBuyer(bidId, buyerId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
@@ -170,7 +192,6 @@ namespace YOTY.Service.WebApi.Controllers
         [Route("{bidId}/proposals/{supplierId}")]
         public async Task<ActionResult> DeleteSupplierProposal(string bidId, string supplierId)
         {
-
             Response response = await this.bidsManager.DeleteSupplierProposal(bidId, supplierId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {

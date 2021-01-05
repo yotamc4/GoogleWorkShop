@@ -42,8 +42,6 @@ namespace YOTY.Service.Core.Managers.Bids
                 BidId = bidBuyerJoinRequest.BidId,
                 BuyerId = bidBuyerJoinRequest.BuyerId,
                 NumOfUnits = bidBuyerJoinRequest.Items,
-                HasPaid = false,
-                HasVoted = false,
             });
             bid.UnitsCounter += bidBuyerJoinRequest.Items;
             try
@@ -85,15 +83,14 @@ namespace YOTY.Service.Core.Managers.Bids
         public async Task<Response> CreateNewBid(NewBidRequest bidRequest)
         {
             BidEntity bidEntity = _mapper.Map<BidEntity>(bidRequest);
-            //TODO is this the time we want? (or global).
-            bidEntity.CreationDate = DateTime.Now;
-            bidEntity.Id = Guid.NewGuid().ToString();
-            bidEntity.UnitsCounter = 0;
-            bidEntity.PotenialSuplliersCounter = 0;
-            bidEntity.Product.Id = Guid.NewGuid().ToString();
-            bidEntity.CurrentParticipancies = new List<ParticipancyEntity>();
-            bidEntity.CurrentProposals = new List<SupplierProposalEntity>();
-            bidEntity.Phase = BidPhase.Join;
+            PopulateBidEntity(bidEntity);
+            
+            ProductEntity existingProduct = await FindExistingProductAsync(bidRequest.Product);
+            if (existingProduct != null)
+            {
+                bidEntity.Product = existingProduct;
+            }
+
             _context.Bids.Add(bidEntity);
             try
             {
@@ -208,16 +205,43 @@ namespace YOTY.Service.Core.Managers.Bids
             return new Response<BidDTO>() { DTOObject = bidDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
-        public async Task<Response<BidDTO>> GetBid(string bidId)
+        public async Task<Response<BidDTO>> GetBid(string bidId, string userId, string userRole)
         {
-            BidEntity bid = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.Product).FirstOrDefaultAsync().ConfigureAwait(false);
-            if (bid == null)
+            BidEntity bid;
+            BidDTO bidDTO;
+            if (userRole == null)
             {
-                return new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
+                bid = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.Product).FirstOrDefaultAsync().ConfigureAwait(false);
+                if (bid == null)
+                {
+                    return new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
+                }
+                bidDTO = _mapper.Map<BidDTO>(bid);
+                return new Response<BidDTO>() { DTOObject = bidDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
             }
-            BidDTO bidDTO = _mapper.Map<BidDTO>(bid);
-            return new Response<BidDTO>() { DTOObject = bidDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
-
+            else if (userRole.Equals("Consumer", StringComparison.OrdinalIgnoreCase))
+            {
+                bid = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.Product).Include(b => b.CurrentParticipancies).FirstOrDefaultAsync().ConfigureAwait(false);
+                if (bid == null)
+                {
+                    return new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
+                }
+                bidDTO = _mapper.Map<BidDTO>(bid);
+                bidDTO.IsUserInBid = bid.CurrentParticipancies.Any(p => p.BuyerId == userId);
+                return new Response<BidDTO>() { DTOObject = bidDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };               
+            }
+            else if (userRole.Equals("Supplier", StringComparison.OrdinalIgnoreCase))
+            {
+                bid = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.Product).Include(b => b.CurrentProposals).Include(b => b.ChosenProposal).FirstOrDefaultAsync().ConfigureAwait(false);
+                if (bid == null)
+                {
+                    return new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
+                }
+                bidDTO = _mapper.Map<BidDTO>(bid);
+                bidDTO.IsUserInBid = bid.ChosenProposal != null ? bid.ChosenProposal.SupplierId == userId : bid.CurrentProposals.Any(proposal => proposal.SupplierId == userId);
+                return  new Response<BidDTO>() { DTOObject = bidDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };       
+            }
+            throw new Exception($"Unexpected role:{userRole}");
         }
 
         public async Task<Response<List<BuyerDTO>>> GetBidBuyers(string bidId)
@@ -263,7 +287,7 @@ namespace YOTY.Service.Core.Managers.Bids
         public async Task<Response<BidsDTO>> GetBids(BidsQueryOptions bidsFilters)
         {
 
-            // firts category and sub category 
+            // first category and sub category 
             // then 
             string bidsSearchString = bidsFilters.Search;
             if (bidsFilters.Category == null && bidsSearchString == null)
@@ -323,14 +347,14 @@ namespace YOTY.Service.Core.Managers.Bids
             return new Response<BidsDTO>() { DTOObject = bidsDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
-        private bool ValidateBidsFilters(BidsQueryOptions bidsFilters, out string validationErorrString)
+        private bool ValidateBidsFilters(BidsQueryOptions bidsFilters, out string validationErrorString)
         {
-            validationErorrString = null;
+            validationErrorString = null;
             string demandedCategory = bidsFilters.Category;
             string demandedSubCategory = bidsFilters.SubCategory;
             if (demandedSubCategory != null && demandedCategory == null)
             {
-                validationErorrString = $"Sub catergory has set to :{bidsFilters.SubCategory } while category is null";
+                validationErrorString = $"Sub catergory has set to :{bidsFilters.SubCategory } while category is null";
                 return false;
             }
             /*
@@ -379,7 +403,7 @@ namespace YOTY.Service.Core.Managers.Bids
 
         private static bool FilterByQueryString(BidEntity bid, string queryString)
         {
-            return queryString == null || bid.Product.Name.Contains(queryString) || bid.Product.Description.Contains(queryString);
+            return queryString == null || bid.Product.Name.Contains(queryString, StringComparison.OrdinalIgnoreCase) || bid.Product.Description.Contains(queryString, StringComparison.OrdinalIgnoreCase);
         }
 
         private IEnumerable<BidEntity> GetFilteredBids(BidsQueryOptions bidsFilters)
@@ -585,6 +609,10 @@ namespace YOTY.Service.Core.Managers.Bids
         private async Task<Response> ModifyBidPhase(string bidId, BidPhase newPhase)
         {
             BidEntity bid = await _context.Bids.FindAsync(bidId).ConfigureAwait(false);
+            if (bid == null)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
+            }
             bid.Phase = newPhase;
             try
             {
@@ -596,6 +624,56 @@ namespace YOTY.Service.Core.Managers.Bids
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
             }
             return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+        }
+
+        public async Task<Response<List<OrderDetailsDTO>>> GetPaidCustomersFullOrderDetails(string bidId, string userId)
+        {
+            BidEntity bid = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.CurrentParticipancies).ThenInclude(p=>p.Buyer).Include(b => b.ChosenProposal).FirstOrDefaultAsync();
+            if (bid == null)
+            {
+                return new Response<List<OrderDetailsDTO>>() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
+            }
+            if (userId != bid?.ChosenProposal?.SupplierId)
+            {
+                return new Response<List<OrderDetailsDTO>>() { IsOperationSucceeded = false, SuccessOrFailureMessage = "unauthorized" };
+            }
+            List<OrderDetailsDTO> orderDetailsList = bid.CurrentParticipancies.Where(p => p.HasPaid).Select(p => new OrderDetailsDTO{
+                BuyerName = p.Buyer.Name,
+                BuyerEmail = p.Buyer.Email,
+                BuyerAddress = p.Buyer.Address,
+                BuyerPhoneNumber = p.Buyer.PhoneNumber,
+                BuyerPostalCode = p.Buyer.PostalCode,
+                NumOfOrderedUnits = p.NumOfUnits
+            }).ToList();
+
+            return new Response<List<OrderDetailsDTO>>() { DTOObject = orderDetailsList, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+        }
+        private async Task<ProductEntity> FindExistingProductAsync(ProductRequest productRequest)
+        {
+            try
+            {
+                var Products = _context.Set<ProductEntity>();
+                string lowerName = productRequest.Name.ToLower();
+                ProductEntity result = await Products.Where(product => product.Name.ToLower() == lowerName).FirstOrDefaultAsync();
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static void PopulateBidEntity(BidEntity bidEntity)
+        {
+            //TODO is this the time we want? (or global).
+            bidEntity.CreationDate = DateTime.Now;
+            bidEntity.Id = Guid.NewGuid().ToString();
+            bidEntity.UnitsCounter = 0;
+            bidEntity.PotenialSuplliersCounter = 0;
+            bidEntity.Product.Id = Guid.NewGuid().ToString();
+            bidEntity.CurrentParticipancies = new List<ParticipancyEntity>();
+            bidEntity.CurrentProposals = new List<SupplierProposalEntity>();
+            bidEntity.Phase = BidPhase.Join;
         }
     }
 }

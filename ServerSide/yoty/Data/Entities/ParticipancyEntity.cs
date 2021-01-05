@@ -22,4 +22,5 @@ namespace YOTY.Service.Data.Entities
 
         public string BuyerId { get; set; }
     }
+
 }
