@@ -94,6 +94,12 @@ namespace YOTY.Service.Core.Managers.Bids
             bidEntity.CurrentParticipancies = new List<ParticipancyEntity>();
             bidEntity.CurrentProposals = new List<SupplierProposalEntity>();
             bidEntity.Phase = BidPhase.Join;
+            ProductEntity existingProduct = await FindExistingProductAsync(bidRequest.Product);
+            if (existingProduct != null)
+            {
+                bidEntity.Product = existingProduct;
+            }
+
             _context.Bids.Add(bidEntity);
             try
             {
@@ -662,6 +668,20 @@ namespace YOTY.Service.Core.Managers.Bids
             }).ToList();
 
             return new Response<List<OrderDetailsDTO>>() { DTOObject = orderDetailsList, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+        }
+        private async Task<ProductEntity> FindExistingProductAsync(ProductRequest productRequest)
+        {
+            try
+            {
+                var Products = _context.Set<ProductEntity>();
+                string lowerName = productRequest.Name.ToLower();
+                ProductEntity result = await Products.Where(product => product.Name.ToLower() == lowerName).FirstOrDefaultAsync();
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }
