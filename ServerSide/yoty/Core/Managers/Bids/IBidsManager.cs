@@ -47,5 +47,7 @@ namespace YOTY.Service.Core.Managers.Bids
         Task<Response> CancelBid(CancellationRequest cancellationRequest);
 
         Task<Response> CompleteBid(CompletionRequest completionRequest);
+
+        Task<Response<List<OrderDetailsDTO>>> GetPaidCustomersFullOrderDetails(string bidId, string userId);
     }
 }

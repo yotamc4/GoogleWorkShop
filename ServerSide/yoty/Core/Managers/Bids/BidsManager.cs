@@ -235,7 +235,7 @@ namespace YOTY.Service.Core.Managers.Bids
                     }
                     break;
                 case "Supplier":
-                    bid = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.Product).Include(b => b.CurrentProposals).FirstOrDefaultAsync().ConfigureAwait(false);
+                    bid = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.Product).Include(b => b.CurrentProposals).Include(b => b.ChosenProposal).FirstOrDefaultAsync().ConfigureAwait(false);
                     if (bid == null)
                     {
                         response = new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
@@ -243,7 +243,7 @@ namespace YOTY.Service.Core.Managers.Bids
                     else
                     {
                         bidDTO = _mapper.Map<BidDTO>(bid);
-                        bidDTO.IsUserInBid = bid.CurrentProposals.Any(proposal => proposal.SupplierId == userId);
+                        bidDTO.IsUserInBid = bid.ChosenProposal != null ? bid.ChosenProposal.SupplierId == userId : bid.CurrentProposals.Any(proposal => proposal.SupplierId == userId);
                         response = new Response<BidDTO>() { DTOObject = bidDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
                     }
                     break;
@@ -647,7 +647,7 @@ namespace YOTY.Service.Core.Managers.Bids
             return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
-        private async Task<Response<List<OrderDetailsDTO>>> GetPaidCustomersFullOrderDetails(string bidId, string userId)
+        public async Task<Response<List<OrderDetailsDTO>>> GetPaidCustomersFullOrderDetails(string bidId, string userId)
         {
             BidEntity bid = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.CurrentParticipancies).ThenInclude(p=>p.Buyer).Include(b => b.ChosenProposal).FirstOrDefaultAsync();
             if (bid == null)
