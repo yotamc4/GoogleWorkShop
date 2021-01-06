@@ -9,6 +9,7 @@ import { ProductPage } from "./ProductPage/ProductPage";
 import { UserProfile } from "./UserProfile/UserProfile";
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
+import { AboutUs } from "./Components/AboutUs";
 
 initializeIcons();
 
@@ -76,6 +77,9 @@ function App() {
       <Switch>
         <Route exact path="/">
           <Home />
+        </Route>
+        <Route exact path="/about_us">
+          <AboutUs />
         </Route>
         <Route path="/createNewGroup">
           <NewGroupBuyingForm />
