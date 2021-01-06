@@ -38,10 +38,6 @@ export const Home: React.FunctionComponent = () => {
   // The home component is also been used for the categories and subCategories view
   const isHomePage: boolean = window.location.pathname === "/";
 
-  const changeHistory = () => {
-    history.push("/createNewGroup");
-  };
-
   React.useEffect(() => {
     setTimeout(() => {
       setShowWelcomeBanner(false);
@@ -85,7 +81,9 @@ export const Home: React.FunctionComponent = () => {
             <DefaultButton
               text={"Create a new group-buy"}
               primary
-              onClick={changeHistory}
+              onClick={() => {
+                history.push("/createNewGroup");
+              }}
               iconProps={{
                 iconName: "Add",
                 styles: { root: { color: "darkgrey", marginRight: "-0.6rem" } },
