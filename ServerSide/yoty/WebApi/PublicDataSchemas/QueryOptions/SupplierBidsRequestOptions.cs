@@ -3,17 +3,10 @@
 
 namespace YOTY.Service.WebApi.PublicDataSchemas
 {
-    public class BuyerBidsRequestOptions
-    {        
-        public bool IsCreatedByBuyer { get; set; }
+    public class SupplierBidsRequestOptions
+    {
+        public bool IsChosenSupplier { get; set; }
 
         public BidsTime BidsTime { get; set; }
-    }
-
-    public enum BidsTime
-    {
-        None,
-        Live,
-        Old
     }
 }

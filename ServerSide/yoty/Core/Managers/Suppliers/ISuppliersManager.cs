@@ -14,6 +14,9 @@ namespace YOTY.Service.Core.Managers.Suppliers
         Task<Response<SupplierDTO>> GetSupplier(string supplierId); //c0
         Task<Response<List<BidDTO>>> GetSupplierLiveBids(string supplierId); //c0
         Task<Response<List<BidDTO>>> GetSupplierOldBids(string supplierId); //c1
+
+        Task<Response<BidsDTO>> GetBidsWhereProposed(string supplierId, BidsTime timeFilter);
+        Task<Response<BidsDTO>> GetBidsWhereChosen(string supplierId, BidsTime timeFilter);
     }
 
 }

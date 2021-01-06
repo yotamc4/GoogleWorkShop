@@ -79,7 +79,7 @@ namespace YOTY.Service.Core.Managers.Buyers
                 return new Response<BidsDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BuyerNotFoundFailString };
             }
 
-            var ownedBids = _context.Bids.Where(b => b.OwnerId == buyerId).Select(bid => _mapper.Map<BidDTO>(bid)).ToList();
+            var ownedBids = _context.Bids.Where(b => b.OwnerId == buyerId).Where(bid => FilterBuyerBids(bid, timeFilter)).Select(bid => _mapper.Map<BidDTO>(bid)).ToList();
             return new Response<BidsDTO>() { DTOObject = BidsDTO.CreateDefaultBidsPage(ownedBids), IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
