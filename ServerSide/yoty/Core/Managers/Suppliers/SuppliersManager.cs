@@ -57,6 +57,32 @@ namespace YOTY.Service.Core.Managers.Suppliers
 
         }
 
+        public async Task<Response<BidsDTO>> GetBidsWhereChosen(string supplierId, BidsTime timeFilter)
+        {
+            //validate existence
+            var supplier = await _context.Suppliers.Where(s => s.Id == supplierId).Include(s => s.CurrentProposals).ThenInclude(p => p.Bid).ThenInclude(b => b.ChosenProposal).FirstOrDefaultAsync().ConfigureAwait(false);
+            if (supplier == null)
+            {
+                return new Response<BidsDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = SupplierNotFoundFailString };
+            }
+
+            var wonBids = supplier.CurrentProposals.Where(p => p.Bid.ChosenProposal?.SupplierId == supplierId).Select(p => p.Bid).Where(bid => FilterBuyerBids(bid, timeFilter)).Select(bid => _mapper.Map<BidDTO>(bid)).ToList();
+            return new Response<BidsDTO>() { DTOObject = BidsDTO.CreateDefaultBidsPage(wonBids), IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+        }
+
+        public async Task<Response<BidsDTO>> GetBidsWhereProposed(string supplierId, BidsTime timeFilter)
+        {
+            //validate existence
+            var supplier = await _context.Suppliers.Where(s => s.Id == supplierId).Include(s => s.CurrentProposals).ThenInclude(p => p.Bid).FirstOrDefaultAsync().ConfigureAwait(false);
+            if (supplier == null)
+            {
+                return new Response<BidsDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = SupplierNotFoundFailString };
+            }
+
+            var proposedBids = supplier.CurrentProposals.Select(p => p.Bid).Where(bid => FilterBuyerBids(bid, timeFilter)).Select(bid => _mapper.Map<BidDTO>(bid)).ToList();
+            return new Response<BidsDTO>() { DTOObject = BidsDTO.CreateDefaultBidsPage(proposedBids), IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+        }
+
         public async Task<Response<SupplierDTO>> GetSupplier(string supplierId)
         {
             var supplier = await _context.Suppliers.FindAsync(supplierId).ConfigureAwait(false);
@@ -134,6 +160,21 @@ namespace YOTY.Service.Core.Managers.Suppliers
         private string getSuccessMessage([CallerMemberName] string callerName = "")
         {
             return $"{callerName} success";
+        }
+
+        private static bool FilterBuyerBids(BidEntity buyerBid, BidsTime timeFilter)
+        {
+            // TODO remove duplicate code
+            HashSet<BidPhase> livePhases = new HashSet<BidPhase>() { BidPhase.Join, BidPhase.Vote, BidPhase.Payment };
+            switch (timeFilter)
+            {
+                case BidsTime.Old:
+                    return !livePhases.Contains(buyerBid.Phase);
+                case BidsTime.Live:
+                    return livePhases.Contains(buyerBid.Phase);
+                default: //null
+                    return true;
+            }
         }
     }
 }

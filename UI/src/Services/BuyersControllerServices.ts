@@ -3,12 +3,16 @@ import * as ControllerUtils from "./ControllerUtils";
 import { GetBidsResponse } from "./BidsControllerService";
 
 export async function GetBidsCreatedByBuyer(
-  userId: string
+  userId: string,
+  getAccessTokenSilently?: (options?: any) => Promise<string>
 ): Promise<GetBidsResponse> {
-  const serviceUrl = BasicControllerUrl + "/api/v1/Users/" + userId;
+  const serviceUrl = BasicControllerUrl + "/api/v1/Buyers/" + userId;
 
   try {
-    const response: Response = await ControllerUtils.makeGetRequest(serviceUrl);
+    const response: Response = await ControllerUtils.makeGetRequest(
+      serviceUrl,
+      getAccessTokenSilently
+    );
 
     const getBidsResponse: GetBidsResponse = (await response.json()) as GetBidsResponse;
 
@@ -32,7 +36,7 @@ export async function GetBidsCreatedByBuyer(
 export async function GetGroupsBuyerIsParticipant(
   userId: string
 ): Promise<GetBidsResponse> {
-  const serviceUrl = BasicControllerUrl + "/api/v1/Users/" + userId;
+  const serviceUrl = BasicControllerUrl + "/api/v1/Buyers/" + userId;
 
   try {
     const response: Response = await ControllerUtils.makeGetRequest(serviceUrl);

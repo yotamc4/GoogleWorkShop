@@ -25,10 +25,6 @@ const imagePropsSubLogo: IImageProps = {
 };
 
 export const Home: React.FunctionComponent = () => {
-  const [showWelcomeBanner, setShowWelcomeBanner] = React.useState<boolean>(
-    true
-  );
-
   const history = useHistory();
 
   const currentSearchParams: URLSearchParams = new URLSearchParams(
@@ -37,16 +33,6 @@ export const Home: React.FunctionComponent = () => {
 
   // The home component is also been used for the categories and subCategories view
   const isHomePage: boolean = window.location.pathname === "/";
-
-  const changeHistory = () => {
-    history.push("/createNewGroup");
-  };
-
-  React.useEffect(() => {
-    setTimeout(() => {
-      setShowWelcomeBanner(false);
-    }, 10000);
-  });
 
   const onSearchBoxEnterPressed = (newValue: any) => {
     const url: URL = new URL("/groups", window.location.origin);
@@ -72,8 +58,8 @@ export const Home: React.FunctionComponent = () => {
     <AuthContextProvider>
       <Stack tokens={verticalGapStackTokens}>
         <Stack horizontal horizontalAlign="center">
-          {isHomePage && showWelcomeBanner && (
-            <Image {...imagePropsSubLogo} width="71rem" height="20rem" />
+          {isHomePage && (
+            <Image {...imagePropsSubLogo} width="71rem" height="13rem" />
           )}
         </Stack>
         <Stack tokens={genericGapStackTokens(20)}>
@@ -85,7 +71,9 @@ export const Home: React.FunctionComponent = () => {
             <DefaultButton
               text={"Create a new group-buy"}
               primary
-              onClick={changeHistory}
+              onClick={() => {
+                history.push("/createNewGroup");
+              }}
               iconProps={{
                 iconName: "Add",
                 styles: { root: { color: "darkgrey", marginRight: "-0.6rem" } },
