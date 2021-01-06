@@ -14,7 +14,7 @@ export async function GetBidsCreatedByBuyer(
       getAccessTokenSilently
     );
 
-    const getBidsResponse: any = (await response.json()) as any;
+    const getBidsResponse: GetBidsResponse = (await response.json()) as GetBidsResponse;
 
     for (let i = 0; i < getBidsResponse.bidsPage.length; i++) {
       getBidsResponse.bidsPage[i].creationDate = new Date(
