@@ -15,6 +15,12 @@ import {
 import { deleteIcon } from "./SupplierSectionStyles";
 import axios from "axios";
 import { useParams } from "react-router";
+import { Phase } from "../../Modal/ProductDetails";
+import { getDate } from "../utils";
+import { PaymentsTable } from "../../PaymentTable/PaymentTable";
+import { useAuth0 } from "@auth0/auth0-react";
+import { deleteSupplierProposal } from "../../Services/BidsControllerService";
+import configData from "../../config.json";
 
 export interface ISuppliersListState {
   items: ISupplierProposalRequest[];
@@ -85,15 +91,17 @@ _columns = [
 export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> = ({
   supplierProposalRequestList,
   numberOfParticipants,
-  expirationDate,
+  bidPhase,
+  isUserInBid,
 }) => {
+  const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
   const { id } = useParams<{ id: string }>();
   const [open, setOpen] = React.useState(false);
   //TODO: we should consume it from the context!!!!!
   const [
     isAddPropposalToSupplierListClicked,
     setIsAddPropposalToSupplierListClicked,
-  ] = React.useState<boolean>(false);
+  ] = React.useState<boolean>(isUserInBid as boolean);
   const [listItems, setListItems] = React.useState<
     ISupplierProposalRequest[] | undefined
   >(supplierProposalRequestList);
@@ -154,24 +162,9 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
     const newSupplierProposalFormDetails: ISupplierProposalRequest = {
       ...supplierProposalFormDetails,
     };
-    newSupplierProposalFormDetails["publishedTime"] =
-      String(
-        (new Date(
-          supplierProposalFormDetails.publishedTime as string
-        ).getUTCMonth() as number) + 1
-      ) +
-      "/" +
-      String(
-        (new Date(
-          supplierProposalFormDetails.publishedTime as string
-        ).getUTCDate() as number) + 1
-      ) +
-      "/" +
-      String(
-        (new Date(
-          supplierProposalFormDetails.publishedTime as string
-        ).getUTCFullYear() as number) + 1
-      );
+    newSupplierProposalFormDetails["publishedTime"] = getDate(
+      supplierProposalFormDetails.publishedTime
+    );
     newSupplierProposalFormDetails["progressBar"] = (
       <ProgressIndicator
         label={
@@ -199,79 +192,82 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
   };
 
   const deletePropposalFromSupplierList = React.useCallback(() => {
-    axios
-      .delete(
-        //TODO: the buyerId should be taken from the context!
-        `https://localhost:5001/api/v1/bids/${id}/proposals/Istore@gmail.com`
-      )
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    //TODO: consume the supplier from the contextId!!!
+    const url = `/${id}/proposals/${user.sub}`;
+    deleteSupplierProposal(url, getAccessTokenSilently);
     const newListItems = listItems?.filter(
-      (proposal) => proposal.supplierId != "Istore@gmail.com"
+      (proposal) => proposal.supplierId != user.sub
     );
     setListItems(newListItems);
-  }, [listItems]);
+    setIsAddPropposalToSupplierListClicked(false);
+  }, [listItems, user, getAccessTokenSilently]);
 
-  return new Date().getTime() < new Date(expirationDate).getTime() ? (
-    <Stack styles={stackStyles}>
-      {isAddPropposalToSupplierListClicked ? (
-        <Stack horizontal>
-          <ActionButton
-            iconProps={deleteIcon}
-            allowDisabledFocus
-            disabled={false}
-            checked={false}
-            onClick={deletePropposalFromSupplierList}
+  switch (bidPhase) {
+    case Phase.Join:
+      return (
+        <Stack styles={stackStyles}>
+          {isAuthenticated && user[configData.roleIdentifier] === "Supplier" ? (
+            <Stack horizontal>
+              <ActionButton
+                iconProps={
+                  isAddPropposalToSupplierListClicked ? deleteIcon : addIcon
+                }
+                allowDisabledFocus
+                disabled={false}
+                checked={false}
+                text={
+                  isAddPropposalToSupplierListClicked
+                    ? "Delete your supplier proposal"
+                    : "Add a new Supplier proposal"
+                }
+                onClick={
+                  isAddPropposalToSupplierListClicked
+                    ? deletePropposalFromSupplierList
+                    : handleClickOpen
+                }
+              ></ActionButton>
+            </Stack>
+          ) : (
+            <></>
+          )}
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
           >
-            Delete your supplier proposal
-          </ActionButton>
-        </Stack>
-      ) : (
-        <ActionButton
-          iconProps={addIcon}
-          allowDisabledFocus
-          disabled={false}
-          checked={false}
-          onClick={handleClickOpen}
-        >
-          Add a new Supplier proposal
-        </ActionButton>
-      )}
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogContent>
-          <SupplierProposalForm
-            addPropposalToSupplierList={addPropposalToSupplierList}
-            handleClose={handleClose}
+            <DialogContent>
+              <SupplierProposalForm
+                addPropposalToSupplierList={addPropposalToSupplierList}
+                handleClose={handleClose}
+              />
+            </DialogContent>
+          </Dialog>
+          <></>
+          <DetailsList
+            items={listItems as ISupplierProposalRequest[]}
+            columns={_columns}
+            selectionMode={SelectionMode.none}
           />
-        </DialogContent>
-      </Dialog>
-      <></>
-      <DetailsList
-        items={listItems as ISupplierProposalRequest[]}
-        columns={_columns}
-        selectionMode={SelectionMode.none}
-      />
-    </Stack>
-  ) : (
-    <Stack>
-      <SuppliersSurvey
-        supliersNames={listItems?.map((supplierProposal) => {
-          return {
-            key: String(supplierProposal.supplierId),
-            text: supplierProposal.supplierName as string,
-          };
-        })}
-      />
-    </Stack>
-  );
+        </Stack>
+      );
+    case Phase.Vote:
+      return (
+        <Stack>
+          <SuppliersSurvey
+            supliersNames={listItems?.map((supplierProposal) => {
+              return {
+                key: String(supplierProposal.supplierId),
+                text: supplierProposal.supplierName as string,
+              };
+            })}
+          />
+        </Stack>
+      );
+    case Phase.Payment:
+      return (
+        <PaymentsTable payers={[{ name: "ofek", imageUrl: "f", paid: true }]} />
+      );
+    default:
+      return null;
+  }
 };

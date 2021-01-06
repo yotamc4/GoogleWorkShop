@@ -10,6 +10,7 @@ ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Auth0Provider
+        useRefreshTokens={true}
         domain="dev--1o3sg23.eu.auth0.com"
         clientId="gRDTNywjSyELPUFWi2UbapnCZ2Hs0cJf"
         redirectUri={window.location.origin}

@@ -22,4 +22,5 @@ export interface Bid extends NewBidRequest {
   unitsCounter: number;
   creationDate: Date;
   phase: number;
+  isUserInBid: boolean;
 }

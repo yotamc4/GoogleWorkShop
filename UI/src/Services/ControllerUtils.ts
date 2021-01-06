@@ -19,6 +19,27 @@ export async function makePostRequest<T>(
   return await fetch(url, options);
 }
 
+export async function makeDeleteRequest<T>(
+  url: string,
+  body: T,
+  getAccessTokenSilently?: (options?: any) => Promise<string>
+): Promise<Response> {
+  const options: any = {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json;",
+    },
+    body: JSON.stringify(body),
+  };
+
+  if (getAccessTokenSilently) {
+    options.headers.Authorization = `Bearer ${await getAccessTokenSilently()}`;
+  }
+
+  return await fetch(url, options);
+}
+
 export async function makeGetRequest<T>(
   url: string,
   getAccessTokenSilently?: (options?: any) => Promise<string>

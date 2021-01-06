@@ -17,7 +17,7 @@ function App() {
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
 
   React.useEffect(() => {
-    const getAccessTokenAndRegisterNewUser = async () => {
+    const registerNewUser = async () => {
       if (
         isAuthenticated &&
         user["https://UniBuyClient.workshop.com/isFirstLogin"] === "true"
@@ -67,7 +67,7 @@ function App() {
         }
       }
     };
-    getAccessTokenAndRegisterNewUser();
+    registerNewUser();
   }, [isAuthenticated]);
   return (
     <>
