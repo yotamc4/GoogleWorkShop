@@ -210,8 +210,8 @@ namespace YOTY.Service.WebApi.Controllers
         }
 
         [HttpPost]
-        [Route("{bidId}/vote")]
-        public async Task<ActionResult> VoteForSupplier(MarkPaidRequest markPaidRequest)
+        [Route("{bidId}/markPayment")]
+        public async Task<ActionResult> MarkBuyerPayment(MarkPaidRequest markPaidRequest)
         {
             if (!markPaidRequest.BidId.IsValidId() || !markPaidRequest.BuyerId.IsValidId() || !markPaidRequest.MarkingUserId.IsValidId())
             {
