@@ -28,7 +28,7 @@ namespace YOTY.Service.Core.Services.Scheduling
             }
         }
 
-        private static async Task<Response> TryUpdateBidPhaseAndNotify(IBidsManager bidsManager, NotificationsManager notificationsManager, string bidId)
+        public static async Task<Response> TryUpdateBidPhaseAndNotify(IBidsManager bidsManager, NotificationsManager notificationsManager, string bidId)
         {
             Response<BidPhase> updatePhaseResponse;
             try
