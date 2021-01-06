@@ -8,12 +8,13 @@ namespace YOTY.Service.WebApi.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Routing;
     using YOTY.Service.Core.Managers.Buyers;
+    using YOTY.Service.WebApi.Middlewares.Auth;
     using YOTY.Service.WebApi.PublicDataSchemas;
 
     [ApiController]
     [Route("api/v1/[controller]")]
     [Authorize]
-    public class BuyersController: ControllerBase
+    public class BuyersController: YotyController
     {
         private IBuyersManager buyersManager;
         public BuyersController(IBuyersManager buyersManager)
@@ -24,6 +25,7 @@ namespace YOTY.Service.WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateBuyer(NewUserRequest newUserRequest)
         {
+            newUserRequest.Id = this.GetUserId();
             Response response = await this.buyersManager.CreateBuyer(newUserRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
@@ -46,9 +48,11 @@ namespace YOTY.Service.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("{buyerId}/bids")]
-        public async Task<ActionResult<BidsDTO>> GetBuyerBids(string buyerId, [FromQuery] BuyerBidsRequestOptions buyerBidsRequestOptions)
+        [Route("bids")]
+        [Authorize(Policy = PolicyNames.BuyerPolicy)]
+        public async Task<ActionResult<BidsDTO>> GetBuyerBids([FromQuery] BuyerBidsRequestOptions buyerBidsRequestOptions)
         {
+            string buyerId = this.GetRequestUserId();
             Response<BidsDTO> response = buyerBidsRequestOptions.IsCreatedByBuyer ?
                 await this.buyersManager.GetBidsCreatedByBuyer(buyerId, buyerBidsRequestOptions.BidsTime).ConfigureAwait(false) :
                 await this.buyersManager.GetBuyerBids(buyerId, buyerBidsRequestOptions.BidsTime).ConfigureAwait(false);
@@ -62,12 +66,12 @@ namespace YOTY.Service.WebApi.Controllers
             return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
         }
 
-        [HttpPost]
-        [Route("details")]
+        [HttpPut]
+        [Authorize(Policy = PolicyNames.BuyerPolicy)]
         public async Task<ActionResult> ModifyBuyerDetails(ModifyBuyerDetailsRequest request)
         {
+            request.BuyerId = this.GetRequestUserId();
             Response response = await this.buyersManager.ModifyBuyerDetails(request);
-
             if (response.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
