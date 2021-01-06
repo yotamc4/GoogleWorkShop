@@ -6,6 +6,7 @@ import { buttonHeaderProps } from "./UserProfileStyles";
 import { Spinner, Stack } from "@fluentui/react";
 import { GroupsList } from "./GroupsList";
 import { Bid } from "../Modal/GroupDetails";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export const UserProfile: React.FunctionComponent = () => {
   const [groupsUserMemberIn, setGroupsUserMemberIn] = React.useState<Bid[]>();
@@ -13,11 +14,16 @@ export const UserProfile: React.FunctionComponent = () => {
     Bid[]
   >();
 
+  const { getAccessTokenSilently } = useAuth0();
+
   // Replace with real user Id
   async function updateCurrentProductAndPageNumber() {
     //TODO - Replace "1" with real userId
     let [groupsCreatedByTheUser, groupsUserMemberIn] = await Promise.all([
-      BuyersControllerServices.GetBidsCreatedByBuyer(/* useId */ "1"),
+      BuyersControllerServices.GetBidsCreatedByBuyer(
+        /* useId */ "1",
+        getAccessTokenSilently
+      ),
       BuyersControllerServices.GetGroupsBuyerIsParticipant(/* useId */ "1"),
     ]);
 

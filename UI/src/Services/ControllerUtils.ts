@@ -1,8 +1,9 @@
 export async function makePostRequest<T>(
   url: string,
-  body: T
+  body: T,
+  getAccessTokenSilently?: (options?: any) => Promise<string>
 ): Promise<Response> {
-  const options = {
+  const options: any = {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -11,17 +12,28 @@ export async function makePostRequest<T>(
     body: JSON.stringify(body),
   };
 
+  if (getAccessTokenSilently) {
+    options.headers.Authorization = `Bearer ${await getAccessTokenSilently()}`;
+  }
+
   return await fetch(url, options);
 }
 
-export async function makeGetRequest<T>(url: string): Promise<Response> {
-  const options = {
+export async function makeGetRequest<T>(
+  url: string,
+  getAccessTokenSilently?: (options?: any) => Promise<string>
+): Promise<Response> {
+  const options: any = {
     method: "GET",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json;",
     },
   };
+
+  if (getAccessTokenSilently) {
+    options.headers.Authorization = `Bearer ${await getAccessTokenSilently()}`;
+  }
 
   return await fetch(url, options);
 }
