@@ -6,6 +6,7 @@ import {
   IImageProps,
   ImageFit,
   Image,
+  Link,
 } from "@fluentui/react";
 import { useHistory, useLocation } from "react-router";
 
@@ -59,7 +60,9 @@ export const Home: React.FunctionComponent = () => {
       <Stack tokens={verticalGapStackTokens}>
         <Stack horizontal horizontalAlign="center">
           {isHomePage && (
-            <Image {...imagePropsSubLogo} width="71rem" height="13rem" />
+            <Link href={"/about_us"}>
+              <Image {...imagePropsSubLogo} width="71rem" height="13rem" />
+            </Link>
           )}
         </Stack>
         <Stack tokens={genericGapStackTokens(20)}>

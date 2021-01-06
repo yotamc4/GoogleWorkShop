@@ -69,7 +69,15 @@ export default function ButtonAppBar() {
             <Link href={`/user/${name.split(" ").join("_")}`}>
               <Persona imageUrl={picture} text={name} />
             </Link>
-            <LogoutButton />
+            <StackItem align={"center"}>
+              <CommandBarButton
+                text="About Us"
+                disabled={false}
+                checked={false}
+                href={"/about_us"}
+              />
+              <LogoutButton />
+            </StackItem>
           </Stack>
         ) : (
           <Stack horizontal horizontalAlign="space-between" styles={StacStyles}>
