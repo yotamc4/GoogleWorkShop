@@ -13,7 +13,15 @@ export async function submitNewGroupForm(
 ): Promise<void> {
   const serviceUrl = BasicControllerUrl;
 
-  await makePostRequest(serviceUrl, bidRequest, getAccessTokenSilently);
+  const response: Response = await makePostRequest(
+    serviceUrl,
+    bidRequest,
+    getAccessTokenSilently
+  );
+
+  if (!response.ok) {
+    throw new Error("Error happened during the fetch POST");
+  }
 }
 
 export async function getBids(
