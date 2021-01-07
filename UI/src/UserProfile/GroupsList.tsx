@@ -11,6 +11,7 @@ import {
   Stack,
 } from "@fluentui/react";
 import { Bid } from "../Modal/GroupDetails";
+import { PhasesName } from "../Modal/ProductDetails";
 
 export const GroupsList: React.FunctionComponent<{
   groups: Bid[];
@@ -97,10 +98,7 @@ export const GroupsList: React.FunctionComponent<{
       fieldName: "phase",
       onColumnClick: onColumnClick,
       onRender: (group: Bid) => {
-        return (
-          // In the future we will get the group's stage from the BE.
-          <span>{"Temp Phase"}</span>
-        );
+        return <span>{PhasesName.get(group.phase)}</span>;
       },
     },
   ];
