@@ -18,7 +18,7 @@ namespace YOTY.Service.Core.Services.Scheduling
             YotyContext context = new YotyContext();
             // don't need mapper rn
             IBidsManager bidsManager = new BidsManager(null, context);
-            NotificationsManager notificationsManager = new NotificationsManager(context, mail);
+            INotificationsManager notificationsManager = new NotificationsManager(context, mail);
             var ids = context.Bids.Select(bid => bid.Id).ToList();
             Response response;
             foreach(var id in ids)
@@ -28,7 +28,7 @@ namespace YOTY.Service.Core.Services.Scheduling
             }
         }
 
-        public static async Task<Response> TryUpdateBidPhaseAndNotify(IBidsManager bidsManager, NotificationsManager notificationsManager, string bidId)
+        public static async Task<Response> TryUpdateBidPhaseAndNotify(IBidsManager bidsManager, INotificationsManager notificationsManager, string bidId)
         {
             Response<BidPhase> updatePhaseResponse;
             try
