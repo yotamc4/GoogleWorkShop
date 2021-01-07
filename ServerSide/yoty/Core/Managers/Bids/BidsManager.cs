@@ -211,7 +211,7 @@ namespace YOTY.Service.Core.Managers.Bids
         {
             BidEntity bid;
             BidDTO bidDTO;
-            if (userRole == null)
+            if (userRole?.Equals("anonymous", StringComparison.OrdinalIgnoreCase) ?? true)
             {
                 bid = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.Product).FirstOrDefaultAsync().ConfigureAwait(false);
                 if (bid == null)

@@ -23,7 +23,7 @@ namespace YOTY.Service.WebApi.Middlewares.Auth.Handlers
 
             if (ExtractUserAndResourceIds(context,out string attempterUserId, out string bidId))
             {
-                var bid = await dbContext.Bids.Where(b => b.Id == bidId).Include(b => b.CurrentParticipancies).ThenInclude(p => p.Buyer).Include(b => b.ChosenProposal).FirstOrDefaultAsync().ConfigureAwait(false);
+                var bid = await dbContext.Bids.FindAsync(bidId).ConfigureAwait(false);
                 if(bid ==null)
                 {
                     context.Succeed(requirement);

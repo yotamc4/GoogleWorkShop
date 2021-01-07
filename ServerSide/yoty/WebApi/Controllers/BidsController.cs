@@ -285,6 +285,7 @@ namespace YOTY.Service.WebApi.Controllers
         [HttpPost]
         [Route("{bidId}/markPayment")]
         [Authorize(Policy = PolicyNames.SupplierPolicy)]
+        public async Task<ActionResult> MarkPayment(MarkPaidRequest markPaidRequest)
         {
             if (!markPaidRequest.BidId.IsValidId() || !markPaidRequest.BuyerId.IsValidId())
             {
