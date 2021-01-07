@@ -31,7 +31,6 @@ CategoriesMap.set("Computers & Tablets", [
     "Gaming & Virtual Reality",
     "Computer Components",
     "Printers, Ink & Toner",
-    "Wi-Fi & Networking",
     "Accessories",
 ]);
 
@@ -46,7 +45,6 @@ CategoriesMap.set("Electronics", [
 CategoriesMap.set("Health, Fitness & Personal Care", [
     "Health & Wellness",
     "Fitness",
-    "Smartwatches",
     "Baby Care",
     "Personal Care & Beauty",
 ]);
