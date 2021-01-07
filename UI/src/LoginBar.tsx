@@ -54,7 +54,7 @@ export default function ButtonAppBar() {
 
   return (
     <Stack styles={StacStyles2}>
-      <StackItem styles={StackItemStyles}>
+      <StackItem styles={StackItemStyles} align={"center"}>
         <Image
           {...imagePropsLogo}
           width={200}
@@ -82,7 +82,15 @@ export default function ButtonAppBar() {
         ) : (
           <Stack horizontal horizontalAlign="space-between" styles={StacStyles}>
             <Label>Hello Guest!</Label>
-            <LoginButton />
+            <StackItem align={"center"}>
+              <CommandBarButton
+                text="About Us"
+                disabled={false}
+                checked={false}
+                href={"/about_us"}
+              />
+              <LoginButton />
+            </StackItem>
           </Stack>
         )}
         <Separator styles={SeperatorStyles} />

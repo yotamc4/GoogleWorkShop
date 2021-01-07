@@ -83,7 +83,7 @@ export const JoinTheGroupButton: React.FunctionComponent<IJoinTheGroupButtonProp
         <Label
           styles={{ root: { color: "red", padding: "0", marginLeft: "2rem" } }}
         >
-          Only login users can join the group{" "}
+          Only logged in users can join the group{" "}
         </Label>
       ) : (
         <></>

@@ -8,17 +8,20 @@ import {
   Image,
   Link,
 } from "@fluentui/react";
-import { useHistory, useLocation } from "react-router";
+import { useHistory } from "react-router";
 
+import * as AutocompleteControllerService from "../Services/AutocompleteControllerService";
+import { AutoComplete } from "../Components/AutoComplete";
 import { NavigationPane } from "./NavigationPane/NavigationPane";
 import { ProductCardGridPages } from "../Components/ProductCardGrid/ProductCardGridPages";
 import { AuthContextProvider } from "../Context/AuthContext";
 import {
   defaultButtonStyles,
   genericGapStackTokens,
-  searchBoxStyles,
+  marginForBothSides,
   verticalGapStackTokens,
 } from "./HomeStyles";
+import ButtonAppBar from "../LoginBar";
 
 const imagePropsSubLogo: IImageProps = {
   src: "/Images/subLogo2.PNG",
@@ -27,10 +30,19 @@ const imagePropsSubLogo: IImageProps = {
 
 export const Home: React.FunctionComponent = () => {
   const history = useHistory();
-
-  const currentSearchParams: URLSearchParams = new URLSearchParams(
-    useLocation().search
+  const [autoCompleteValues, setAutoCompleteValues] = React.useState<string[]>(
+    []
   );
+
+  React.useState(() => {
+    async function getAutoCompleteValues() {
+      setAutoCompleteValues(
+        await AutocompleteControllerService.getAutoCompleteValues()
+      );
+    }
+
+    getAutoCompleteValues();
+  });
 
   // The home component is also been used for the categories and subCategories view
   const isHomePage: boolean = window.location.pathname === "/";
@@ -57,47 +69,37 @@ export const Home: React.FunctionComponent = () => {
 
   return (
     <AuthContextProvider>
-      <Stack tokens={verticalGapStackTokens}>
-        <Stack horizontal horizontalAlign="center">
+      <Stack styles={marginForBothSides}>
+        <ButtonAppBar />
+        <Stack tokens={verticalGapStackTokens}>
           {isHomePage && (
             <Link href={"/about_us"}>
-              <Image {...imagePropsSubLogo} width="71rem" height="13rem" />
+              <Image {...imagePropsSubLogo} height="13rem" />
             </Link>
           )}
-        </Stack>
-        <Stack tokens={genericGapStackTokens(20)}>
-          <Stack
-            horizontal
-            horizontalAlign="center"
-            tokens={genericGapStackTokens(-200)}
-          >
-            <DefaultButton
-              text={"Create a new group-buy"}
-              primary
-              onClick={() => {
-                history.push("/createNewGroup");
-              }}
-              iconProps={{
-                iconName: "Add",
-                styles: { root: { color: "darkgrey", marginRight: "-0.6rem" } },
-              }}
-              styles={defaultButtonStyles}
-            ></DefaultButton>
-            <SearchBox
-              styles={searchBoxStyles}
-              placeholder="Search for group"
-              onSearch={onSearchBoxEnterPressed}
-            />
-          </Stack>
-          <Stack
-            horizontal
-            horizontalAlign="center"
-            tokens={{ childrenGap: "2rem" }}
-          >
-            <Stack tokens={{ childrenGap: "5rem" }}>
-              <NavigationPane />
+          <Stack tokens={genericGapStackTokens(20)}>
+            <Stack horizontal horizontalAlign="space-between">
+              <DefaultButton
+                text={"New group-buy"}
+                primary
+                onClick={() => {
+                  history.push("/createNewGroup");
+                }}
+                iconProps={{
+                  iconName: "Add",
+                  styles: { root: { color: "darkgrey" } },
+                }}
+                styles={defaultButtonStyles}
+              ></DefaultButton>
+              <AutoComplete
+                autoCompleteValues={autoCompleteValues}
+                onPressEnter={onSearchBoxEnterPressed}
+              />
             </Stack>
-            <ProductCardGridPages />
+            <Stack horizontal horizontalAlign="space-between">
+              <NavigationPane />
+              <ProductCardGridPages />
+            </Stack>
           </Stack>
         </Stack>
       </Stack>

@@ -21,6 +21,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { JoinTheGroupButton } from "./JoinTheGroupButton";
 import configData from "../config.json";
 import { getDate } from "./utils";
+import ButtonAppBar from "../LoginBar";
 
 export const ProductPage: React.FunctionComponent = () => {
   const {
@@ -98,6 +99,7 @@ export const ProductPage: React.FunctionComponent = () => {
     </Stack>
   ) : (
     <Stack horizontalAlign={"center"}>
+      <ButtonAppBar />
       <Stack
         horizontal
         horizontalAlign="center"
