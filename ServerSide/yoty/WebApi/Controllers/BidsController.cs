@@ -67,7 +67,7 @@ namespace YOTY.Service.WebApi.Controllers
             {
                 userId = GetRequestUserId();
             }
-            else if(role != null)
+            else if(role?.Equals("anonymous", System.StringComparison.OrdinalIgnoreCase) ?? false)
             {
                 return this.StatusCode(StatusCodes.Status403Forbidden);
             }

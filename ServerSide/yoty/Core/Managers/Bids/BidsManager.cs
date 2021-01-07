@@ -635,10 +635,6 @@ namespace YOTY.Service.Core.Managers.Bids
             {
                 return new Response<List<OrderDetailsDTO>>() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
             }
-            if (userId != bid?.ChosenProposal?.SupplierId)
-            {
-                return new Response<List<OrderDetailsDTO>>() { IsOperationSucceeded = false, SuccessOrFailureMessage = "unauthorized" };
-            }
             List<OrderDetailsDTO> orderDetailsList = bid.CurrentParticipancies.Where(p => p.HasPaid).Select(p => new OrderDetailsDTO{
                 BuyerName = p.Buyer.Name,
                 BuyerEmail = p.Buyer.Email,
