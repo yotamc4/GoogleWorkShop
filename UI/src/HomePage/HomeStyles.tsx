@@ -10,7 +10,7 @@ export const searchBoxStyles: Partial<ISearchBoxStyles> = {
 };
 
 export const marginForBothSides: Partial<ISearchBoxStyles> = {
-  root: { marginLeft: "13rem", marginRight: "13rem" },
+  root: { marginLeft: "35rem", marginRight: "35rem" },
 };
 export const verticalGapStackTokens: IStackTokens = {
   childrenGap: 20,

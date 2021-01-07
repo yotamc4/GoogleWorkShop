@@ -36,7 +36,7 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
     >
       <Circle />
       <Card.Section fill horizontalAlign="center" horizontal>
-        <Image {...imageProps} width={"18rem"} height={"10rem"} />
+        <Image {...imageProps} width={"14rem"} height={"10rem"} />
       </Card.Section>
       <Card.Section
         horizontalAlign="center"
