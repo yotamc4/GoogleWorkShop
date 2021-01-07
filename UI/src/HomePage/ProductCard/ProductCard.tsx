@@ -14,8 +14,7 @@ import { Bid } from "../../Modal/GroupDetails";
 
 export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
   const history = useHistory();
-  const cardTokens: ICardTokens = { childrenMargin: 12 };
-  const agendaCardSectionTokens: ICardSectionTokens = { childrenGap: 0 };
+  const cardTokens: ICardTokens = { childrenMargin: 7 };
   const attendantsCardSectionTokens: ICardSectionTokens = { childrenGap: 6 };
 
   if (bid.id == undefined) {
@@ -26,15 +25,18 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
     src: bid.product?.image,
     imageFit: ImageFit.contain,
   };
-  const changeHistory = () => {
-    history.push(`/products/${bid.id}`);
-  };
 
   return (
-    <Card tokens={cardTokens} styles={cardStyles} onClick={changeHistory}>
+    <Card
+      tokens={cardTokens}
+      styles={cardStyles}
+      onClick={() => {
+        history.push(`/products/${bid.id}`);
+      }}
+    >
       <Circle />
       <Card.Section fill horizontalAlign="center" horizontal>
-        <Image {...imageProps} width={300} height={200} />
+        <Image {...imageProps} width={"18rem"} height={"10rem"} />
       </Card.Section>
       <Card.Section
         horizontalAlign="center"
@@ -49,7 +51,7 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
             : bid.product!.description}
         </Text>
       </Card.Section>
-      <Card.Section horizontalAlign="center" tokens={agendaCardSectionTokens}>
+      <Card.Section horizontalAlign="center">
         <Text variant="mediumPlus" styles={priceTextStyles}>
           Max Acceptable Price: {bid.maxPrice}₪
         </Text>

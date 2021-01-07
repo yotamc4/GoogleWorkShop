@@ -3,7 +3,7 @@ import { Pagination } from "@material-ui/lab";
 
 import * as BidsControllerService from "../../Services/BidsControllerService";
 import { ProductCardGrid } from "./ProductCardGrid";
-import { Spinner, Stack } from "@fluentui/react";
+import { Spinner, Stack, StackItem } from "@fluentui/react";
 import { genericGapStackTokens } from "./ProductCardGridStyles";
 import { Bid } from "../../Modal/GroupDetails";
 
@@ -48,7 +48,7 @@ export const ProductCardGridPages: React.FunctionComponent<ProductCardGridPagesP
   ]);
 
   return (
-    <Stack horizontalAlign="center" tokens={genericGapStackTokens(20)}>
+    <Stack horizontalAlign={"center"} tokens={genericGapStackTokens(20)}>
       {currentBids ? (
         <ProductCardGrid {...{ bids: currentBids }} />
       ) : (
