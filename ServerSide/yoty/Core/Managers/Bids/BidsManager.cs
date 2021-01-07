@@ -243,7 +243,7 @@ namespace YOTY.Service.Core.Managers.Bids
                 bidDTO.IsUserInBid = bid.ChosenProposal != null ? bid.ChosenProposal.SupplierId == userId : bid.CurrentProposals.Any(proposal => proposal.SupplierId == userId);
                 return  new Response<BidDTO>() { DTOObject = bidDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };       
             }
-            throw new Exception($"Unexpected role:{userRole}");
+            return new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = $"Bad input - unexpected user role: {userRole}" };
         }
 
         public async Task<Response<List<BuyerDTO>>> GetBidBuyers(string bidId)

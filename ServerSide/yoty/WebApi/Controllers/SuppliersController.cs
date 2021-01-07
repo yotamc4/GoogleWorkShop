@@ -25,7 +25,7 @@ namespace YOTY.Service.WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateSupplier(NewUserRequest newSupplierRequest)
         {
-            newSupplierRequest.Id = this.GetUserId();
+            newSupplierRequest.Id = this.GetRequestUserId();
             Response response = await this.suppliersManager.CreateSupplier(newSupplierRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {

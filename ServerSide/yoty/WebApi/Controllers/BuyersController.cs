@@ -25,7 +25,7 @@ namespace YOTY.Service.WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateBuyer(NewUserRequest newUserRequest)
         {
-            newUserRequest.Id = this.GetUserId();
+            newUserRequest.Id = this.GetRequestUserId();
             Response response = await this.buyersManager.CreateBuyer(newUserRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {

@@ -77,7 +77,7 @@ namespace YOTY.Service.WebApi.Controllers
             {
                 return response.DTOObject;
             }
-            // at the moment
+            // at the moment - we should change the boolean to enum such that we could differ between bad user input ( 400 ) to not found (404)  to unxepected failures ( 500) 
             return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);            
         }
 

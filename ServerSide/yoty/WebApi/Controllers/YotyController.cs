@@ -8,15 +8,6 @@ namespace YOTY.Service.WebApi.Controllers
 
     public class YotyController: ControllerBase
     {
-        protected string GetUserId()
-        {
-            return 
-                User
-                .Claims
-                .FirstOrDefault(i => i.Type == ClaimTypes.NameIdentifier)
-                ?.Value ;
-        }
-
         protected string GetRequestUserId()
         {
             return User.FindFirst(ClaimTypes.NameIdentifier).Value;
