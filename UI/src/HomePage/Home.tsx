@@ -8,15 +8,16 @@ import {
   Image,
   Link,
 } from "@fluentui/react";
-import { useHistory, useLocation } from "react-router";
+import { useHistory } from "react-router";
 
+import * as AutocompleteControllerService from "../Services/AutocompleteControllerService";
+import { AutoComplete } from "../Components/AutoComplete";
 import { NavigationPane } from "./NavigationPane/NavigationPane";
 import { ProductCardGridPages } from "../Components/ProductCardGrid/ProductCardGridPages";
 import { AuthContextProvider } from "../Context/AuthContext";
 import {
   defaultButtonStyles,
   genericGapStackTokens,
-  searchBoxStyles,
   marginForBothSides,
   verticalGapStackTokens,
 } from "./HomeStyles";
@@ -29,10 +30,19 @@ const imagePropsSubLogo: IImageProps = {
 
 export const Home: React.FunctionComponent = () => {
   const history = useHistory();
-
-  const currentSearchParams: URLSearchParams = new URLSearchParams(
-    useLocation().search
+  const [autoCompleteValues, setAutoCompleteValues] = React.useState<string[]>(
+    []
   );
+
+  React.useState(() => {
+    async function getAutoCompleteValues() {
+      setAutoCompleteValues(
+        await AutocompleteControllerService.getAutoCompleteValues()
+      );
+    }
+
+    getAutoCompleteValues();
+  });
 
   // The home component is also been used for the categories and subCategories view
   const isHomePage: boolean = window.location.pathname === "/";
@@ -81,10 +91,9 @@ export const Home: React.FunctionComponent = () => {
                 }}
                 styles={defaultButtonStyles}
               ></DefaultButton>
-              <SearchBox
-                styles={searchBoxStyles}
-                placeholder="Search for group"
-                onSearch={onSearchBoxEnterPressed}
+              <AutoComplete
+                autoCompleteValues={autoCompleteValues}
+                onPressEnter={onSearchBoxEnterPressed}
               />
             </Stack>
             <Stack horizontal horizontalAlign="space-between">
