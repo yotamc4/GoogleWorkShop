@@ -51,25 +51,29 @@ namespace YOTY.Service.Core.Services.Scheduling
             {
                 case BidPhase.Vote:
                     Console.WriteLine($"UpdatePhase bidId:{bidId}, new phase is vote");
-                    notificationResponse = await notificationsManager.NotifyBidTimeToVote(bidId).ConfigureAwait(false);
+                    // do we want to execute the first task if the second task failed ? 
+                    notificationResponse = await notificationsManager.NotifyBidTimeToVoteAsync(bidId).ConfigureAwait(false);
                     updateProposalsResponse = await bidsManager.UpdateBidProposalsToRelevant(bidId).ConfigureAwait(false);
                     break;
                 case BidPhase.Payment:
                     Console.WriteLine($"UpdatePhase bidId:{bidId}, new phase is payment");
-                    notificationResponse = await notificationsManager.NotifyBidTimeToPay(bidId).ConfigureAwait(false);
+                    notificationResponse = await notificationsManager.NotifyBidTimeToPayAsync(bidId).ConfigureAwait(false);
                     updateProposalsResponse = await bidsManager.GetProposalWithMaxVotes(bidId).ConfigureAwait(false);
                     if (updateProposalsResponse.IsOperationSucceeded)
                     {
                         // TODO figure better condition
-                        notificationResponse = await notificationsManager.NotifyBidChosenSupplier(bidId).ConfigureAwait(false);
+                        notificationResponse = await notificationsManager.NotifyBidChosenSupplierAsync(bidId).ConfigureAwait(false);
                     }
                     break;
                 case BidPhase.CancelledSupplierNotFound:
                     Console.WriteLine($"UpdatePhase bidId:{bidId}, new phase is canceled no relevant proposals found");
-                    notificationResponse = await notificationsManager.NotifyBidParticipantsSupplierNotFoundCancellation(bidId).ConfigureAwait(false);
+                    notificationResponse = await notificationsManager.NotifyBidParticipantsSupplierNotFoundCancellationAsync(bidId).ConfigureAwait(false);
                     break;
             }
-            if (notificationResponse != null && !notificationResponse.IsOperationSucceeded)
+            // yotam noticed that if both actions failed we will not infer on the failure of the update propsal...
+            // and consider use (notificationResponse?.IsOperationSucceeded ?? false) in this cases
+
+            if (notificationResponse?.IsOperationSucceeded != null && !notificationResponse.IsOperationSucceeded)
             {
                 return notificationResponse;
             }

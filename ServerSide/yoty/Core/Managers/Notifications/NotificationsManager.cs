@@ -63,7 +63,7 @@ namespace YOTY.Service.Core.Managers.Notifications
             return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = "Ping Pong" };
         }
 
-        public async Task<Response> NotifyBidSuppliers(string bidId, string body, string subject)
+        public async Task<Response> NotifyBidSuppliersAsync(string bidId, string body, string subject)
         {
             IEnumerable<KeyValuePair<string, string>> emailNamePairs;
             try
@@ -77,10 +77,10 @@ namespace YOTY.Service.Core.Managers.Notifications
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
             }
-            return await NotifyList(body, subject, emailNamePairs, bidId);
+            return await NotifyListAsync(body, subject, emailNamePairs, bidId).ConfigureAwait(false);
         }
 
-        public async Task<Response> NotifyBidParticipants(string bidId, string body, string subject)
+        public async Task<Response> NotifyBidParticipantsAsync(string bidId, string body, string subject)
         {
             IEnumerable<KeyValuePair<string, string>> emailNamePairs;
             try
@@ -94,41 +94,134 @@ namespace YOTY.Service.Core.Managers.Notifications
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
             }
-            return await NotifyList(body, subject, emailNamePairs, bidId);
+            return await NotifyListAsync(body, subject, emailNamePairs, bidId);
         }
 
-        public async Task<Response> NotifyBidAll(string bidId, string body, string subject)
+        public async Task<Response> NotifyBidAllAsync(string bidId, string body, string subject)
         {
-            Response r1 = await NotifyBidParticipants(bidId, body, subject);
-            Response r2 = await NotifyBidSuppliers(bidId, body, subject);
-            if(!r1.IsOperationSucceeded || !r2.IsOperationSucceeded)
+            var notifyBidParticipantsTask = NotifyBidParticipantsAsync(bidId, body, subject);
+            var NotifyBidSuppliersTask = NotifyBidSuppliersAsync(bidId, body, subject);
+
+            await Task.WhenAll(notifyBidParticipantsTask, NotifyBidSuppliersTask);
+
+            Response notifyBidParticipantsResponse = await notifyBidParticipantsTask;
+            Response NotifyBidSuppliersResponse = await NotifyBidSuppliersTask;
+
+            if(!notifyBidParticipantsResponse.IsOperationSucceeded || !NotifyBidSuppliersResponse.IsOperationSucceeded)
             {
-                return !r1.IsOperationSucceeded ? r1 : r2;
+                return !notifyBidParticipantsResponse.IsOperationSucceeded ? notifyBidParticipantsResponse : NotifyBidSuppliersResponse;
             }
             return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
 
         }
 
-        private async Task<Response> NotifyList(string body, string subject, IEnumerable<KeyValuePair<string, string>> emailNamePairs, string bidId)
+        private async Task<Response> NotifyListAsync(string body, string subject, IEnumerable<KeyValuePair<string, string>> emailNamePairs, string bidId)
         {
             MailRequest request = new MailRequest() {
                 Body = body,
                 Subject = subject
             };
+
+            List<Task> sendEmailTasks = new List<Task>();
+
             foreach (var emailNamePair in emailNamePairs)
             {
                 request.ToEmail = emailNamePair.Key;
                 request.Body = personalizeBody(body, emailNamePair.Value, bidId);
-                try
-                {
-                    await _mail.SendEmailAsync(request);
-                }
-                catch (Exception ex)
-                {
-                    return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
-                }
+                var sendEmailTask = _mail.SendEmailAsync(request);
+                sendEmailTasks.Add(sendEmailTask);
+            }
+            try
+            {
+                await Task.WhenAll(sendEmailTasks).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
             }
             return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+        }
+
+        public async Task<Response> NotifyBidChosenSupplierAsync(string bidId)
+        {
+            return await this.NotifyBidChosenSupplierAsync(bidId, FoundChosenSupplierToChosenSuppliersBody, FoundChosenSupplierSubject).ConfigureAwait(false);
+        }
+        public async Task<Response> NotifyBidChosenSupplierAsync(string bidId, string body, string subject)
+        {
+            IEnumerable<KeyValuePair<string, string>> emailNamePairs;
+
+            try
+            { 
+                emailNamePairs = await _context.Bids
+                    .Where(bid => bid.Id == bidId)
+                    .Include(bid => bid.ChosenProposal)
+                    .ThenInclude(p => p.Supplier)
+                    .Select(bid => bid.ChosenProposal.Supplier)
+                    .Select(s => new KeyValuePair<string, string>(s.Email, s.Name))
+                    .ToListAsync()
+                    .ConfigureAwait(false); ;
+            }
+            catch (Exception ex)
+            {
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
+            }
+
+            return await NotifyListAsync(body, subject, emailNamePairs, bidId);
+        }
+
+        public async Task<Response> NotifyBidAllCompletionAsync(string bidId)
+        {
+            return await NotifyBidAllAsync(bidId, GroupCompletionBody, GroupCompletionSubject).ConfigureAwait(false);
+        }
+
+        public async Task<Response> NotifyBidParticipantsTimeToVoteAsync(string bidId)
+        {
+            return await this.NotifyBidParticipantsAsync(bidId, TimeToVoteForSuppliersToParticipantsBody, TimeToVoteForSuppliersToParticipantsSubject).ConfigureAwait(false);
+        }
+
+        public async Task<Response> NotifyBidTimeToVoteAsync(string bidId)
+        {
+            var res1 = await this.NotifyBidParticipantsTimeToVoteAsync(bidId).ConfigureAwait(false);
+            if (!res1.IsOperationSucceeded)
+            {
+                return res1;
+            }
+            return await this.NotifyBidSuppliersAsync(bidId, VoteStartedToSuppliersBody, VoteStartedToSuppliersSubject).ConfigureAwait(false);
+        }
+
+        public async Task<Response> NotifyBidParticipantsTimeToPayAsync(string bidId)
+        {
+            return await this.NotifyBidParticipantsAsync(bidId, TimeToPayBody, TimeToPaySubject).ConfigureAwait(false);
+        }
+
+        public async Task<Response> NotifyBidTimeToPayAsync(string bidId)
+        {
+            var res1 = await this.NotifyBidParticipantsTimeToPayAsync(bidId);
+            if (!res1.IsOperationSucceeded)
+            {
+                return res1;
+            }
+            return await this.NotifyBidSuppliersAsync(bidId, FoundChosenSupplierToSuppliersBody, FoundChosenSupplierSubject).ConfigureAwait(false);
+        }
+
+        public async Task<Response> NotifyBidParticipantsSupplierNotFoundCancellationAsync(string bidId)
+        {
+            return await this.NotifyBidParticipantsAsync(bidId, SupplierNotFoundCancellationBody, SupplierNotFoundCancellationSubject).ConfigureAwait(false);
+        }
+
+        public async Task<Response> NotifyBidParticipantsSupplierCancellationAsync(string bidId)
+        {
+            return await this.NotifyBidParticipantsAsync(bidId, SupplierCancellationBody, SupplierCancellationSubject).ConfigureAwait(false); ;
+        }
+
+        public async Task<Response> NotifyBidAllProgressBarCompletionAsync(string bidId)
+        {
+            var res1 = await this.NotifyBidSuppliersAsync(bidId, ProgressBarCompletionToSuppliersBody, ProgressBarCompletionSubject).ConfigureAwait(false); ;
+            if (!res1.IsOperationSucceeded)
+            {
+                return res1;
+            }
+            return await this.NotifyBidParticipantsAsync(bidId, ProgressBarCompletionToParticipantsBody, ProgressBarCompletionSubject).ConfigureAwait(false); ;
         }
 
         private string getSuccessMessage([CallerMemberName] string callerName = "")
@@ -141,82 +234,24 @@ namespace YOTY.Service.Core.Managers.Notifications
             return $"<b>Hello {name}</b>,<br /><br /> {body} <br />visit <a href='{bidUrl}'>the group page</a> for more info <br /><br />  Thanks <br />The UniBuy Team!";
         }
 
-        private static string getBidUrl(string bidId) {
+        private static string getBidUrl(string bidId)
+        {
             return $"{domain}/groups/{bidId}";
         }
 
-        public async Task<Response> NotifyBidChosenSupplier(string bidId)
+        public Task<Response> NotifyOnFirstSupplierJoinedToBidAsync(string bidId)
         {
-            return await this.NotifyBidChosenSupplier(bidId, FoundChosenSupplierToChosenSuppliersBody, FoundChosenSupplierSubject);
-        }
-        public async Task<Response> NotifyBidChosenSupplier(string bidId, string body, string subject)
-        {
-            IEnumerable<KeyValuePair<string, string>> emailNamePairs;
-
-            try
-            { 
-            var supplier = _context.Bids.Where(bid => bid.Id == bidId).Include(bid => bid.ChosenProposal).ThenInclude(p => p.Supplier).Select(bid => bid.ChosenProposal.Supplier);
-            emailNamePairs = await supplier.Select(s => new KeyValuePair<string, string>(s.Email, s.Name)).ToListAsync().ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
-            }
-            return await NotifyList(body, subject, emailNamePairs, bidId);
+            throw new NotImplementedException();
         }
 
-        public Task<Response> NotifyBidAllCompletion(string bidId)
+        public Task<Response> NotifyOnNewAttractivePropsalForBidAsync(string bidId)
         {
-            return NotifyBidAll(bidId, GroupCompletionBody, GroupCompletionSubject);
+            throw new NotImplementedException();
         }
 
-        public Task<Response> NotifyBidParticipantsTimeToVote(string bidId)
+        public Task<Response> NotifyOnDemandedUnitFirstReachedProposalThresholdAsync(string bidId)
         {
-            return this.NotifyBidParticipants(bidId, TimeToVoteForSuppliersToParticipantsBody, TimeToVoteForSuppliersToParticipantsSubject);
-        }
-        public async Task<Response> NotifyBidTimeToVote(string bidId)
-        {
-            var res1 = await this.NotifyBidParticipantsTimeToVote(bidId);
-            if (!res1.IsOperationSucceeded)
-            {
-                return res1;
-            }
-            return await this.NotifyBidSuppliers(bidId, VoteStartedToSuppliersBody, VoteStartedToSuppliersSubject);
-        }
-
-        public Task<Response> NotifyBidParticipantsTimeToPay(string bidId)
-        {
-            return this.NotifyBidParticipants(bidId, TimeToPayBody, TimeToPaySubject);
-        }
-
-        public async Task<Response> NotifyBidTimeToPay(string bidId)
-        {
-            var res1 = await this.NotifyBidParticipantsTimeToPay(bidId);
-            if (!res1.IsOperationSucceeded)
-            {
-                return res1;
-            }
-            return await this.NotifyBidSuppliers(bidId, FoundChosenSupplierToSuppliersBody, FoundChosenSupplierSubject);
-        }
-
-        public Task<Response> NotifyBidParticipantsSupplierNotFoundCancellation(string bidId)
-        {
-            return this.NotifyBidParticipants(bidId, SupplierNotFoundCancellationBody, SupplierNotFoundCancellationSubject);
-        }
-
-        public Task<Response> NotifyBidParticipantsSupplierCancellation(string bidId)
-        {
-            return this.NotifyBidParticipants(bidId, SupplierCancellationBody, SupplierCancellationSubject);
-        }
-
-        public async Task<Response> NotifyBidAllProgressBarCompletion(string bidId)
-        {
-            var res1 = await this.NotifyBidSuppliers(bidId, ProgressBarCompletionToSuppliersBody, ProgressBarCompletionSubject);
-            if (!res1.IsOperationSucceeded)
-            {
-                return res1;
-            }
-            return await this.NotifyBidParticipants(bidId, ProgressBarCompletionToParticipantsBody, ProgressBarCompletionSubject);
+            throw new NotImplementedException();
         }
     }
 }

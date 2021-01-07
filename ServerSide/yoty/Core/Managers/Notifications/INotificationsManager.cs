@@ -8,16 +8,22 @@ namespace YOTY.Service.Core.Managers.Notifications
 {
     public interface INotificationsManager
     {
-        Task<Response> NotifyBidAllCompletion(string bidId);
+        Task<Response> NotifyBidAllCompletionAsync(string bidId);
 
-        Task<Response> NotifyBidAllProgressBarCompletion(string bidId);
+        Task<Response> NotifyBidAllProgressBarCompletionAsync(string bidId);
 
-        Task<Response> NotifyBidTimeToVote(string bidId);
+        Task<Response> NotifyBidTimeToVoteAsync(string bidId);
 
-        Task<Response> NotifyBidTimeToPay(string bidId);
+        Task<Response> NotifyBidTimeToPayAsync(string bidId);
 
-        Task<Response> NotifyBidParticipantsSupplierNotFoundCancellation(string bidId);
+        Task<Response> NotifyBidParticipantsSupplierNotFoundCancellationAsync(string bidId);
 
-        Task<Response> NotifyBidParticipantsSupplierCancellation(string bidId);
+        Task<Response> NotifyBidParticipantsSupplierCancellationAsync(string bidId);
+
+        Task<Response> NotifyOnFirstSupplierJoinedToBidAsync(string bidId);
+
+        Task<Response> NotifyOnNewAttractivePropsalForBidAsync(string bidId);
+
+        Task<Response> NotifyOnDemandedUnitFirstReachedProposalThresholdAsync(string bidId);
     }
 } 
