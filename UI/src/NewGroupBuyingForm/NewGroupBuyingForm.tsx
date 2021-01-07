@@ -21,6 +21,7 @@ import { newProductRequest } from "../Modal/ProductDetails";
 import { NewBidRequest } from "../Modal/GroupDetails";
 import { submitNewGroupForm } from "../Services/BidsControllerService";
 import { useHistory } from "react-router";
+import ButtonAppBar from "../LoginBar";
 
 export const NewGroupBuyingForm: React.FunctionComponent = () => {
   const [productDetails, setProductDetails] = React.useReducer<
@@ -125,6 +126,7 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
 
   return (
     <Stack horizontalAlign={"center"}>
+      <ButtonAppBar />
       <Text
         block={true}
         className="Bold"

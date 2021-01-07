@@ -68,7 +68,7 @@ export const Home: React.FunctionComponent = () => {
             </Link>
           )}
           <Stack tokens={genericGapStackTokens(20)}>
-            <Stack horizontal>
+            <Stack horizontal horizontalAlign="space-between">
               <DefaultButton
                 text={"New group-buy"}
                 primary
@@ -87,10 +87,8 @@ export const Home: React.FunctionComponent = () => {
                 onSearch={onSearchBoxEnterPressed}
               />
             </Stack>
-            <Stack horizontal>
-              <Stack tokens={{ childrenGap: "5rem" }}>
-                <NavigationPane />
-              </Stack>
+            <Stack horizontal horizontalAlign="space-between">
+              <NavigationPane />
               <ProductCardGridPages />
             </Stack>
           </Stack>
