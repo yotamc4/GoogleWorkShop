@@ -1,9 +1,9 @@
 ﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
-using Microsoft.AspNetCore.Authorization;
-
-namespace YOTY.Service.WebApi.Middlewares.Auth
+namespace YOTY.Service.WebApi.Middlewares.Auth.Requirements
 {
+    using Microsoft.AspNetCore.Authorization;
+
     public class BuyerAuthorizationRequirement: IAuthorizationRequirement
     {
     }

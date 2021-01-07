@@ -181,16 +181,18 @@ namespace YOTY.Service.Core.Managers.Bids
 
         public async Task<Response<BidDTO>> EditBid(EditBidRequest editBidRequest)
         {
-            BidEntity bid = await _context.Bids.FindAsync(editBidRequest.BidId).ConfigureAwait(false);
+            BidEntity bid = await _context.Bids.Where(b => b.Id == editBidRequest.BidId).Include(bid => bid.Product).FirstOrDefaultAsync().ConfigureAwait(false);
+
             if (bid == null)
             {
                 return new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
             }
-            bid.Product.Name = editBidRequest.NewName;
-            bid.Product.Image = editBidRequest.NewProductImage;
-            bid.Product.Description = editBidRequest.NewDescription;
-            bid.Category = editBidRequest.NewCategory;
-            bid.SubCategory = editBidRequest.NewSubCategory;
+
+            bid.Product.Name = editBidRequest.NewName ?? bid.Product.Name;
+            bid.Product.Image = editBidRequest.NewProductImage ?? bid.Product.Image;
+            bid.Product.Description = editBidRequest.NewDescription ?? bid.Product.Description;
+            bid.Category = editBidRequest.NewCategory ?? bid.Category;
+            bid.SubCategory = editBidRequest.NewSubCategory ?? bid.SubCategory;
 
             try
             {

@@ -2,9 +2,7 @@
 
 namespace YOTY.Service.WebApi.Controllers
 {
-    using System;
     using System.Collections.Generic;
-    using System.Security.Claims;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
@@ -157,7 +155,7 @@ namespace YOTY.Service.WebApi.Controllers
             }
             else if (bidBuyerJoinRequest.BidId != bidId)
             {
-                return this.StatusCode(StatusCodes.Status400BadRequest);
+                return this.StatusCode(StatusCodes.Status400BadRequest, $"bidId:{bidId} mentioned in request path dosen't match bidId:{bidBuyerJoinRequest.BidId} in request Body");
             }
 
             Response response = await this.bidsManager.AddBuyer(bidBuyerJoinRequest).ConfigureAwait(false);

@@ -6,6 +6,8 @@ namespace YOTY.Service.WebApi.Middlewares.Auth
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using YOTY.Service.WebApi.Middlewares.Auth.Handlers;
+    using YOTY.Service.WebApi.Middlewares.Auth.Requirements;
 
     public static class ServiceAuthConfigurer
     {
@@ -29,14 +31,18 @@ namespace YOTY.Service.WebApi.Middlewares.Auth
         }
 
         public static IServiceCollection AddYotyAuthorization(this IServiceCollection services)
-        {
+        {          
             return services
                 .AddAuthorizationHandler<BuyerAuthorizationHandler>()
                 .AddAuthorizationHandler<SupplierAuthorizationHandler>()
+                .AddAuthorizationHandler<BidOwnerPolicyHandler>()
+                .AddAuthorizationHandler<ChosenSupplierPolicyHandler>()
                 .ConfigureAuthorization(
-                    "JwtBearer",
+                    "Bearer",
                     CreatePolicyDefinition(PolicyNames.BuyerPolicy, new BuyerAuthorizationRequirement()),
-                    CreatePolicyDefinition(PolicyNames.SupplierPolicy, new SupplierAuthorizationRequirement()));
+                    CreatePolicyDefinition(PolicyNames.SupplierPolicy, new SupplierAuthorizationRequirement()),
+                    CreatePolicyDefinition(PolicyNames.BidOwnerPolicy, new BidOwnerRequirement()),
+                    CreatePolicyDefinition(PolicyNames.ChosenSupplierPolicy, new ChosenSupplierRequirement()));
         }
 
         public static IServiceCollection AddAuthorizationHandler<TAuthorizationHandler>(this IServiceCollection services)
@@ -59,6 +65,7 @@ namespace YOTY.Service.WebApi.Middlewares.Auth
                     });
                 }
             });
+            
 
             return services;
         }

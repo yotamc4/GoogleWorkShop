@@ -1,16 +1,13 @@
 ﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
-
-
-namespace YOTY.Service.WebApi.Middlewares.Auth
+namespace YOTY.Service.WebApi.Middlewares.Auth.Handlers
 {
-    using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
     using YOTY.Service.Data;
+    using YOTY.Service.WebApi.Middlewares.Auth.Requirements;
 
     public class SupplierAuthorizationHandler: AuthorizationHandler<SupplierAuthorizationRequirement>
     {
