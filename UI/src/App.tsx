@@ -71,9 +71,7 @@ function App() {
   }, [isAuthenticated]);
   return (
     <>
-      <Stack horizontalAlign="center">
-        <ButtonAppBar />
-      </Stack>
+      <Stack horizontalAlign="center"></Stack>
       <Switch>
         <Route exact path="/">
           <Home />

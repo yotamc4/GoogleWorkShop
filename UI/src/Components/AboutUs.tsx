@@ -1,5 +1,6 @@
 import { Link, Stack, StackItem, Text } from "@fluentui/react";
 import * as React from "react";
+import ButtonAppBar from "../LoginBar";
 import { genericGapStackTokensString } from "./ProductCardGrid/ProductCardGridStyles";
 
 export const AboutUs: React.FunctionComponent = () => {
@@ -10,6 +11,7 @@ export const AboutUs: React.FunctionComponent = () => {
         padding: 10,
       }}
     >
+      <ButtonAppBar />
       <StackItem align="center">
         <Text variant={"xxLarge"} styles={getStylesColour("#70706c")}>
           About us

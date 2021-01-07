@@ -17,8 +17,10 @@ import {
   defaultButtonStyles,
   genericGapStackTokens,
   searchBoxStyles,
+  marginForBothSides,
   verticalGapStackTokens,
 } from "./HomeStyles";
+import ButtonAppBar from "../LoginBar";
 
 const imagePropsSubLogo: IImageProps = {
   src: "/Images/subLogo2.PNG",
@@ -57,47 +59,40 @@ export const Home: React.FunctionComponent = () => {
 
   return (
     <AuthContextProvider>
-      <Stack tokens={verticalGapStackTokens}>
-        <Stack horizontal horizontalAlign="center">
+      <Stack styles={marginForBothSides}>
+        <ButtonAppBar />
+        <Stack tokens={verticalGapStackTokens}>
           {isHomePage && (
             <Link href={"/about_us"}>
-              <Image {...imagePropsSubLogo} width="71rem" height="13rem" />
+              <Image {...imagePropsSubLogo} height="13rem" />
             </Link>
           )}
-        </Stack>
-        <Stack tokens={genericGapStackTokens(20)}>
-          <Stack
-            horizontal
-            horizontalAlign="center"
-            tokens={genericGapStackTokens(-200)}
-          >
-            <DefaultButton
-              text={"Create a new group-buy"}
-              primary
-              onClick={() => {
-                history.push("/createNewGroup");
-              }}
-              iconProps={{
-                iconName: "Add",
-                styles: { root: { color: "darkgrey", marginRight: "-0.6rem" } },
-              }}
-              styles={defaultButtonStyles}
-            ></DefaultButton>
-            <SearchBox
-              styles={searchBoxStyles}
-              placeholder="Search for group"
-              onSearch={onSearchBoxEnterPressed}
-            />
-          </Stack>
-          <Stack
-            horizontal
-            horizontalAlign="center"
-            tokens={{ childrenGap: "2rem" }}
-          >
-            <Stack tokens={{ childrenGap: "5rem" }}>
-              <NavigationPane />
+          <Stack tokens={genericGapStackTokens(20)}>
+            <Stack horizontal>
+              <DefaultButton
+                text={"New group-buy"}
+                primary
+                onClick={() => {
+                  history.push("/createNewGroup");
+                }}
+                iconProps={{
+                  iconName: "Add",
+                  styles: { root: { color: "darkgrey" } },
+                }}
+                styles={defaultButtonStyles}
+              ></DefaultButton>
+              <SearchBox
+                styles={searchBoxStyles}
+                placeholder="Search for group"
+                onSearch={onSearchBoxEnterPressed}
+              />
             </Stack>
-            <ProductCardGridPages />
+            <Stack horizontal>
+              <Stack tokens={{ childrenGap: "5rem" }}>
+                <NavigationPane />
+              </Stack>
+              <ProductCardGridPages />
+            </Stack>
           </Stack>
         </Stack>
       </Stack>
