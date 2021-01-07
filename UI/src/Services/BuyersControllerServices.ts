@@ -3,10 +3,12 @@ import * as ControllerUtils from "./ControllerUtils";
 import { GetBidsResponse } from "./BidsControllerService";
 
 export async function GetBidsCreatedByBuyer(
-  userId: string,
   getAccessTokenSilently?: (options?: any) => Promise<string>
 ): Promise<GetBidsResponse> {
-  const serviceUrl = BasicControllerUrl + "/api/v1/Buyers/" + userId;
+  const serviceUrl = ControllerUtils.buildUrlWithQueryParams(
+    BasicControllerUrl + "/bids",
+    new Map([["IsCreatedByBuyer", "true"]])
+  );
 
   try {
     const response: Response = await ControllerUtils.makeGetRequest(
@@ -34,12 +36,15 @@ export async function GetBidsCreatedByBuyer(
 
 // TODO - need to update this function to the BE (they haven't implemented it)
 export async function GetGroupsBuyerIsParticipant(
-  userId: string
+  getAccessTokenSilently?: (options?: any) => Promise<string>
 ): Promise<GetBidsResponse> {
-  const serviceUrl = BasicControllerUrl + "/api/v1/Buyers/" + userId;
+  const serviceUrl = BasicControllerUrl + "/bids";
 
   try {
-    const response: Response = await ControllerUtils.makeGetRequest(serviceUrl);
+    const response: Response = await ControllerUtils.makeGetRequest(
+      serviceUrl,
+      getAccessTokenSilently
+    );
 
     const getBidsResponse: GetBidsResponse = (await response.json()) as GetBidsResponse;
 
@@ -59,4 +64,4 @@ export async function GetGroupsBuyerIsParticipant(
   }
 }
 
-const BasicControllerUrl: string = "https://localhost:5001";
+const BasicControllerUrl: string = "https://localhost:5001/api/v1/Buyers";

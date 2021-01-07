@@ -8,11 +8,12 @@ import {
 } from "./ControllerUtils";
 
 export async function submitNewGroupForm(
-  bidRequest: NewBidRequest
+  bidRequest: NewBidRequest,
+  getAccessTokenSilently?: (options?: any) => Promise<string>
 ): Promise<void> {
   const serviceUrl = BasicControllerUrl;
 
-  await makePostRequest(serviceUrl, bidRequest);
+  await makePostRequest(serviceUrl, bidRequest, getAccessTokenSilently);
 }
 
 export async function getBids(

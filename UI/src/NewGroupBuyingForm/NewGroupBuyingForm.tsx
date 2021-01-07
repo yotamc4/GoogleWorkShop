@@ -110,7 +110,6 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
     });
   };
 
-  // TODO - Move the call to separate file (Services controllers)
   const onSubmitForm = async (): Promise<void> => {
     try {
       setRequestInProcess(true);
