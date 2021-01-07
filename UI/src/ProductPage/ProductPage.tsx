@@ -23,7 +23,12 @@ import configData from "../config.json";
 import { getDate } from "./utils";
 
 export const ProductPage: React.FunctionComponent = () => {
-  const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
+  const {
+    isAuthenticated,
+    user,
+    isLoading,
+    getAccessTokenSilently,
+  } = useAuth0();
   const [numberOfParticipants, setnumberOfParticipants] = React.useState<
     number
   >(0);
@@ -38,33 +43,47 @@ export const ProductPage: React.FunctionComponent = () => {
 
   const { id } = useParams<{ id: string }>();
   React.useEffect(() => {
-    let role: string;
-    if (isAuthenticated) {
-      role = user[configData.roleIdentifier];
-    } else {
-      role = "Anonymous";
-    }
-    axios
-      .all([
-        axios.get(
-          `https://localhost:5001/api/v1/bids/${id}?role=${role}&id=${user?.sub}`
-        ),
-        axios.get(`https://localhost:5001/api/v1/bids/${id}/proposals`),
-      ])
-      .then(
-        axios.spread(
-          (bidDetailsResponse, supplierProposalRequestListResponse) => {
-            setBidDetails(bidDetailsResponse.data as BidDetails);
+    const getBid = async () => {
+      let role: string;
+      let config;
+      if (isAuthenticated) {
+        const accessToken = await getAccessTokenSilently();
+        config = {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        };
+        role = user[configData.roleIdentifier];
+      } else {
+        role = "Anonymous";
+        config = {
+          headers: { Authorization: `Bearer` },
+        };
+      }
+      axios
+        .all([
+          axios.get(
+            `https://localhost:5001/api/v1/bids/${id}?role=${role}&id=${user?.sub}`,
+            config
+          ),
+          axios.get(`https://localhost:5001/api/v1/bids/${id}/proposals`),
+        ])
+        .then(
+          axios.spread(
+            (bidDetailsResponse, supplierProposalRequestListResponse) => {
+              setBidDetails(bidDetailsResponse.data as BidDetails);
 
-            setnumberOfParticipants(bidDetailsResponse.data.unitsCounter);
-            setsupplierProposalRequestList(
-              supplierProposalRequestListResponse.data as ISupplierProposalRequest[]
-            );
-            setIsDataLoaded(true);
-          }
-        )
-      );
-  }, [isAuthenticated]);
+              setnumberOfParticipants(bidDetailsResponse.data.unitsCounter);
+              setsupplierProposalRequestList(
+                supplierProposalRequestListResponse.data as ISupplierProposalRequest[]
+              );
+              setIsDataLoaded(true);
+            }
+          )
+        );
+    };
+    if (!isLoading) {
+      getBid();
+    }
+  }, [isAuthenticated, isLoading]);
 
   const changeNumberOfParticipants = React.useCallback(
     (addedNumber: number) => {

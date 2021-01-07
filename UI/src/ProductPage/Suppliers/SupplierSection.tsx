@@ -107,9 +107,8 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
   >(supplierProposalRequestList);
 
   React.useEffect(() => {
-    listItems?.map((supplierProposalRequest) => {
+    const newArr = listItems?.map((supplierProposalRequest) => {
       supplierProposalRequest["progressBar"] = (
-        //TODO: how to present the minimumUnits-requestedItems avoid injection
         <ProgressIndicator
           label={
             (supplierProposalRequest.minimumUnits as number) -
@@ -135,18 +134,45 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
         ) +
         "/" +
         String(
-          (new Date(
+          new Date(
             supplierProposalRequest?.publishedTime as string
-          ).getUTCDate() as number) + 1
+          ).getUTCDate() as number
         ) +
         "/" +
         String(
-          (new Date(
+          new Date(
             supplierProposalRequest?.publishedTime as string
-          ).getUTCFullYear() as number) + 1
+          ).getUTCFullYear() as number
         );
+      return supplierProposalRequest;
     });
+    setListItems(newArr);
   }, []);
+
+  React.useEffect(() => {
+    const newArr = listItems?.map((supplierProposalRequest) => {
+      supplierProposalRequest["progressBar"] = (
+        <ProgressIndicator
+          label={
+            (supplierProposalRequest.minimumUnits as number) -
+              numberOfParticipants >
+            0
+              ? `${
+                  (supplierProposalRequest.minimumUnits as number) -
+                  numberOfParticipants
+                } units to complete`
+              : "Complete"
+          }
+          percentComplete={
+            numberOfParticipants /
+            (supplierProposalRequest.minimumUnits as number)
+          }
+        />
+      );
+      return supplierProposalRequest;
+    });
+    setListItems(newArr);
+  }, [numberOfParticipants]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -248,6 +274,11 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
             columns={_columns}
             selectionMode={SelectionMode.none}
           />
+          {listItems?.length === 0 && (
+            <div style={{ marginLeft: "25rem" }}>
+              No proposals have been added yet
+            </div>
+          )}
         </Stack>
       );
     case Phase.Vote:
