@@ -12,5 +12,6 @@ export interface ISupplierProposalRequest {
 export interface ISuppliersSectionProps {
   supplierProposalRequestList: ISupplierProposalRequest[] | undefined;
   numberOfParticipants: number;
-  expirationDate: string;
+  bidPhase: number;
+  isUserInBid: boolean | undefined;
 }
