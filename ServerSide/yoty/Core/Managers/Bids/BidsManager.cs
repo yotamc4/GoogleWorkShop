@@ -248,15 +248,14 @@ namespace YOTY.Service.Core.Managers.Bids
 
         public async Task<Response<List<BuyerDTO>>> GetBidBuyers(string bidId)
         {
-            var bid_ent = await _context.Bids.FindAsync(bidId).ConfigureAwait(false);
+            var bid_ent = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.CurrentParticipancies).ThenInclude(p => p.Buyer).FirstOrDefaultAsync().ConfigureAwait(false);
             if (bid_ent == null)
             {
                 return new Response<List<BuyerDTO>>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
 
             }
 
-            List<BuyerDTO> buyers = new List<BuyerDTO>();
-            bid_ent.CurrentParticipancies.ForEach(p => buyers.Add(_mapper.Map<BuyerDTO>(p.Buyer)));
+            List<BuyerDTO> buyers = bid_ent.CurrentParticipancies.Select(p => _mapper.Map<BuyerDTO>(p.Buyer)).ToList();
             return new Response<List<BuyerDTO>>() { DTOObject = buyers, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 

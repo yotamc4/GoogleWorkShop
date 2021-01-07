@@ -6,6 +6,7 @@ import {
   IImageProps,
   ImageFit,
   Image,
+  Link,
 } from "@fluentui/react";
 import { useHistory, useLocation } from "react-router";
 
@@ -16,8 +17,10 @@ import {
   defaultButtonStyles,
   genericGapStackTokens,
   searchBoxStyles,
+  marginForBothSides,
   verticalGapStackTokens,
 } from "./HomeStyles";
+import ButtonAppBar from "../LoginBar";
 
 const imagePropsSubLogo: IImageProps = {
   src: "/Images/subLogo2.PNG",
@@ -25,10 +28,6 @@ const imagePropsSubLogo: IImageProps = {
 };
 
 export const Home: React.FunctionComponent = () => {
-  const [showWelcomeBanner, setShowWelcomeBanner] = React.useState<boolean>(
-    true
-  );
-
   const history = useHistory();
 
   const currentSearchParams: URLSearchParams = new URLSearchParams(
@@ -37,16 +36,6 @@ export const Home: React.FunctionComponent = () => {
 
   // The home component is also been used for the categories and subCategories view
   const isHomePage: boolean = window.location.pathname === "/";
-
-  const changeHistory = () => {
-    history.push("/createNewGroup");
-  };
-
-  React.useEffect(() => {
-    setTimeout(() => {
-      setShowWelcomeBanner(false);
-    }, 10000);
-  });
 
   const onSearchBoxEnterPressed = (newValue: any) => {
     const url: URL = new URL("/groups", window.location.origin);
@@ -70,43 +59,38 @@ export const Home: React.FunctionComponent = () => {
 
   return (
     <AuthContextProvider>
-      <Stack tokens={verticalGapStackTokens}>
-        <Stack horizontal horizontalAlign="center">
-          {isHomePage && showWelcomeBanner && (
-            <Image {...imagePropsSubLogo} width="71rem" height="20rem" />
+      <Stack styles={marginForBothSides}>
+        <ButtonAppBar />
+        <Stack tokens={verticalGapStackTokens}>
+          {isHomePage && (
+            <Link href={"/about_us"}>
+              <Image {...imagePropsSubLogo} height="13rem" />
+            </Link>
           )}
-        </Stack>
-        <Stack tokens={genericGapStackTokens(20)}>
-          <Stack
-            horizontal
-            horizontalAlign="center"
-            tokens={genericGapStackTokens(-200)}
-          >
-            <DefaultButton
-              text={"Create a new group-buy"}
-              primary
-              onClick={changeHistory}
-              iconProps={{
-                iconName: "Add",
-                styles: { root: { color: "darkgrey", marginRight: "-0.6rem" } },
-              }}
-              styles={defaultButtonStyles}
-            ></DefaultButton>
-            <SearchBox
-              styles={searchBoxStyles}
-              placeholder="Search for group"
-              onSearch={onSearchBoxEnterPressed}
-            />
-          </Stack>
-          <Stack
-            horizontal
-            horizontalAlign="center"
-            tokens={{ childrenGap: "2rem" }}
-          >
-            <Stack tokens={{ childrenGap: "5rem" }}>
-              <NavigationPane />
+          <Stack tokens={genericGapStackTokens(20)}>
+            <Stack horizontal horizontalAlign="space-between">
+              <DefaultButton
+                text={"New group-buy"}
+                primary
+                onClick={() => {
+                  history.push("/createNewGroup");
+                }}
+                iconProps={{
+                  iconName: "Add",
+                  styles: { root: { color: "darkgrey" } },
+                }}
+                styles={defaultButtonStyles}
+              ></DefaultButton>
+              <SearchBox
+                styles={searchBoxStyles}
+                placeholder="Search for group"
+                onSearch={onSearchBoxEnterPressed}
+              />
             </Stack>
-            <ProductCardGridPages />
+            <Stack horizontal horizontalAlign="space-between">
+              <NavigationPane />
+              <ProductCardGridPages />
+            </Stack>
           </Stack>
         </Stack>
       </Stack>

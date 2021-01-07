@@ -6,9 +6,12 @@ import {
 } from "@fluentui/react";
 
 export const searchBoxStyles: Partial<ISearchBoxStyles> = {
-  root: { height: "2.6rem", width: "40rem", marginRight: "10rem" },
+  root: { height: "2.6rem", width: "35rem" },
 };
 
+export const marginForBothSides: Partial<ISearchBoxStyles> = {
+  root: { marginLeft: "13rem", marginRight: "13rem" },
+};
 export const verticalGapStackTokens: IStackTokens = {
   childrenGap: 20,
 };
@@ -18,11 +21,10 @@ export const defaultButtonStyles: IButtonStyles = {
     borderRadius: 25,
     height: "2.5rem",
     marginRight: "15rem",
+    minWidth: "12rem",
   },
   textContainer: {
-    padding: "1rem",
-    fontSize: "1.2rem",
-    marginBottom: "0.4rem",
+    fontSize: "1rem",
   },
 };
 

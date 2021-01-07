@@ -1,10 +1,16 @@
 import { Bid, NewBidRequest } from "../Modal/GroupDetails";
-import { buildUrlWithQueryParams, makePostRequest } from "./ControllerUtils";
+import { BidBuyerJoinRequest } from "../Modal/ProductDetails";
+import { ISupplierProposalRequest } from "../ProductPage/Suppliers/SupplierSection.interface";
+import {
+  buildUrlWithQueryParams,
+  makeDeleteRequest,
+  makePostRequest,
+} from "./ControllerUtils";
 
 export async function submitNewGroupForm(
   bidRequest: NewBidRequest
 ): Promise<void> {
-  const serviceUrl = BasicControllerUrl + "/api/v1/Bids";
+  const serviceUrl = BasicControllerUrl;
 
   await makePostRequest(serviceUrl, bidRequest);
 }
@@ -15,7 +21,7 @@ export async function getBids(
   subCategory: string | null,
   searchString: string | null
 ): Promise<GetBidsResponse> {
-  const serviceUrl = BasicControllerUrl + "/api/v1/Bids";
+  const serviceUrl = BasicControllerUrl;
   const queryParm: Map<string, string> = new Map([
     ["page", intervalNumber.toString()],
   ]);
@@ -64,7 +70,53 @@ export async function getBids(
   }
 }
 
-const BasicControllerUrl: string = "https://localhost:5001";
+export function addBuyer(
+  bidBuyerJoinRequest: BidBuyerJoinRequest,
+  url: string,
+  getAccessTokenSilently?: (options?: any) => Promise<string>
+) {
+  const serviceUrl = BasicControllerUrl + url;
+  const response = makePostRequest(
+    serviceUrl,
+    bidBuyerJoinRequest,
+    getAccessTokenSilently
+  );
+  return response;
+}
+
+export function deleteBuyer(
+  url: string,
+  getAccessTokenSilently?: (options?: any) => Promise<string>
+) {
+  const serviceUrl = BasicControllerUrl + url;
+  const response = makeDeleteRequest(serviceUrl, "", getAccessTokenSilently);
+  return response;
+}
+
+export function addSupplierProposal(
+  supplierProposalFormDetails: Partial<ISupplierProposalRequest>,
+  url: string,
+  getAccessTokenSilently?: (options?: any) => Promise<string>
+) {
+  const serviceUrl = BasicControllerUrl + url;
+  const response = makePostRequest(
+    serviceUrl,
+    supplierProposalFormDetails,
+    getAccessTokenSilently
+  );
+  return response;
+}
+
+export function deleteSupplierProposal(
+  url: string,
+  getAccessTokenSilently?: (options?: any) => Promise<string>
+) {
+  const serviceUrl = BasicControllerUrl + url;
+  const response = makeDeleteRequest(serviceUrl, "", getAccessTokenSilently);
+  return response;
+}
+
+const BasicControllerUrl: string = "https://localhost:5001/api/v1/Bids";
 
 export interface GetBidsResponse {
   pageSize: number;

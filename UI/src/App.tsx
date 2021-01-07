@@ -9,6 +9,7 @@ import { ProductPage } from "./ProductPage/ProductPage";
 import { UserProfile } from "./UserProfile/UserProfile";
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
+import { AboutUs } from "./Components/AboutUs";
 
 initializeIcons();
 
@@ -16,7 +17,7 @@ function App() {
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
 
   React.useEffect(() => {
-    const getAccessTokenAndRegisterNewUser = async () => {
+    const registerNewUser = async () => {
       if (
         isAuthenticated &&
         user["https://UniBuyClient.workshop.com/isFirstLogin"] === "true"
@@ -66,16 +67,17 @@ function App() {
         }
       }
     };
-    getAccessTokenAndRegisterNewUser();
+    registerNewUser();
   }, [isAuthenticated]);
   return (
     <>
-      <Stack horizontalAlign="center">
-        <ButtonAppBar />
-      </Stack>
+      <Stack horizontalAlign="center"></Stack>
       <Switch>
         <Route exact path="/">
           <Home />
+        </Route>
+        <Route exact path="/about_us">
+          <AboutUs />
         </Route>
         <Route path="/createNewGroup">
           <NewGroupBuyingForm />

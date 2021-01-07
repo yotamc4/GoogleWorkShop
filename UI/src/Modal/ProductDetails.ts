@@ -9,6 +9,8 @@ export interface BidDetails {
   expirationDate: string;
   potenialSuplliersCounter: number;
   unitsCounter: number;
+  phase: Phase;
+  isUserInBid: boolean;
 }
 
 export interface ProductDetails {
@@ -33,4 +35,13 @@ export interface BidBuyerJoinRequest {
   buyerId: string;
   bidId: string;
   items: number;
+}
+
+export enum Phase {
+  Join,
+  Vote,
+  Payment,
+  CancelledSupplierNotFound,
+  CancelledNotEnoughBuyersPayed,
+  Completed,
 }

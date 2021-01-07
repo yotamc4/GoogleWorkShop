@@ -47,6 +47,23 @@ namespace YOTY.Service.WebApi.Controllers
             return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
         }
 
+        [HttpGet]
+        [Route("{supplierId}/bids")]
+        public async Task<ActionResult<BidsDTO>> GetSupplierBids(string supplierId, [FromQuery] SupplierBidsRequestOptions supplierBidsRequestOptions)
+        {
+            Response<BidsDTO> response = supplierBidsRequestOptions.IsChosenSupplier ?
+                await this.suppliersManager.GetBidsWhereChosen(supplierId, supplierBidsRequestOptions.BidsTime).ConfigureAwait(false) :
+                await this.suppliersManager.GetBidsWhereProposed(supplierId, supplierBidsRequestOptions.BidsTime).ConfigureAwait(false);
+
+            if (response.IsOperationSucceeded)
+            {
+                return response.DTOObject;
+            }
+
+            // at the moment
+            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
+        }
+
         [HttpPost]
         [Route("details")]
         [Authorize(Policy = PolicyNames.SupplierPolicy)]

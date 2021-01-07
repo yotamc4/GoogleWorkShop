@@ -1,4 +1,8 @@
-import { ISeparatorStyles, IStackItemStyles, IStackStyles } from "@fluentui/react";
+import {
+  ISeparatorStyles,
+  IStackItemStyles,
+  IStackStyles,
+} from "@fluentui/react";
 
 export const StacStyles: IStackStyles = {
   root: {
@@ -16,8 +20,6 @@ export const StacStyles2: IStackStyles = {
 export const StackItemStyles: IStackItemStyles = {
   root: {
     width: "7rem",
-    marginLeft: "32rem",
-    marginTop: "-3rem",
     ":hover": { cursor: "pointer" },
   },
 };

@@ -11,6 +11,7 @@ import {
   Label,
   CommandBarButton,
   Persona,
+  Link,
 } from "@fluentui/react";
 import { useHistory } from "react-router";
 import FacebookLogin from "react-facebook-login";
@@ -38,15 +39,12 @@ export default function ButtonAppBar() {
   const [picture, setPicture] = React.useState<string>("");
   const [name, setName] = React.useState<string>("");
 
-  React.useEffect(()=>{
-    if (isAuthenticated){
+  React.useEffect(() => {
+    if (isAuthenticated) {
       setName(user?.name);
       setPicture(user?.picture);
     }
-    else{
-      
-    }
-  },[isAuthenticated]);
+  }, [isAuthenticated]);
 
   const history = useHistory();
   const changeHistory = () => {
@@ -56,7 +54,7 @@ export default function ButtonAppBar() {
 
   return (
     <Stack styles={StacStyles2}>
-      <StackItem styles={StackItemStyles}>
+      <StackItem styles={StackItemStyles} align={"center"}>
         <Image
           {...imagePropsLogo}
           width={200}
@@ -66,20 +64,35 @@ export default function ButtonAppBar() {
       </StackItem>
       <Stack>
         <Separator theme={theme} styles={{ content: { width: "75rem" } }} />
-        {isAuthenticated ? 
-        (
+        {isAuthenticated ? (
           <Stack horizontal horizontalAlign="space-between" styles={StacStyles}>
-            <Persona imageUrl={picture} text={name} />
-            <LogoutButton/>
+            <Link href={`/user/${name.split(" ").join("_")}`}>
+              <Persona imageUrl={picture} text={name} />
+            </Link>
+            <StackItem align={"center"}>
+              <CommandBarButton
+                text="About Us"
+                disabled={false}
+                checked={false}
+                href={"/about_us"}
+              />
+              <LogoutButton />
+            </StackItem>
           </Stack>
-        )
-        :
-        (
+        ) : (
           <Stack horizontal horizontalAlign="space-between" styles={StacStyles}>
             <Label>Hello Guest!</Label>
-            <LoginButton/>
+            <StackItem align={"center"}>
+              <CommandBarButton
+                text="About Us"
+                disabled={false}
+                checked={false}
+                href={"/about_us"}
+              />
+              <LoginButton />
+            </StackItem>
           </Stack>
-        ) }
+        )}
         <Separator styles={SeperatorStyles} />
       </Stack>
     </Stack>

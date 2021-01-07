@@ -12,11 +12,14 @@ import * as FormsStyles from "../../FormStyles/FormsStyles";
 import { ISupplierProposalFormProps } from "./SupplierProposalForm.interface";
 import { useParams } from "react-router";
 import { ISupplierProposalRequest } from "./SupplierSection.interface";
+import { useAuth0 } from "@auth0/auth0-react";
+import { addSupplierProposal } from "../../Services/BidsControllerService";
 
 export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalFormProps> = ({
   addPropposalToSupplierList,
   handleClose,
 }) => {
+  const { user } = useAuth0();
   const { id } = useParams<{ id: string }>();
   const [formInputs, setFormInputs] = React.useReducer<
     (
@@ -47,41 +50,28 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
 
   //TODO: fix when the input isn't correct (wrong value or hasn't set)
   const onClickSend = () => {
+    const url = `/${id}/proposals`;
     const date = new Date();
     if (!(!formInputs.proposedPrice && !formInputs.minimumUnits)) {
       addPropposalToSupplierList({
         publishedTime: String(date),
         bidId: id,
-        supplierId: "Istore@gmail.com",
-        supplierName: "Istore",
+        supplierId: user.sub,
+        supplierName: user.name,
         ...formInputs,
       });
-      //TODO: needs to consume from the context the bidId and the supplierId
-      postSupplierPropposal({
-        publishedTime: date,
-        bidId: id,
-        supplierId: "Istore@gmail.com",
-        supplierName: "Istore",
-        ...formInputs,
-      });
-    }
-    //TODO: The user can't add the proposal need to return popup or some error message
-  };
 
-  const postSupplierPropposal = (
-    supplierProposalFormDetails: Partial<ISupplierProposalRequest>
-  ): void => {
-    axios
-      .post(
-        `https://localhost:5001/api/v1/bids/${id}/proposals`,
-        supplierProposalFormDetails
-      )
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      addSupplierProposal(
+        {
+          publishedTime: date,
+          bidId: id,
+          supplierId: user.sub,
+          supplierName: user.name,
+          ...formInputs,
+        },
+        url
+      );
+    }
   };
 
   const onTextFieldChange = (

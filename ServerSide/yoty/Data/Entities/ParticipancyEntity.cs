@@ -6,6 +6,8 @@ namespace YOTY.Service.Data.Entities
     {
         public int NumOfUnits { get; set; }
 
+        public string BuyerName { get; set; }
+
         public bool HasVoted { get; set; }
 
         public bool HasPaid{ get; set; }
