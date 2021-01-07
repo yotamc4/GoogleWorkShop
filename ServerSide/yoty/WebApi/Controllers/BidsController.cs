@@ -2,7 +2,6 @@
 
 namespace YOTY.Service.WebApi.Controllers
 {
-    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
@@ -12,23 +11,28 @@ namespace YOTY.Service.WebApi.Controllers
     using YOTY.Service.Core.Managers.Bids;
     using YOTY.Service.Core.Managers.Notifications;
     using YOTY.Service.Utils;
+    using YOTY.Service.WebApi.Middlewares.Auth;
     using YOTY.Service.WebApi.PublicDataSchemas;
 
     // The controller has designed by the API best-practises doc here:https://hackernoon.com/restful-api-designing-guidelines-the-best-practices-60e1d954e7c9
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class BidsController: ControllerBase
+    [Authorize]
+    public class BidsController: YotyController
     {
         private IBidsManager bidsManager;
         private INotificationsManager notificationsManager;
+        private IAuthorizationService authorizationService;
 
-        public BidsController(IBidsManager bidsManager, INotificationsManager notificationsManager)
+        public BidsController(IBidsManager bidsManager, INotificationsManager notificationsManager, IAuthorizationService authorizationService)
         {
             this.bidsManager = bidsManager;
             this.notificationsManager = notificationsManager;
+            this.authorizationService = authorizationService;
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<BidsDTO>> GetBids([FromQuery] BidsQueryOptions bidsQueryOptions)
         {
             Response<BidsDTO> response = await this.bidsManager.GetBids(bidsQueryOptions).ConfigureAwait(false);
@@ -36,36 +40,50 @@ namespace YOTY.Service.WebApi.Controllers
             {
                 return this.StatusCode(StatusCodes.Status201Created, response.DTOObject);
             }
-            return this.StatusCode(StatusCodes.Status403Forbidden, response.SuccessOrFailureMessage);
+            return this.StatusCode(StatusCodes.Status500InternalServerError, response.SuccessOrFailureMessage);
         }
 
 
         [HttpPost]
+        [Authorize(Policy = PolicyNames.BuyerPolicy)]
         public async Task<ActionResult> PostNewBid(NewBidRequest bid)
         {
+            bid.OwnerId = GetRequestUserId();
             Response response = await this.bidsManager.CreateNewBid(bid).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status201Created, response.SuccessOrFailureMessage);
             }
-            return this.StatusCode(StatusCodes.Status403Forbidden, response.SuccessOrFailureMessage);
+            return this.StatusCode(StatusCodes.Status500InternalServerError, response.SuccessOrFailureMessage);
         }
 
         [HttpGet]
         [Route("{bidId}")]
-        public async Task<ActionResult<BidDTO>> GetBid(string bidId, [FromQuery] string role, [FromQuery] string id = "")
+        [AllowAnonymous]
+        public async Task<ActionResult<BidDTO>> GetBid(string bidId, [FromQuery] string role)
         {
-            Response<BidDTO> response = await this.bidsManager.GetBid(bidId, id, role).ConfigureAwait(false);
+            string userId = null;
+            if (User.Identity.IsAuthenticated)
+            {
+                userId = GetRequestUserId();
+            }
+            else if(!role?.Equals("anonymous", System.StringComparison.OrdinalIgnoreCase) ?? false)
+            {
+                return this.StatusCode(StatusCodes.Status403Forbidden);
+            }
+
+            Response<BidDTO> response = await this.bidsManager.GetBid(bidId, userId, role).ConfigureAwait(false);
             if (response.IsOperationSucceeded )
             {
                 return response.DTOObject;
             }
-            // at the moment
+            // at the moment - we should change the boolean to enum such that we could differ between bad user input ( 400 ) to not found (404)  to unxepected failures ( 500) 
             return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);            
         }
 
         [HttpGet]
         [Route("{bidId}/buyers")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<BuyerDTO>>> GetBidBuyers(string bidId)
         {
             Response<List<BuyerDTO>> response = await this.bidsManager.GetBidBuyers(bidId).ConfigureAwait(false);
@@ -79,6 +97,7 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpGet]
         [Route("{bidId}/proposals")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<SupplierProposalDTO>>> GetBidSuppliersProposals(string bidId)
         {
             Response<List<SupplierProposalDTO>> response = await bidsManager.GetBidSuppliersProposals(bidId).ConfigureAwait(false);
@@ -92,9 +111,15 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpGet]
         [Route("{bidId}/orderDetails")]
-        public async Task<ActionResult<List<OrderDetailsDTO>>> GetBidOrderDetails(string bidId, [FromQuery] string userId)
+        [Authorize(Policy = PolicyNames.SupplierPolicy)]
+        public async Task<ActionResult<List<OrderDetailsDTO>>> GetBidOrderDetails(string bidId)
         {
-            // TODO replace manager validation with middle-ware token validation and remove userId from here
+            var authResult = await this.authorizationService.AuthorizeAsync(User, bidId, PolicyNames.ChosenSupplierPolicy).ConfigureAwait(false);
+            string userId = GetRequestUserId();
+            if (!authResult.Succeeded)
+            {
+                return this.StatusCode(StatusCodes.Status403Forbidden);
+            }
             Response<List<OrderDetailsDTO>> response = await bidsManager.GetPaidCustomersFullOrderDetails(bidId, userId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
@@ -106,6 +131,7 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpGet]
         [Route("{bidId}/participants")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<ParticipancyDTO>>> GetBidParticipations(string bidId)
         {
             Response<List<ParticipancyDTO>> response = await bidsManager.GetBidParticipations(bidId).ConfigureAwait(false);
@@ -119,11 +145,17 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpPost]
         [Route("{bidId}/buyers")]
+        [Authorize(Policy = PolicyNames.BuyerPolicy)]
         public async Task<ActionResult> AddBuyer(string bidId, BidBuyerJoinRequest bidBuyerJoinRequest)
         {
+            bidBuyerJoinRequest.BuyerId = GetRequestUserId();
             if (bidBuyerJoinRequest.BidId == null)
             {
                 bidBuyerJoinRequest.BidId = bidId;
+            }
+            else if (bidBuyerJoinRequest.BidId != bidId)
+            {
+                return this.StatusCode(StatusCodes.Status400BadRequest, $"bidId:{bidId} mentioned in request path dosen't match bidId:{bidBuyerJoinRequest.BidId} in request Body");
             }
 
             Response response = await this.bidsManager.AddBuyer(bidBuyerJoinRequest).ConfigureAwait(false);
@@ -136,12 +168,19 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpPost]
         [Route("{bidId}/proposals")]
+        [Authorize(Policy = PolicyNames.SupplierPolicy)]
         public async Task<ActionResult> AddSupplierProposal(string bidId, SupplierProposalRequest supplierProposalRequest)
         {
+            supplierProposalRequest.SupplierId = GetRequestUserId();
             if (supplierProposalRequest.BidId == null)
             {
                 supplierProposalRequest.BidId = bidId;
             }
+            else if (supplierProposalRequest.BidId != bidId)
+            {
+                return this.StatusCode(StatusCodes.Status400BadRequest);
+            }
+
             Response response = await this.bidsManager.AddSupplierProposal(supplierProposalRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
@@ -150,9 +189,18 @@ namespace YOTY.Service.WebApi.Controllers
             return this.StatusCode(StatusCodes.Status304NotModified, response.SuccessOrFailureMessage);
         }
 
+        // consider to movee it to buyer controller
         [HttpPut]
+        [Authorize(Policy = PolicyNames.BuyerPolicy)]
         public async Task<ActionResult<BidDTO>> EditBid(EditBidRequest editBidRequest)
         {
+            AuthorizationResult authorizationResult = await this.authorizationService.AuthorizeAsync(User, editBidRequest.BidId, PolicyNames.BidOwnerPolicy).ConfigureAwait(false);
+            if (!authorizationResult.Succeeded)
+            {
+                return this.StatusCode(StatusCodes.Status403Forbidden);
+
+            }
+
             Response<BidDTO> response = await this.bidsManager.EditBid(editBidRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
@@ -161,11 +209,32 @@ namespace YOTY.Service.WebApi.Controllers
             return this.StatusCode(StatusCodes.Status304NotModified, response.SuccessOrFailureMessage);
         }
 
+        // consider to move it to buyer controller
+        [HttpDelete]
+        [Route("{bidId}")]
+        [Authorize(Policy = PolicyNames.BuyerPolicy)]
+        public async Task<ActionResult> DeleteBid(string bidId)
+        {
+            AuthorizationResult authorizationResult = await this.authorizationService.AuthorizeAsync(User, bidId, PolicyNames.BidOwnerPolicy).ConfigureAwait(false);
+            if (!authorizationResult.Succeeded)
+            {
+                return this.StatusCode(StatusCodes.Status403Forbidden);
+            }
+
+            Response response = await this.bidsManager.DeleteBid(bidId).ConfigureAwait(false);
+            if (response.IsOperationSucceeded)
+            {
+                return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
+            }
+            return this.StatusCode(StatusCodes.Status304NotModified, response.SuccessOrFailureMessage);
+        }
 
         [HttpDelete]
-        [Route("{bidId}/buyers/{buyerId}")]
-        public async Task<ActionResult> DeleteBuyer(string bidId, string buyerId)
+        [Route("{bidId}/buyers")]
+        [Authorize(Policy = PolicyNames.BuyerPolicy)]
+        public async Task<ActionResult> DeleteBuyer(string bidId) // buyer id should be removed from the controller
         {
+            string buyerId = GetRequestUserId();
             Response response = await this.bidsManager.DeleteBuyer(bidId, buyerId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
@@ -179,8 +248,10 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpDelete]
         [Route("{bidId}/proposals/{supplierId}")]
-        public async Task<ActionResult> DeleteSupplierProposal(string bidId, string supplierId)
+        [Authorize(Policy = PolicyNames.SupplierPolicy)]
+        public async Task<ActionResult> DeleteSupplierProposal(string bidId)
         {
+            string supplierId = GetRequestUserId();
             Response response = await this.bidsManager.DeleteSupplierProposal(bidId, supplierId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
@@ -193,13 +264,15 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpPost]
         [Route("{bidId}/vote")]
+        [Authorize(Policy = PolicyNames.BuyerPolicy)]
         public async Task<ActionResult> VoteForSupplier(VotingRequest votingRequest)
         {
-            if (!votingRequest.BidId.IsValidId() || !votingRequest.BuyerId.IsValidId() || !votingRequest.VotedSupplierId.IsValidId())
+            if (!votingRequest.BidId.IsValidId() ||  !votingRequest.VotedSupplierId.IsValidId())
             {
-                return this.StatusCode(StatusCodes.Status400BadRequest, $"one of the following: bidId: {votingRequest.BidId}, buyerId: {votingRequest.BuyerId} supplierId: {votingRequest.VotedSupplierId} are not legal id");
+                return this.StatusCode(StatusCodes.Status400BadRequest, $"one of the following: bidId: {votingRequest.BidId}, supplierId: {votingRequest.VotedSupplierId} are not legal id");
             }
 
+            votingRequest.BuyerId = GetRequestUserId();
             Response response = await this.bidsManager.VoteForSupplier(votingRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
@@ -211,12 +284,21 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpPost]
         [Route("{bidId}/markPayment")]
-        public async Task<ActionResult> MarkBuyerPayment(MarkPaidRequest markPaidRequest)
+        [Authorize(Policy = PolicyNames.SupplierPolicy)]
+        public async Task<ActionResult> MarkPayment(MarkPaidRequest markPaidRequest)
         {
-            if (!markPaidRequest.BidId.IsValidId() || !markPaidRequest.BuyerId.IsValidId() || !markPaidRequest.MarkingUserId.IsValidId())
+            if (!markPaidRequest.BidId.IsValidId() || !markPaidRequest.BuyerId.IsValidId())
             {
-                return this.StatusCode(StatusCodes.Status400BadRequest, $"one of the following: bidId: {markPaidRequest.BidId}, buyerId: {markPaidRequest.BuyerId} supplierId: {markPaidRequest.MarkingUserId} are not legal id");
+                return this.StatusCode(StatusCodes.Status400BadRequest, $"one of the following: bidId: {markPaidRequest.BidId}, buyerId: {markPaidRequest.BuyerId}");
             }
+            markPaidRequest.MarkingUserId = GetRequestUserId();
+
+            var authResult = await this.authorizationService.AuthorizeAsync(User, markPaidRequest.BidId, PolicyNames.ChosenSupplierPolicy).ConfigureAwait(false);
+            if (!authResult.Succeeded)
+            {
+                return this.StatusCode(StatusCodes.Status403Forbidden);
+            }
+            markPaidRequest.MarkingUserId = this.GetRequestUserId();
 
             Response response = await this.bidsManager.MarkPaid(markPaidRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
@@ -229,12 +311,20 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpPost]
         [Route("{bidId}/cancel")]
+        [Authorize(Policy = PolicyNames.SupplierPolicy)]
         public async Task<ActionResult> CancelBid(CancellationRequest cancellationRequest)
         {
-            if (!cancellationRequest.BidId.IsValidId() || !cancellationRequest.SupplierId.IsValidId())
+            if (!cancellationRequest.BidId.IsValidId())
             {
-                return this.StatusCode(StatusCodes.Status400BadRequest, $"one of the following: bidId: {cancellationRequest.BidId}, supplierId: {cancellationRequest.SupplierId} are not legal id");
+                return this.StatusCode(StatusCodes.Status400BadRequest, $"Given bidId: {cancellationRequest.BidId}, is not legal id");
             }
+
+            var authResult = await this.authorizationService.AuthorizeAsync(User, cancellationRequest.BidId, PolicyNames.ChosenSupplierPolicy).ConfigureAwait(false);
+            if (!authResult.Succeeded)
+            {
+                return this.StatusCode(StatusCodes.Status403Forbidden);
+            }
+            cancellationRequest.SupplierId = this.GetRequestUserId();
 
             Response response = await this.bidsManager.CancelBid(cancellationRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
@@ -251,12 +341,20 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpPost]
         [Route("{bidId}/complete")]
+        [Authorize(Policy = PolicyNames.SupplierPolicy)]
         public async Task<ActionResult> CompleteBid(CompletionRequest completionRequest)
         {
-            if (!completionRequest.BidId.IsValidId() || !completionRequest.SupplierId.IsValidId())
+            if (!completionRequest.BidId.IsValidId())
             {
-                return this.StatusCode(StatusCodes.Status400BadRequest, $"one of the following: bidId: {completionRequest.BidId}, supplierId: {completionRequest.SupplierId} are not legal id");
+                return this.StatusCode(StatusCodes.Status400BadRequest, $"Given bidId: {completionRequest.BidId} is not legal id");
             }
+
+            var authResult = await this.authorizationService.AuthorizeAsync(User, completionRequest.BidId, PolicyNames.ChosenSupplierPolicy).ConfigureAwait(false);
+            if (!authResult.Succeeded)
+            {
+                return this.StatusCode(StatusCodes.Status403Forbidden);
+            }
+            completionRequest.SupplierId = this.GetRequestUserId();
 
             Response response = await this.bidsManager.CompleteBid(completionRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)

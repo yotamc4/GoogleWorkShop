@@ -7,12 +7,13 @@ namespace YOTY.Service.WebApi.Controllers
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using YOTY.Service.Core.Managers.Suppliers;
+    using YOTY.Service.WebApi.Middlewares.Auth;
     using YOTY.Service.WebApi.PublicDataSchemas;
     
     [ApiController]
     [Route("api/v1/[controller]")]
     [Authorize]
-    public class SuppliersController: ControllerBase
+    public class SuppliersController: YotyController
     {
         private ISuppliersManager suppliersManager;
 
@@ -24,6 +25,7 @@ namespace YOTY.Service.WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateSupplier(NewUserRequest newSupplierRequest)
         {
+            newSupplierRequest.Id = this.GetRequestUserId();
             Response response = await this.suppliersManager.CreateSupplier(newSupplierRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
@@ -33,6 +35,7 @@ namespace YOTY.Service.WebApi.Controllers
         }
 
         [HttpGet]
+        // only auth users 
         public async Task<ActionResult<SupplierDTO>> GetSupplier(string supplierId)
         {
             Response<SupplierDTO> response = await this.suppliersManager.GetSupplier(supplierId).ConfigureAwait(false);
@@ -63,8 +66,11 @@ namespace YOTY.Service.WebApi.Controllers
 
         [HttpPost]
         [Route("details")]
-        public async Task<ActionResult> ModifyBuyerDetails(ModifySupplierDetailsRequest request)
+        [Authorize(Policy = PolicyNames.SupplierPolicy)]
+        public async Task<ActionResult> ModifySupplierDetails(ModifySupplierDetailsRequest request)
         {
+            request.SupplierId = this.GetRequestUserId();
+
             Response response = await this.suppliersManager.ModifySupplierDetails(request);
 
             if (response.IsOperationSucceeded)
