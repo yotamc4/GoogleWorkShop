@@ -19,7 +19,7 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
   addPropposalToSupplierList,
   handleClose,
 }) => {
-  const { user } = useAuth0();
+  const { user,getAccessTokenSilently } = useAuth0();
   const { id } = useParams<{ id: string }>();
   const [formInputs, setFormInputs] = React.useReducer<
     (
@@ -69,7 +69,8 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
           supplierName: user.name,
           ...formInputs,
         },
-        url
+        url,
+        getAccessTokenSilently
       );
     }
   };

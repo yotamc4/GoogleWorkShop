@@ -14,4 +14,5 @@ export interface ISuppliersSectionProps {
   numberOfParticipants: number;
   bidPhase: number;
   isUserInBid: boolean | undefined;
+  hasVoted: boolean | undefined;
 }
