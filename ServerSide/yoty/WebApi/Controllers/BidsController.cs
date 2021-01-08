@@ -110,6 +110,20 @@ namespace YOTY.Service.WebApi.Controllers
         }
 
         [HttpGet]
+        [Route("{bidId}/chosenProposal")]
+        [AllowAnonymous]
+        public async Task<ActionResult<SupplierProposalDTO>> GetBidChosenProposal(string bidId)
+        {
+            Response<SupplierProposalDTO> response = await bidsManager.GetBidChosenProposal(bidId).ConfigureAwait(false);
+            if (response.IsOperationSucceeded)
+            {
+                return response.DTOObject;
+            }
+            // at the moment
+            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
+        }
+
+        [HttpGet]
         [Route("{bidId}/orderDetails")]
         [Authorize(Policy = PolicyNames.SupplierPolicy)]
         public async Task<ActionResult<List<OrderDetailsDTO>>> GetBidOrderDetails(string bidId)
