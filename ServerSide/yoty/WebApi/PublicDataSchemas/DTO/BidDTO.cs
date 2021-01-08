@@ -31,5 +31,7 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
         public BidPhase Phase { get; set; }
 
         public bool IsUserInBid { get; set; }
+
+        public bool HasVoted { get; set; }
     }
 }
