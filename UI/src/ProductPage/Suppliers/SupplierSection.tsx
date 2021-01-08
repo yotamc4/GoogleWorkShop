@@ -1,6 +1,6 @@
 import * as React from "react";
 import { DetailsList, IColumn } from "office-ui-fabric-react/lib/DetailsList";
-import { Stack } from "office-ui-fabric-react";
+import { Stack, Text } from "office-ui-fabric-react";
 import { ActionButton } from "office-ui-fabric-react";
 import { SelectionMode, ProgressIndicator } from "@fluentui/react";
 import Dialog from "@material-ui/core/Dialog";
@@ -13,7 +13,6 @@ import {
   ISuppliersSectionProps,
 } from "./SupplierSection.interface";
 import { deleteIcon } from "./SupplierSectionStyles";
-import axios from "axios";
 import { useParams } from "react-router";
 import { Phase } from "../../Modal/ProductDetails";
 import { getDate } from "../utils";
@@ -21,6 +20,7 @@ import { PaymentsTable } from "../../PaymentTable/PaymentTable";
 import { useAuth0 } from "@auth0/auth0-react";
 import { deleteSupplierProposal } from "../../Services/BidsControllerService";
 import configData from "../../config.json";
+import { textStyles } from "./SupplierSurveyStyles";
 
 export interface ISuppliersListState {
   items: ISupplierProposalRequest[];
@@ -93,6 +93,7 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
   numberOfParticipants,
   bidPhase,
   isUserInBid,
+  hasVoted,
 }) => {
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
   const { id } = useParams<{ id: string }>();
@@ -284,14 +285,35 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
     case Phase.Vote:
       return (
         <Stack>
-          <SuppliersSurvey
-            supliersNames={listItems?.map((supplierProposal) => {
-              return {
-                key: String(supplierProposal.supplierId),
-                text: supplierProposal.supplierName as string,
-              };
-            })}
-          />
+          {isUserInBid && user[configData.roleIdentifier] === "Consumer" ? (
+            <SuppliersSurvey
+              supliersNames={listItems?.map((supplierProposal) => {
+                return {
+                  key: String(supplierProposal.supplierId),
+                  text: supplierProposal.supplierName as string,
+                };
+              })}
+              hasVoted={hasVoted}
+            />
+          ) : (
+            <Stack horizontal horizontalAlign="center">
+              <Text
+                block={true}
+                className="Bold"
+                styles={textStyles}
+                variant="xLargePlus"
+              >
+                The group is in voting phase
+              </Text>
+            </Stack>
+          )}
+          {(listItems?.length as number) > 0 && (
+            <DetailsList
+              items={listItems as ISupplierProposalRequest[]}
+              columns={_columns}
+              selectionMode={SelectionMode.none}
+            />
+          )}
         </Stack>
       );
     case Phase.Payment:

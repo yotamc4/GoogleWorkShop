@@ -19,7 +19,7 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
   addPropposalToSupplierList,
   handleClose,
 }) => {
-  const { user } = useAuth0();
+  const { user, getAccessTokenSilently } = useAuth0();
   const { id } = useParams<{ id: string }>();
   const [formInputs, setFormInputs] = React.useReducer<
     (
@@ -38,6 +38,7 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
       proposedPrice: undefined,
       minimumUnits: undefined,
       description: undefined,
+      paymentLink: undefined,
     }
   );
 
@@ -69,7 +70,8 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
           supplierName: user.name,
           ...formInputs,
         },
-        url
+        url,
+        getAccessTokenSilently
       );
     }
   };
@@ -78,7 +80,10 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ): void => {
-    if ((event.target as HTMLInputElement).id === "description") {
+    if (
+      (event.target as HTMLInputElement).id === "description" ||
+      (event.target as HTMLInputElement).id === "paymentLink"
+    ) {
       setFormInputs({
         [(event.target as HTMLInputElement).id]: newValue,
       });
@@ -120,6 +125,14 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
           required
           onChange={onTextFieldChange}
           onGetErrorMessage={onGetErrorMessage}
+          styles={{ root: { width: FormsStyles.inputWidth } }}
+        />
+        <TextField
+          id="paymentLink"
+          label="Payment link"
+          ariaLabel="Required without visible label"
+          required
+          onChange={onTextFieldChange}
           styles={{ root: { width: FormsStyles.inputWidth } }}
         />
         <TextField

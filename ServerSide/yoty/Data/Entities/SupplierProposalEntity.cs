@@ -6,6 +6,8 @@ namespace YOTY.Service.Data.Entities
     {
         public DateTime PublishedTime { get; set; }
 
+        public Uri PaymentLink { get; set; }
+
         public int MinimumUnits { get; set; }
 
         public double ProposedPrice { get; set; }

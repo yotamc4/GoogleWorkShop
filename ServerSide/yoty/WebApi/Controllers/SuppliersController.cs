@@ -48,9 +48,11 @@ namespace YOTY.Service.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("{supplierId}/bids")]
-        public async Task<ActionResult<BidsDTO>> GetSupplierBids(string supplierId, [FromQuery] SupplierBidsRequestOptions supplierBidsRequestOptions)
+        [Route("bids")]
+        [Authorize(Policy = PolicyNames.SupplierPolicy)]
+        public async Task<ActionResult<BidsDTO>> GetSupplierBids([FromQuery] SupplierBidsRequestOptions supplierBidsRequestOptions)
         {
+            string supplierId = this.GetRequestUserId();
             Response<BidsDTO> response = supplierBidsRequestOptions.IsChosenSupplier ?
                 await this.suppliersManager.GetBidsWhereChosen(supplierId, supplierBidsRequestOptions.BidsTime).ConfigureAwait(false) :
                 await this.suppliersManager.GetBidsWhereProposed(supplierId, supplierBidsRequestOptions.BidsTime).ConfigureAwait(false);

@@ -49,5 +49,9 @@ namespace YOTY.Service.Core.Managers.Bids
         Task<Response> CompleteBid(CompletionRequest completionRequest);
 
         Task<Response<List<OrderDetailsDTO>>> GetPaidCustomersFullOrderDetails(string bidId, string userId);
+
+        Task<Response<List<ParticipancyFullDetailsDTO>>> GetBidParticipationsFullDetails(string bidId);
+
+        Task<Response<SupplierProposalDTO>> GetBidChosenProposal(string bidId);
     }
 }

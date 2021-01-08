@@ -11,21 +11,25 @@ import {
   thankForYourVote,
   verticalGapStackTokens,
 } from "./SupplierSurveyStyles";
-import axios from "axios";
 import { useParams } from "react-router";
 import { IVotingRequest } from "./SupplierSurvey.interface";
+import { useAuth0 } from "@auth0/auth0-react";
+import { voteForSupplier } from "../../Services/BidsControllerService";
 
 export interface ISuppliersSurveyProps {
   supliersNames: IChoiceGroupOption[] | undefined;
+  hasVoted: boolean | undefined;
 }
 
 export const SuppliersSurvey: React.FunctionComponent<ISuppliersSurveyProps> = ({
   supliersNames,
+  hasVoted,
 }) => {
+  const { user, getAccessTokenSilently } = useAuth0();
   const { id } = useParams<{ id: string }>();
   //TODO: consume the supplier from the contextId!!!
   const [isVoteButtonClicked, setIsVoteButtonClicked] = React.useState<boolean>(
-    false
+    hasVoted as boolean
   );
   const [selectedKey, setSelectedKey] = React.useState<string>();
 
@@ -41,17 +45,11 @@ export const SuppliersSurvey: React.FunctionComponent<ISuppliersSurveyProps> = (
   const onClickVoteButton = (): void => {
     const voteData: IVotingRequest = {
       bidId: id,
-      buyerId: "OfekDavid123",
+      buyerId: user.sub,
       votedSupplierId: selectedKey as string,
     };
-    axios
-      .post(`https://localhost:5001/api/v1/bids/${id}/vote`, voteData)
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    const url = `/${id}/vote`;
+    voteForSupplier(voteData, url, getAccessTokenSilently);
     setIsVoteButtonClicked(true);
   };
 

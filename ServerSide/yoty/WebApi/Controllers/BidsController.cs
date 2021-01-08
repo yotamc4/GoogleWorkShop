@@ -110,6 +110,20 @@ namespace YOTY.Service.WebApi.Controllers
         }
 
         [HttpGet]
+        [Route("{bidId}/chosenProposal")]
+        [AllowAnonymous]
+        public async Task<ActionResult<SupplierProposalDTO>> GetBidChosenProposal(string bidId)
+        {
+            Response<SupplierProposalDTO> response = await bidsManager.GetBidChosenProposal(bidId).ConfigureAwait(false);
+            if (response.IsOperationSucceeded)
+            {
+                return response.DTOObject;
+            }
+            // at the moment
+            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
+        }
+
+        [HttpGet]
         [Route("{bidId}/orderDetails")]
         [Authorize(Policy = PolicyNames.SupplierPolicy)]
         public async Task<ActionResult<List<OrderDetailsDTO>>> GetBidOrderDetails(string bidId)
@@ -135,6 +149,27 @@ namespace YOTY.Service.WebApi.Controllers
         public async Task<ActionResult<List<ParticipancyDTO>>> GetBidParticipations(string bidId)
         {
             Response<List<ParticipancyDTO>> response = await bidsManager.GetBidParticipations(bidId).ConfigureAwait(false);
+            if (response.IsOperationSucceeded)
+            {
+                return response.DTOObject;
+            }
+            // at the moment
+            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
+        }
+
+        [HttpGet]
+        [Route("{bidId}/participantsFullDetails")]
+        [Authorize(Policy = PolicyNames.SupplierPolicy)]
+        public async Task<ActionResult<List<ParticipancyFullDetailsDTO>>> GetBidParticipationsFullDetails(string bidId)
+        {
+            string requestUserId = GetRequestUserId();
+
+            var authResult = await this.authorizationService.AuthorizeAsync(User, requestUserId, PolicyNames.ChosenSupplierPolicy).ConfigureAwait(false);
+            if (!authResult.Succeeded)
+            {
+                return this.StatusCode(StatusCodes.Status403Forbidden);
+            }
+            Response<List<ParticipancyFullDetailsDTO>> response = await bidsManager.GetBidParticipationsFullDetails(bidId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
                 return response.DTOObject;
@@ -298,7 +333,6 @@ namespace YOTY.Service.WebApi.Controllers
             {
                 return this.StatusCode(StatusCodes.Status403Forbidden);
             }
-            markPaidRequest.MarkingUserId = this.GetRequestUserId();
 
             Response response = await this.bidsManager.MarkPaid(markPaidRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)

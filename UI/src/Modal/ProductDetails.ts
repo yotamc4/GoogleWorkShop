@@ -11,6 +11,8 @@ export interface BidDetails {
   unitsCounter: number;
   phase: Phase;
   isUserInBid: boolean;
+  hasVoted: boolean;
+  paymentLink: string;
 }
 
 export interface ProductDetails {
