@@ -16,12 +16,13 @@ namespace YOTY.Service.Data
         public YotyContext()
         {
         }
+        /*
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(
-                "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData");
+                "Server=tcp:yotydb.database.windows.net,1433;Initial Catalog=YOTY.Service_db;Persist Security Info=False;User ID=tzachioy@gmail.com@yotydb;Password=Kamaodjan13?;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
         }
-        
+        */
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SupplierProposalEntity>().HasKey(o => new { o.BidId, o.SupplierId });

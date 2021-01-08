@@ -23,12 +23,15 @@ namespace yoty
 
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IWebHostEnvironment HostingEnvironment;
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment hostingEnvironment)
         {
             Configuration = configuration;
+            HostingEnvironment = hostingEnvironment;
         }
 
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -36,7 +39,12 @@ namespace yoty
             services
                 .AddYotyAuthentication()
                 .AddYotyAuthorization();
-            string connectionString = "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData";
+
+            string connectionString = HostingEnvironment.IsProduction() ?
+                Configuration.GetConnectionString("productionDB") :
+                Configuration.GetConnectionString("productionDB");
+                //Configuration.GetConnectionString("localDB");
+
             services.AddCors(option => option.AddDefaultPolicy(
                 builder => {
                     builder.AllowAnyOrigin();
