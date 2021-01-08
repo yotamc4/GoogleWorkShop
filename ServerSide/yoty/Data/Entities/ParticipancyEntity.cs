@@ -12,6 +12,12 @@ namespace YOTY.Service.Data.Entities
 
         public bool HasPaid{ get; set; }
 
+        public string BuyerAddress { get; set; }
+
+        public string BuyerPostalCode { get; set; }
+
+        public string BuyerPhoneNumber { get; set; }
+
         //-----------------------------
         //Relationships
         [Required]
