@@ -6,6 +6,7 @@ export interface ISupplierProposalRequest {
   minimumUnits?: number;
   proposedPrice?: number;
   description?: string;
+  paymentLink?: string;
   progressBar?: JSX.Element;
 }
 
