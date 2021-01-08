@@ -365,7 +365,7 @@ namespace YOTY.Service.WebApi.Controllers
             {
                 return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
             }
-            Response notificationResponse = await this.notificationsManager.NotifyBidParticipantsNotPaidCancellation(cancellationRequest.BidId).ConfigureAwait(false);
+            Response notificationResponse = await this.notificationsManager.NotifyBidAllMissingPaymentsCancellation(cancellationRequest.BidId).ConfigureAwait(false);
             if (notificationResponse.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status200OK, notificationResponse.SuccessOrFailureMessage);

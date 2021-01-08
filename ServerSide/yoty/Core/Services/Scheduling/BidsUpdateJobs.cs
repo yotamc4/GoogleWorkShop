@@ -73,8 +73,7 @@ namespace YOTY.Service.Core.Services.Scheduling
                     modifyDbResponse = await bidsManager.CancelBid(bidId).ConfigureAwait(false);
                     if (modifyDbResponse.IsOperationSucceeded)
                     {
-                        // Yotam change to notifybidNotPaidCancelation
-                        notificationResponse = await notificationsManager.NotifyBidParticipantsNotPaidCancellation(bidId).ConfigureAwait(false);
+                        notificationResponse = await notificationsManager.NotifyBidAllMissingPaymentsCancellation(bidId).ConfigureAwait(false);
                     }
                     break;
                 case BidPhase.Completed:

@@ -20,8 +20,8 @@ namespace YOTY.Service.Core.Managers.Notifications
         private const string VoteStartedToSuppliersSubject = "Voting Started - UniBuy";
         private const string TimeToPayBody = "A supplier proposal for the group-buy you are participating in has been chosen! <br /><br /><b>please visit the groups page during this time and complete payment.</b>";
         private const string TimeToPaySubject = "Time To Pay - UniBuy";
-        private const string SupplierCancellationBody = "We are sorry to inform you that the supplier has canceled the deal for now,  <br />as other participants canceled their participations.";
-        private const string SupplierCancellationSubject = "Deal Cancellation - UniBuy";
+        private const string MissingPaymentsCancellationBody = "We are sorry to inform you that the group-buy has been canceled,  <br />as not all participants completed payment in the given time frame.";
+        private const string MissingPaymentsCancellationSubject = "Deal Cancellation - UniBuy";
         private const string SupplierNotFoundCancellationBody = "We are sorry to inform you that no supplier has made a proposal to a group-buy you are participating in. <br />Better luck next time.";
         private const string SupplierNotFoundCancellationSubject = "Supplier Not Found - UniBuy";
         private const string GroupCompletionBody = "The group-buy you participated in has come to completion <br /><br />We hope you had a satisfying experience, always at your service.";
@@ -204,9 +204,9 @@ namespace YOTY.Service.Core.Managers.Notifications
             return this.NotifyBidParticipants(bidId, SupplierNotFoundCancellationBody, SupplierNotFoundCancellationSubject);
         }
         
-        public Task<Response> NotifyBidParticipantsNotPaidCancellation(string bidId)
+        public Task<Response> NotifyBidAllMissingPaymentsCancellation(string bidId)
         {
-            return this.NotifyBidParticipants(bidId, SupplierCancellationBody, SupplierCancellationSubject);
+            return this.NotifyBidAll(bidId, MissingPaymentsCancellationBody, MissingPaymentsCancellationSubject);
         }
 
         public async Task<Response> NotifyBidAllProgressBarCompletion(string bidId)
