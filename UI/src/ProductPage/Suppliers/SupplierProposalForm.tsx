@@ -133,7 +133,6 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
           ariaLabel="Required without visible label"
           required
           onChange={onTextFieldChange}
-          onGetErrorMessage={onGetErrorMessage}
           styles={{ root: { width: FormsStyles.inputWidth } }}
         />
         <TextField
