@@ -272,6 +272,23 @@ namespace YOTY.Service.Core.Managers.Bids
             }
         }
 
+        public async Task<Response<SupplierProposalDTO>> GetBidChosenProposal(string bidId)
+        {
+            try
+            {
+                var chosenProposal = await _context.Bids.Where(b => b.Id == bidId).Include(b=>b.ChosenProposal).Select(b => b.ChosenProposal).FirstOrDefaultAsync().ConfigureAwait(false);
+                if(chosenProposal == null){
+                    return new Response<SupplierProposalDTO>() { IsOperationSucceeded = false, SuccessOrFailureMessage = "error querying for proposals" };
+                }
+                return new Response<SupplierProposalDTO>() { DTOObject = _mapper.Map<SupplierProposalDTO>(chosenProposal), IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+            }
+            catch
+            {
+                return new Response<SupplierProposalDTO>() { IsOperationSucceeded = false, SuccessOrFailureMessage = "error querying for proposals" };
+            }
+        }
+
+
         public async Task<Response<List<ParticipancyDTO>>> GetBidParticipations(string bidId)
         {
             try
