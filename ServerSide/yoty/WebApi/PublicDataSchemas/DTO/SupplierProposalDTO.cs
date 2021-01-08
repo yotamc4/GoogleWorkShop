@@ -19,5 +19,6 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 
         public string Description { get; set; }
 
+        public Uri PaymentLink { get; set; }
     }
 }
