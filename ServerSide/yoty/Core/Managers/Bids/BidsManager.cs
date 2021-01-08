@@ -104,11 +104,13 @@ namespace YOTY.Service.Core.Managers.Bids
             {
                 bidEntity.Product = existingProduct;
             }
-            if (await this.isValidNewBidAsync(bidEntity))
+
+            if (!(await this.isValidNewBidAsync(bidEntity)))
             {
                 // new Response Error Code
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = "Not Valid Group: This owner has an active bid of this product / There are too many groups for this product / There is an equivalent available group already" };
             }
+
             _context.Bids.Add(bidEntity);
             try
             {
@@ -390,7 +392,7 @@ namespace YOTY.Service.Core.Managers.Bids
         private async Task<Response<BidsDTO>> GetDefaultHomePageBids(int page)
         {
             List<BidDTO> bids = await _context.Bids
-                .Where(bid => bid.Phase == BidPhase.Join && bid.Phase == BidPhase.Vote)
+                .Where(bid => bid.Phase == BidPhase.Join || bid.Phase == BidPhase.Vote)
                 .OrderByDescending(bid => bid.UnitsCounter)
                 .OrderByDescending(bid => bid.PotenialSuplliersCounter)
                 .OrderBy(bid => bid.ExpirationDate)
@@ -474,7 +476,7 @@ namespace YOTY.Service.Core.Managers.Bids
         private IEnumerable<BidEntity> GetFilteredBids(BidsQueryOptions bidsFilters)
         {
             return _context.Bids
-                .Where(bid => bid.Phase == BidPhase.Join && bid.Phase == BidPhase.Vote)
+                .Where(bid => bid.Phase == BidPhase.Join || bid.Phase == BidPhase.Vote)
                 .Include(bid => bid.Product)
                 .AsEnumerable()
                 .Where(bid => FilterByCategories(bid, bidsFilters.Category, bidsFilters.SubCategory))
