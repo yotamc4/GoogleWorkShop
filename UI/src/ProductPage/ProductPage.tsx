@@ -177,6 +177,7 @@ export const ProductPage: React.FunctionComponent = () => {
             numberOfParticipants={numberOfParticipants as number}
             bidPhase={bidDetails?.phase as number}
             isUserInBid={bidDetails?.isUserInBid}
+            hasVoted={bidDetails?.hasVoted}
           />
         )}
       </Stack>

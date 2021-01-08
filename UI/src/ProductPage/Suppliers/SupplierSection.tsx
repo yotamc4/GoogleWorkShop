@@ -93,6 +93,7 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
   numberOfParticipants,
   bidPhase,
   isUserInBid,
+  hasVoted,
 }) => {
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
   const { id } = useParams<{ id: string }>();
@@ -291,6 +292,7 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
                 text: supplierProposal.supplierName as string,
               };
             })}
+            hasVoted={hasVoted}
           />
         </Stack>
       );

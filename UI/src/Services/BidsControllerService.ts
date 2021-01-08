@@ -1,6 +1,7 @@
 import { Bid, NewBidRequest } from "../Modal/GroupDetails";
 import { BidBuyerJoinRequest } from "../Modal/ProductDetails";
 import { ISupplierProposalRequest } from "../ProductPage/Suppliers/SupplierSection.interface";
+import { IVotingRequest } from "../ProductPage/Suppliers/SupplierSurvey.interface";
 import {
   buildUrlWithQueryParams,
   makeDeleteRequest,
@@ -113,6 +114,20 @@ export function deleteSupplierProposal(
 ) {
   const serviceUrl = BasicControllerUrl + url;
   const response = makeDeleteRequest(serviceUrl, "", getAccessTokenSilently);
+  return response;
+}
+
+export function voteForSupplier(
+  voteData: IVotingRequest,
+  url: string,
+  getAccessTokenSilently?: (options?: any) => Promise<string>
+) {
+  const serviceUrl = BasicControllerUrl + url;
+  const response = makePostRequest(
+    serviceUrl,
+    voteData,
+    getAccessTokenSilently
+  );
   return response;
 }
 
