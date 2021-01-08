@@ -229,7 +229,9 @@ namespace YOTY.Service.Core.Managers.Bids
                     return new Response<BidDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
                 }
                 bidDTO = _mapper.Map<BidDTO>(bid);
-                bidDTO.IsUserInBid = bid.CurrentParticipancies.Any(p => p.BuyerId == userId);
+                ParticipancyEntity participancy = bid.CurrentParticipancies.Where(p => p.BuyerId == userId).FirstOrDefault();
+                bidDTO.IsUserInBid = participancy != null;
+                bidDTO.HasVoted = participancy?.HasVoted ?? false;
                 return new Response<BidDTO>() { DTOObject = bidDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };               
             }
             else if (userRole.Equals("Supplier", StringComparison.OrdinalIgnoreCase))

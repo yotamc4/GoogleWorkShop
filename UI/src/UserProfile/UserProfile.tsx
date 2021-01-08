@@ -7,6 +7,7 @@ import { Spinner, Stack } from "@fluentui/react";
 import { GroupsList } from "./GroupsList";
 import { Bid } from "../Modal/GroupDetails";
 import { useAuth0 } from "@auth0/auth0-react";
+import ButtonAppBar from "../LoginBar";
 
 export const UserProfile: React.FunctionComponent = () => {
   const [groupsUserMemberIn, setGroupsUserMemberIn] = React.useState<Bid[]>();
@@ -16,15 +17,12 @@ export const UserProfile: React.FunctionComponent = () => {
 
   const { getAccessTokenSilently } = useAuth0();
 
-  // Replace with real user Id
   async function updateCurrentProductAndPageNumber() {
-    //TODO - Replace "1" with real userId
     let [groupsCreatedByTheUser, groupsUserMemberIn] = await Promise.all([
-      BuyersControllerServices.GetBidsCreatedByBuyer(
-        /* useId */ "1",
+      BuyersControllerServices.GetBidsCreatedByBuyer(getAccessTokenSilently),
+      BuyersControllerServices.GetGroupsBuyerIsParticipant(
         getAccessTokenSilently
       ),
-      BuyersControllerServices.GetGroupsBuyerIsParticipant(/* useId */ "1"),
     ]);
 
     setGroupsCreatedByTheUser(groupsCreatedByTheUser.bidsPage);
@@ -37,6 +35,7 @@ export const UserProfile: React.FunctionComponent = () => {
 
   return (
     <Stack horizontalAlign="center">
+      <ButtonAppBar />
       <Pivot styles={{ root: { marginBottom: "2rem" } }}>
         <PivotItem
           headerButtonProps={{

@@ -69,7 +69,7 @@ export const Home: React.FunctionComponent = () => {
 
   return (
     <AuthContextProvider>
-      <Stack styles={marginForBothSides}>
+      <Stack>
         <ButtonAppBar />
         <Stack tokens={verticalGapStackTokens}>
           {isHomePage && (

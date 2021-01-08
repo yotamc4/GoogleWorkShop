@@ -53,7 +53,7 @@ export default function ButtonAppBar() {
   };
 
   return (
-    <Stack styles={StacStyles2}>
+    <Stack>
       <StackItem styles={StackItemStyles} align={"center"}>
         <Image
           {...imagePropsLogo}

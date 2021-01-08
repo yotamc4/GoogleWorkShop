@@ -9,11 +9,20 @@ import {
 } from "./ControllerUtils";
 
 export async function submitNewGroupForm(
-  bidRequest: NewBidRequest
+  bidRequest: NewBidRequest,
+  getAccessTokenSilently?: (options?: any) => Promise<string>
 ): Promise<void> {
   const serviceUrl = BasicControllerUrl;
 
-  await makePostRequest(serviceUrl, bidRequest);
+  const response: Response = await makePostRequest(
+    serviceUrl,
+    bidRequest,
+    getAccessTokenSilently
+  );
+
+  if (!response.ok) {
+    throw new Error("Error happened during the fetch POST");
+  }
 }
 
 export async function getBids(
