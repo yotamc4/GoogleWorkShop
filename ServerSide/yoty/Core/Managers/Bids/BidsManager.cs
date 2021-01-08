@@ -373,6 +373,7 @@ namespace YOTY.Service.Core.Managers.Bids
         private async Task<Response<BidsDTO>> GetDefaultHomePageBids(int page)
         {
             List<BidDTO> bids = await _context.Bids
+                .Where(bid => bid.Phase == BidPhase.Join && bid.Phase == BidPhase.Vote)
                 .OrderByDescending(bid => bid.UnitsCounter)
                 .OrderByDescending(bid => bid.PotenialSuplliersCounter)
                 .OrderBy(bid => bid.ExpirationDate)
@@ -456,6 +457,7 @@ namespace YOTY.Service.Core.Managers.Bids
         private IEnumerable<BidEntity> GetFilteredBids(BidsQueryOptions bidsFilters)
         {
             return _context.Bids
+                .Where(bid => bid.Phase == BidPhase.Join && bid.Phase == BidPhase.Vote)
                 .Include(bid => bid.Product)
                 .AsEnumerable()
                 .Where(bid => FilterByCategories(bid, bidsFilters.Category, bidsFilters.SubCategory))
