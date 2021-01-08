@@ -1,79 +1,31 @@
 import * as React from "react";
-import * as BuyersControllerServices from "../Services/BuyersControllerServices";
 
-import { Pivot, PivotItem } from "office-ui-fabric-react/lib/Pivot";
-import { buttonHeaderProps } from "./UserProfileStyles";
-import { Spinner, Stack } from "@fluentui/react";
-import { GroupsList } from "./GroupsList";
-import { Bid } from "../Modal/GroupDetails";
-import { useAuth0 } from "@auth0/auth0-react";
-import ButtonAppBar from "../LoginBar";
+import { Spinner, Stack, StackItem } from "@fluentui/react";
+import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
+import configData from "../config.json";
+import { SupplierProfile } from "./SupplierProfile";
+import { BuyerProfile } from "./BuyerProfile";
 
-export const UserProfile: React.FunctionComponent = () => {
-  const [groupsUserMemberIn, setGroupsUserMemberIn] = React.useState<Bid[]>();
-  const [groupsCreatedByTheUser, setGroupsCreatedByTheUser] = React.useState<
-    Bid[]
-  >();
+const UserProfile: React.FunctionComponent = () => {
+  const [isSupplier, SetIsSupplier] = React.useState<boolean | undefined>();
 
-  const { getAccessTokenSilently } = useAuth0();
-
-  async function updateCurrentProductAndPageNumber() {
-    let [groupsCreatedByTheUser, groupsUserMemberIn] = await Promise.all([
-      BuyersControllerServices.GetBidsCreatedByBuyer(getAccessTokenSilently),
-      BuyersControllerServices.GetGroupsBuyerIsParticipant(
-        getAccessTokenSilently
-      ),
-    ]);
-
-    setGroupsCreatedByTheUser(groupsCreatedByTheUser.bidsPage);
-    setGroupsUserMemberIn(groupsUserMemberIn.bidsPage);
-  }
+  const { user } = useAuth0();
 
   React.useEffect(() => {
-    updateCurrentProductAndPageNumber();
-  }, []);
+    SetIsSupplier(user[configData.roleIdentifier] === "Supplier");
+  });
 
-  return (
-    <Stack horizontalAlign="center">
-      <ButtonAppBar />
-      <Pivot styles={{ root: { marginBottom: "2rem" } }}>
-        <PivotItem
-          headerButtonProps={{
-            text: "Groups I was sign in into",
-            styles: buttonHeaderProps,
-          }}
-        >
-          {groupsUserMemberIn ? (
-            <GroupsList groups={groupsUserMemberIn} />
-          ) : (
-            <Spinner />
-          )}
-        </PivotItem>
-        <PivotItem
-          headerButtonProps={{
-            text: "Groups created by me",
-            styles: buttonHeaderProps,
-          }}
-        >
-          {groupsCreatedByTheUser ? (
-            <GroupsList groups={groupsCreatedByTheUser} />
-          ) : (
-            <Spinner />
-          )}
-        </PivotItem>
-        <PivotItem
-          headerButtonProps={{
-            text: "Groups I'm interested in",
-            styles: buttonHeaderProps,
-          }}
-        >
-          {groupsUserMemberIn ? (
-            <GroupsList groups={groupsUserMemberIn} />
-          ) : (
-            <Spinner />
-          )}
-        </PivotItem>
-      </Pivot>
-    </Stack>
-  );
+  if (isSupplier === undefined) {
+    return (
+      <Stack horizontalAlign={"center"} verticalAlign={"center"}>
+        <Spinner />
+      </Stack>
+    );
+  }
+
+  return isSupplier === true ? <SupplierProfile /> : <BuyerProfile />;
 };
+
+export default withAuthenticationRequired(UserProfile, {
+  onRedirecting: () => <Spinner />,
+});

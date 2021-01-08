@@ -18,7 +18,6 @@ import { AuthContextProvider } from "../Context/AuthContext";
 import {
   defaultButtonStyles,
   genericGapStackTokens,
-  marginForBothSides,
   verticalGapStackTokens,
 } from "./HomeStyles";
 import ButtonAppBar from "../LoginBar";
