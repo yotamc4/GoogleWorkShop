@@ -60,26 +60,52 @@ namespace YOTY.Service.Core.Managers.Suppliers
         public async Task<Response<BidsDTO>> GetBidsWhereChosen(string supplierId, BidsTime timeFilter)
         {
             //validate existence
-            var supplier = await _context.Suppliers.Where(s => s.Id == supplierId).Include(s => s.CurrentProposals).ThenInclude(p => p.Bid).ThenInclude(b => b.ChosenProposal).FirstOrDefaultAsync().ConfigureAwait(false);
+            var supplier = await _context.Suppliers
+                .Where(supplier => supplier.Id == supplierId)
+                .Include(supplier => supplier.CurrentProposals)
+                .ThenInclude(p => p.Bid)
+                .ThenInclude(bid => bid.Product)
+                .Include(supplier => supplier.CurrentProposals)
+                .ThenInclude(proposal => proposal.Bid)
+                .ThenInclude(b => b.ChosenProposal)
+                .FirstOrDefaultAsync()
+                .ConfigureAwait(false);
+
             if (supplier == null)
             {
                 return new Response<BidsDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = SupplierNotFoundFailString };
             }
 
-            var wonBids = supplier.CurrentProposals.Where(p => p.Bid.ChosenProposal?.SupplierId == supplierId).Select(p => p.Bid).Where(bid => FilterBuyerBids(bid, timeFilter)).Select(bid => _mapper.Map<BidDTO>(bid)).ToList();
+            var wonBids = supplier.CurrentProposals
+                .Where(p => p.Bid.ChosenProposal?.SupplierId == supplierId)
+                .Select(p => p.Bid).Where(bid => FilterBuyerBids(bid, timeFilter))
+                .Select(bid => _mapper.Map<BidDTO>(bid))
+                .ToList();
+
             return new Response<BidsDTO>() { DTOObject = BidsDTO.CreateDefaultBidsPage(wonBids), IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
         public async Task<Response<BidsDTO>> GetBidsWhereProposed(string supplierId, BidsTime timeFilter)
         {
             //validate existence
-            var supplier = await _context.Suppliers.Where(s => s.Id == supplierId).Include(s => s.CurrentProposals).ThenInclude(p => p.Bid).FirstOrDefaultAsync().ConfigureAwait(false);
+            var supplier = await _context.Suppliers
+                .Where(s => s.Id == supplierId)
+                .Include(s => s.CurrentProposals)
+                .ThenInclude(p => p.Bid)
+                .ThenInclude(bid => bid.Product)
+                .FirstOrDefaultAsync().ConfigureAwait(false);
+
             if (supplier == null)
             {
                 return new Response<BidsDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = SupplierNotFoundFailString };
             }
 
-            var proposedBids = supplier.CurrentProposals.Select(p => p.Bid).Where(bid => FilterBuyerBids(bid, timeFilter)).Select(bid => _mapper.Map<BidDTO>(bid)).ToList();
+            var proposedBids = supplier.CurrentProposals
+                .Select(p => p.Bid)
+                .Where(bid => FilterBuyerBids(bid, timeFilter))
+                .Select(bid => _mapper.Map<BidDTO>(bid))
+                .ToList();
+
             return new Response<BidsDTO>() { DTOObject = BidsDTO.CreateDefaultBidsPage(proposedBids), IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
