@@ -23,7 +23,9 @@ export const SupplierProfile: React.FunctionComponent = () => {
         getAccessTokenSilently
       ),
 
-      SuppliersControllerService.GetGroupsSupplierHasWon(getAccessTokenSilently),
+      SuppliersControllerService.GetGroupsSupplierHasWon(
+        getAccessTokenSilently
+      ),
     ]);
 
     setGroupsWon(groupsWon.bidsPage);

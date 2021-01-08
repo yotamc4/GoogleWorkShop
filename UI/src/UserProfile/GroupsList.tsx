@@ -52,7 +52,7 @@ export const GroupsList: React.FunctionComponent<{
     {
       key: "column1",
       name: "Group",
-      minWidth: 70,
+      minWidth: 120,
       maxWidth: 150,
       data: "string",
       onRender: (group: Bid) => {
@@ -65,7 +65,7 @@ export const GroupsList: React.FunctionComponent<{
     {
       key: "column2",
       name: "Expiration Date",
-      minWidth: 70,
+      minWidth: 120,
       maxWidth: 130,
       isSorted: true,
       isSortedDescending: false,
@@ -78,7 +78,7 @@ export const GroupsList: React.FunctionComponent<{
     {
       key: "column3",
       name: "Creation Date",
-      minWidth: 70,
+      minWidth: 120,
       maxWidth: 130,
       isSorted: true,
       isSortedDescending: false,
@@ -91,8 +91,8 @@ export const GroupsList: React.FunctionComponent<{
     {
       key: "column4",
       name: "Group stage",
-      minWidth: 70,
-      maxWidth: 100,
+      minWidth: 120,
+      maxWidth: 150,
       isSorted: true,
       isSortedDescending: false,
       fieldName: "phase",
