@@ -287,6 +287,19 @@ namespace YOTY.Service.Core.Managers.Bids
             }
         }
 
+        public async Task<Response<List<ParticipancyFullDetailsDTO>>> GetBidParticipationsFullDetails(string bidId)
+        {
+            try
+            {
+                List<ParticipancyFullDetailsDTO> participancies = await _context.Set<ParticipancyEntity>().Where(p => p.BidId == bidId).Select(p => _mapper.Map<ParticipancyFullDetailsDTO>(p)).ToListAsync().ConfigureAwait(false);
+                return new Response<List<ParticipancyFullDetailsDTO>>() { DTOObject = participancies, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+            }
+            catch
+            {
+                return new Response<List<ParticipancyFullDetailsDTO>>() { IsOperationSucceeded = false, SuccessOrFailureMessage = "error querying for proposals" };
+            }
+        }
+
         public async Task<Response<BidsDTO>> GetBids(BidsQueryOptions bidsFilters)
         {
 
