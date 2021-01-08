@@ -69,7 +69,7 @@ export const Home: React.FunctionComponent = () => {
 
   return (
     <AuthContextProvider>
-      <Stack styles={marginForBothSides}>
+      <Stack>
         <ButtonAppBar />
         <Stack tokens={verticalGapStackTokens}>
           {isHomePage && (
@@ -96,7 +96,7 @@ export const Home: React.FunctionComponent = () => {
                 onPressEnter={onSearchBoxEnterPressed}
               />
             </Stack>
-            <Stack horizontal horizontalAlign="space-between">
+            <Stack horizontal>
               <NavigationPane />
               <ProductCardGridPages />
             </Stack>

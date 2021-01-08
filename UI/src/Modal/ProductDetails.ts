@@ -11,6 +11,8 @@ export interface BidDetails {
   unitsCounter: number;
   phase: Phase;
   isUserInBid: boolean;
+  hasVoted: boolean;
+  paymentLink: string;
 }
 
 export interface ProductDetails {
@@ -45,3 +47,12 @@ export enum Phase {
   CancelledNotEnoughBuyersPayed,
   Completed,
 }
+
+export const PhasesName: Map<Phase, string> = new Map([
+  [Phase.Join, "Open to join"],
+  [Phase.Vote, "Voting"],
+  [Phase.Payment, "Payment"],
+  [Phase.CancelledSupplierNotFound, "Cancelled- supplier has not found"],
+  [Phase.CancelledNotEnoughBuyersPayed, "Cancelled- not enough buyers payed"],
+  [Phase.Completed, "Completed"],
+]);

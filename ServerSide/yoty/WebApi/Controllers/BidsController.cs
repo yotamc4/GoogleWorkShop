@@ -157,6 +157,27 @@ namespace YOTY.Service.WebApi.Controllers
             return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
         }
 
+        [HttpGet]
+        [Route("{bidId}/participantsFullDetails")]
+        [Authorize(Policy = PolicyNames.SupplierPolicy)]
+        public async Task<ActionResult<List<ParticipancyFullDetailsDTO>>> GetBidParticipationsFullDetails(string bidId)
+        {
+            string requestUserId = GetRequestUserId();
+
+            var authResult = await this.authorizationService.AuthorizeAsync(User, requestUserId, PolicyNames.ChosenSupplierPolicy).ConfigureAwait(false);
+            if (!authResult.Succeeded)
+            {
+                return this.StatusCode(StatusCodes.Status403Forbidden);
+            }
+            Response<List<ParticipancyFullDetailsDTO>> response = await bidsManager.GetBidParticipationsFullDetails(bidId).ConfigureAwait(false);
+            if (response.IsOperationSucceeded)
+            {
+                return response.DTOObject;
+            }
+            // at the moment
+            return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
+        }
+
         [HttpPost]
         [Route("{bidId}/buyers")]
         [Authorize(Policy = PolicyNames.BuyerPolicy)]
@@ -312,7 +333,6 @@ namespace YOTY.Service.WebApi.Controllers
             {
                 return this.StatusCode(StatusCodes.Status403Forbidden);
             }
-            markPaidRequest.MarkingUserId = this.GetRequestUserId();
 
             Response response = await this.bidsManager.MarkPaid(markPaidRequest).ConfigureAwait(false);
             if (response.IsOperationSucceeded)

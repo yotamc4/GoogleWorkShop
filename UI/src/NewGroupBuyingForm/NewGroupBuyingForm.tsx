@@ -22,6 +22,7 @@ import { NewBidRequest } from "../Modal/GroupDetails";
 import { submitNewGroupForm } from "../Services/BidsControllerService";
 import { useHistory } from "react-router";
 import ButtonAppBar from "../LoginBar";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export const NewGroupBuyingForm: React.FunctionComponent = () => {
   const [productDetails, setProductDetails] = React.useReducer<
@@ -110,11 +111,12 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
     });
   };
 
-  // TODO - Move the call to separate file (Services controllers)
+  const { getAccessTokenSilently } = useAuth0();
+
   const onSubmitForm = async (): Promise<void> => {
     try {
       setRequestInProcess(true);
-      await submitNewGroupForm(bidRequest);
+      await submitNewGroupForm(bidRequest, getAccessTokenSilently);
       urlHistory.push(`/`);
     } catch {
       setRequestInProcess(false);

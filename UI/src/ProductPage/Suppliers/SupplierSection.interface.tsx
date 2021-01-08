@@ -6,6 +6,7 @@ export interface ISupplierProposalRequest {
   minimumUnits?: number;
   proposedPrice?: number;
   description?: string;
+  paymentLink?: string;
   progressBar?: JSX.Element;
 }
 
@@ -14,4 +15,5 @@ export interface ISuppliersSectionProps {
   numberOfParticipants: number;
   bidPhase: number;
   isUserInBid: boolean | undefined;
+  hasVoted: boolean | undefined;
 }

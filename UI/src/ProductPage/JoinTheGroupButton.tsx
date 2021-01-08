@@ -27,7 +27,7 @@ export const JoinTheGroupButton: React.FunctionComponent<IJoinTheGroupButtonProp
     false
   );
 
-  const onClickConsumerJoingButton = React.useCallback(() => {
+  const onClickConsumerJoingButton = () => {
     if (isJoinTheGroupButtomClicked) {
       const url = `/${id}/buyers/${user.sub}`;
       deleteBuyer(url, getAccessTokenSilently);
@@ -44,7 +44,7 @@ export const JoinTheGroupButton: React.FunctionComponent<IJoinTheGroupButtonProp
       setIsJoinTheGroupButtomClicked(true);
       changeNumberOfParticipants(1);
     }
-  }, [user]);
+  };
 
   return isAuthenticated ? (
     user[configData.roleIdentifier] === "Supplier" ? (

@@ -59,13 +59,23 @@ namespace YOTY.Service.Core.Managers.Buyers
         }
         public async Task<Response<BidsDTO>> GetBuyerBids(string buyerId, BidsTime timeFilter)
         {
-            var buyer = await _context.Buyers.Where(b => b.Id == buyerId).Include(b => b.CurrentParticipancies).ThenInclude(p => p.Bid).FirstOrDefaultAsync().ConfigureAwait(false);
+            var buyer = await _context.Buyers
+                .Where(buyer => buyer.Id == buyerId)
+                .Include(buyer => buyer.CurrentParticipancies)
+                .ThenInclude(participancy => participancy.Bid)
+                .ThenInclude(bid => bid.Product)
+                .FirstOrDefaultAsync().ConfigureAwait(false);
             if (buyer == null)
             {
                 return new Response<BidsDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BuyerNotFoundFailString };
             }
 
-            List<BidDTO> liveBids = buyer.CurrentParticipancies.Select(p => p.Bid).Where(bid=> FilterBuyerBids(bid, timeFilter)).Select(bid => _mapper.Map<BidDTO>(bid)).ToList();
+            List<BidDTO> liveBids = buyer
+                .CurrentParticipancies
+                .Select(p => p.Bid)
+                .Where(bid=> FilterBuyerBids(bid, timeFilter))
+                .Select(bid => _mapper.Map<BidDTO>(bid))
+                .ToList();
             return new Response<BidsDTO>() { DTOObject = BidsDTO.CreateDefaultBidsPage(liveBids), IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
@@ -73,14 +83,27 @@ namespace YOTY.Service.Core.Managers.Buyers
         public async Task<Response<BidsDTO>> GetBidsCreatedByBuyer(string buyerId, BidsTime timeFilter)
         {
             //validate existence
-            var buyer = await _context.Buyers.FindAsync(buyerId).ConfigureAwait(false);
+            var buyer = await _context
+                .Buyers
+                .FindAsync(buyerId)
+                .ConfigureAwait(false);
             if (buyer == null)
             {
                 return new Response<BidsDTO>() { DTOObject = null, IsOperationSucceeded = false, SuccessOrFailureMessage = BuyerNotFoundFailString };
             }
 
-            var ownedBids = _context.Bids.Where(b => b.OwnerId == buyerId).Where(bid => FilterBuyerBids(bid, timeFilter)).Select(bid => _mapper.Map<BidDTO>(bid)).ToList();
-            return new Response<BidsDTO>() { DTOObject = BidsDTO.CreateDefaultBidsPage(ownedBids), IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+            List<BidEntity> ownedBidsEntities = await _context.Bids
+                .Where(b => b.OwnerId == buyerId)
+                .Include(bid => bid.Product)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            List<BidDTO> ownedBidsDTO = ownedBidsEntities
+                .Where(bid => FilterBuyerBids(bid, timeFilter))
+                .Select(bid => _mapper.Map<BidDTO>(bid))
+                .ToList();
+
+            return new Response<BidsDTO>() { DTOObject = BidsDTO.CreateDefaultBidsPage(ownedBidsDTO), IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
         private static bool FilterBuyerBids(BidEntity buyerBid, BidsTime timeFilter)

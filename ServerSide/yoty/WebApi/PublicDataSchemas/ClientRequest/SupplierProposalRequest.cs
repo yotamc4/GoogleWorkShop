@@ -27,5 +27,8 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
 
         [JsonProperty("description")]
         public string Description { get; set; }
+
+        [JsonProperty("paymentLink")]
+        public Uri PaymentLink { get; set; }
     }
 }
