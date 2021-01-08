@@ -38,12 +38,8 @@ namespace YOTY.Service.Core.Managers.Bids
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
             }
-            bid.CurrentParticipancies.Add(new ParticipancyEntity {
-                BidId = bidBuyerJoinRequest.BidId,
-                BuyerId = bidBuyerJoinRequest.BuyerId,
-                NumOfUnits = bidBuyerJoinRequest.Items,
-            });
-            bid.UnitsCounter += bidBuyerJoinRequest.Items;
+            bid.CurrentParticipancies.Add(_mapper.Map<ParticipancyEntity>(bidBuyerJoinRequest)));
+            bid.UnitsCounter += bidBuyerJoinRequest.NumOfUnits;
             try
             {
                 _context.Bids.Update(bid);
