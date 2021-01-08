@@ -203,8 +203,8 @@ namespace YOTY.Service.Core.Managers.Notifications
         {
             return this.NotifyBidParticipants(bidId, SupplierNotFoundCancellationBody, SupplierNotFoundCancellationSubject);
         }
-
-        public Task<Response> NotifyBidParticipantsSupplierCancellation(string bidId)
+        
+        public Task<Response> NotifyBidParticipantsNotPaidCancellation(string bidId)
         {
             return this.NotifyBidParticipants(bidId, SupplierCancellationBody, SupplierCancellationSubject);
         }

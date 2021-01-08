@@ -590,7 +590,7 @@ namespace YOTY.Service.Core.Managers.Bids
 
         public async Task<Response<BidPhase>> TryUpdatePhase(string bidId)
         {
-            BidEntity bid_ent = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.CurrentProposals).FirstOrDefaultAsync().ConfigureAwait(false);
+            BidEntity bid_ent = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.CurrentProposals).Include(b => b.CurrentParticipancies).FirstOrDefaultAsync().ConfigureAwait(false);
 
             if (bid_ent == null)
             {
@@ -623,6 +623,19 @@ namespace YOTY.Service.Core.Managers.Bids
                     if (bid_ent.ExpirationDate.AddHours(48) <= DateTime.Now)
                     {
                         newPhase = BidPhase.Payment;
+                    }
+                    break;
+                case BidPhase.Payment:
+                    if (bid_ent.ExpirationDate.AddDays(5) <= DateTime.Now)
+                    {
+                        if (bid_ent.CurrentParticipancies.Any(p => p.HasPaid == false))
+                        {
+                            newPhase = BidPhase.CancelledNotEnoughBuyersPayed;
+                        }
+                        else
+                        {
+                            newPhase = BidPhase.Completed;
+                        }
                     }
                     break;
                 // All others should update synchronously (with events)
@@ -662,14 +675,14 @@ namespace YOTY.Service.Core.Managers.Bids
             return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
-        public async Task<Response> CancelBid(CancellationRequest cancellationRequest)
+        public async Task<Response> CancelBid(string bidId)
         {
-            return await this.ModifyBidPhase(cancellationRequest.BidId, BidPhase.CancelledNotEnoughBuyersPayed).ConfigureAwait(false);
+            return await this.ModifyBidPhase(bidId, BidPhase.CancelledNotEnoughBuyersPayed).ConfigureAwait(false);
         }
 
-        public async Task<Response> CompleteBid(CompletionRequest completionRequest)
+        public async Task<Response> CompleteBid(string bidId)
         {
-            return await this.ModifyBidPhase(completionRequest.BidId, BidPhase.Completed).ConfigureAwait(false);
+            return await this.ModifyBidPhase(bidId, BidPhase.Completed).ConfigureAwait(false);
         }
 
         private async Task<Response> ModifyBidPhase(string bidId, BidPhase newPhase)

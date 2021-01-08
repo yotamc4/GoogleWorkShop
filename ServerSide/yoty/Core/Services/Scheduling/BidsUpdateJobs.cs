@@ -41,7 +41,7 @@ namespace YOTY.Service.Core.Services.Scheduling
             }
             
             Response notificationResponse = null;
-            Response updateProposalsResponse = null;
+            Response modifyDbResponse = null;
             if (!updatePhaseResponse.IsOperationSucceeded)
             {
                 Console.WriteLine($"UpdatePhase bidId:{bidId}, no update needed");
@@ -52,13 +52,13 @@ namespace YOTY.Service.Core.Services.Scheduling
                 case BidPhase.Vote:
                     Console.WriteLine($"UpdatePhase bidId:{bidId}, new phase is vote");
                     notificationResponse = await notificationsManager.NotifyBidTimeToVote(bidId).ConfigureAwait(false);
-                    updateProposalsResponse = await bidsManager.UpdateBidProposalsToRelevant(bidId).ConfigureAwait(false);
+                    modifyDbResponse = await bidsManager.UpdateBidProposalsToRelevant(bidId).ConfigureAwait(false);
                     break;
                 case BidPhase.Payment:
                     Console.WriteLine($"UpdatePhase bidId:{bidId}, new phase is payment");
                     notificationResponse = await notificationsManager.NotifyBidTimeToPay(bidId).ConfigureAwait(false);
-                    updateProposalsResponse = await bidsManager.GetProposalWithMaxVotes(bidId).ConfigureAwait(false);
-                    if (updateProposalsResponse.IsOperationSucceeded)
+                    modifyDbResponse = await bidsManager.GetProposalWithMaxVotes(bidId).ConfigureAwait(false);
+                    if (modifyDbResponse.IsOperationSucceeded)
                     {
                         // TODO figure better condition
                         notificationResponse = await notificationsManager.NotifyBidChosenSupplier(bidId).ConfigureAwait(false);
@@ -68,15 +68,32 @@ namespace YOTY.Service.Core.Services.Scheduling
                     Console.WriteLine($"UpdatePhase bidId:{bidId}, new phase is canceled no relevant proposals found");
                     notificationResponse = await notificationsManager.NotifyBidParticipantsSupplierNotFoundCancellation(bidId).ConfigureAwait(false);
                     break;
+                case BidPhase.CancelledNotEnoughBuyersPayed:
+                    Console.WriteLine($"UpdatePhase bidId:{bidId}, new phase is canceled not enough consumers paid");
+                    modifyDbResponse = await bidsManager.CancelBid(bidId).ConfigureAwait(false);
+                    if (modifyDbResponse.IsOperationSucceeded)
+                    {
+                        // Yotam change to notifybidNotPaidCancelation
+                        notificationResponse = await notificationsManager.NotifyBidParticipantsNotPaidCancellation(bidId).ConfigureAwait(false);
+                    }
+                    break;
+                case BidPhase.Completed:
+                    Console.WriteLine($"UpdatePhase bidId:{bidId}, new phase is completed");
+                    modifyDbResponse = await bidsManager.CompleteBid(bidId).ConfigureAwait(false);
+                    if (modifyDbResponse.IsOperationSucceeded)
+                    {
+                        notificationResponse = await notificationsManager.NotifyBidAllCompletion(bidId).ConfigureAwait(false);
+                    }
+                    break;
             }
             if (notificationResponse != null && !notificationResponse.IsOperationSucceeded)
             {
                 return notificationResponse;
             }
-            if (updateProposalsResponse != null && !updateProposalsResponse.IsOperationSucceeded)
+            if (modifyDbResponse != null && !modifyDbResponse.IsOperationSucceeded)
             {
                 //TODO need to update
-                return updateProposalsResponse;
+                return modifyDbResponse;
             }
             return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = "TryUpdateBidPhaseAndNotify Success!" };
         }

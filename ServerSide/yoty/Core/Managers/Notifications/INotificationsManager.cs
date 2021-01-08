@@ -18,6 +18,6 @@ namespace YOTY.Service.Core.Managers.Notifications
 
         Task<Response> NotifyBidParticipantsSupplierNotFoundCancellation(string bidId);
 
-        Task<Response> NotifyBidParticipantsSupplierCancellation(string bidId);
+        Task<Response> NotifyBidParticipantsNotPaidCancellation(string bidId);
     }
 } 
