@@ -102,6 +102,7 @@ namespace YOTY.Service.Core.Managers.Suppliers
 
             var proposedBids = supplier.CurrentProposals
                 .Select(p => p.Bid)
+                .Where(bid => bid.Phase == BidPhase.Join || bid.Phase == BidPhase.Vote)
                 .Where(bid => FilterBuyerBids(bid, timeFilter))
                 .Select(bid => _mapper.Map<BidDTO>(bid))
                 .ToList();
