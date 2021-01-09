@@ -38,7 +38,7 @@ namespace YOTY.Service.Core.Managers.Bids
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
             }
-            if(await this.isValidJoinAsync(bid.Product, bidBuyerJoinRequest.BuyerId))
+            if(!await this.isValidJoinAsync(bid.Product, bidBuyerJoinRequest.BuyerId))
             {
                 // new Response Error Code
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = "Buyer already participates in an active bid with this product" };
