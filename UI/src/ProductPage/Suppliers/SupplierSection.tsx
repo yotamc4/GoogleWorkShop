@@ -219,7 +219,7 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
   };
 
   const deletePropposalFromSupplierList = React.useCallback(() => {
-    const url = `/${id}/proposals/${user.sub}`;
+    const url = `/${id}/proposals`;
     deleteSupplierProposal(url, getAccessTokenSilently);
     const newListItems = listItems?.filter(
       (proposal) => proposal.supplierId != user.sub

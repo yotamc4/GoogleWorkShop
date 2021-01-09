@@ -2,7 +2,6 @@ import { initializeIcons, Stack } from "@fluentui/react";
 import React from "react";
 import "./App.css";
 import { Home } from "./HomePage/Home";
-import ButtonAppBar from "./LoginBar";
 import { Route, Switch } from "react-router-dom";
 import { NewGroupBuyingForm } from "./NewGroupBuyingForm/NewGroupBuyingForm";
 import { ProductPage } from "./ProductPage/ProductPage";
