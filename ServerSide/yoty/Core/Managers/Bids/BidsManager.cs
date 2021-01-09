@@ -19,6 +19,7 @@ namespace YOTY.Service.Core.Managers.Bids
         private const string BidNotFoundFailString = "Failed, Bid not found";
         private const string ProposalNotFoundFailString = "Failed, Proposal not found";
         private const string ParticipantNotFoundFailString = "Failed, Participant not found";
+        private const string SupplierOfferedExpensiveRequestFormatMessage = "Suggested price by supplier was:{0} while maximun allowd price for this group by is:{1} ";
 
         private readonly YotyContext _context;
         private readonly IMapper _mapper;
@@ -73,7 +74,14 @@ namespace YOTY.Service.Core.Managers.Bids
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
             }
-            // TODO? validate supplier
+            if (supplierProposalRequest.ProposedPrice > bid.MaxPrice)
+            {
+                return new Response() {
+                    IsOperationSucceeded = false,
+                    SuccessOrFailureMessage = string.Format(SupplierOfferedExpensiveRequestFormatMessage, supplierProposalRequest.ProposedPrice, bid.MaxPrice)
+                };
+            }
+
             SupplierProposalEntity new_proposal_ent = _mapper.Map<SupplierProposalEntity>(supplierProposalRequest);
             bid.CurrentProposals.Add(new_proposal_ent);
             bid.PotenialSuplliersCounter += 1;

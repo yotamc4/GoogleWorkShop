@@ -365,7 +365,7 @@ namespace YOTY.Service.WebApi.Controllers
             {
                 return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
             }
-            Response notificationResponse = await this.notificationsManager.NotifyBidParticipantsSupplierCancellation(cancellationRequest.BidId).ConfigureAwait(false);
+            Response notificationResponse = await this.notificationsManager.NotifyBidParticipantsSupplierCancellationAsync(cancellationRequest.BidId).ConfigureAwait(false);
             if (notificationResponse.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status200OK, notificationResponse.SuccessOrFailureMessage);
@@ -395,7 +395,7 @@ namespace YOTY.Service.WebApi.Controllers
             {
                 return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
             }
-            Response notificationResponse = await this.notificationsManager.NotifyBidAllCompletion(completionRequest.BidId).ConfigureAwait(false);
+            Response notificationResponse = await this.notificationsManager.NotifyBidAllCompletionAsync(completionRequest.BidId).ConfigureAwait(false);
             if (notificationResponse.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status200OK, notificationResponse.SuccessOrFailureMessage);
