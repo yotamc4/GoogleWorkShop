@@ -13,6 +13,18 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
         public string BidId { get; set; }
 
         [JsonProperty("items")]
-        public int Items { get; set; }
+        public int NumOfUnits { get; set; }
+
+        [JsonProperty("buyerName")]
+        public string BuyerName { get; set; }
+
+        [JsonProperty("buyerAddress")]
+        public string BuyerAddress { get; set; }
+
+        [JsonProperty("buyerPostalCode")]
+        public string BuyerPostalCode { get; set; }
+
+        [JsonProperty("buyerPhoneNumber")]
+        public string BuyerPhoneNumber { get; set; }
     }
 }
