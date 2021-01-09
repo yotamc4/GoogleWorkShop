@@ -1,10 +1,13 @@
 import { Bid, NewBidRequest } from "../Modal/GroupDetails";
 import { BidBuyerJoinRequest } from "../Modal/ProductDetails";
+import { IMarkPaidRequest } from "../PaymentTable/PaymentTable.interface";
 import { ISupplierProposalRequest } from "../ProductPage/Suppliers/SupplierSection.interface";
 import { IVotingRequest } from "../ProductPage/Suppliers/SupplierSurvey.interface";
 import {
   buildUrlWithQueryParams,
   makeDeleteRequest,
+  makeGetRequest,
+  makeGetRequestAsync,
   makePostRequest,
 } from "./ControllerUtils";
 
@@ -80,6 +83,58 @@ export async function getBids(
   }
 }
 
+export function getBidSpecific(
+  url: string,
+  isAuthenticated: boolean,
+  getAccessTokenSilently?: (options?: any) => Promise<string>
+) {
+  const serviceUrl = BasicControllerUrl + url;
+  if (isAuthenticated) {
+    return makeGetRequestAsync(serviceUrl, getAccessTokenSilently);
+  } else {
+    return makeGetRequestAsync(serviceUrl);
+  }
+}
+
+export function getProposals(
+  url: string,
+  isAuthenticated: boolean,
+  getAccessTokenSilently?: (options?: any) => Promise<string>
+) {
+  const serviceUrl = BasicControllerUrl + url;
+  if (isAuthenticated) {
+    return makeGetRequestAsync(serviceUrl, getAccessTokenSilently);
+  } else {
+    return makeGetRequestAsync(serviceUrl);
+  }
+}
+
+export function getBidParticipations(
+  url: string,
+  isAuthenticated: boolean,
+  getAccessTokenSilently?: (options?: any) => Promise<string>
+) {
+  const serviceUrl = BasicControllerUrl + url;
+  if (isAuthenticated) {
+    return makeGetRequest(serviceUrl, getAccessTokenSilently);
+  } else {
+    return makeGetRequest(serviceUrl);
+  }
+}
+
+export function getBidParticipationsFullDetails(
+  url: string,
+  isAuthenticated: boolean,
+  getAccessTokenSilently?: (options?: any) => Promise<string>
+) {
+  const serviceUrl = BasicControllerUrl + url;
+  if (isAuthenticated) {
+    return makeGetRequest(serviceUrl, getAccessTokenSilently);
+  } else {
+    return makeGetRequest(serviceUrl);
+  }
+}
+
 export function addBuyer(
   bidBuyerJoinRequest: BidBuyerJoinRequest,
   url: string,
@@ -112,6 +167,20 @@ export function addSupplierProposal(
   const response = makePostRequest(
     serviceUrl,
     supplierProposalFormDetails,
+    getAccessTokenSilently
+  );
+  return response;
+}
+
+export async function markPayment(
+  markPaidRequest: IMarkPaidRequest,
+  url: string,
+  getAccessTokenSilently?: (options?: any) => Promise<string>
+) {
+  const serviceUrl = BasicControllerUrl + url;
+  const response = await makePostRequest(
+    serviceUrl,
+    markPaidRequest,
     getAccessTokenSilently
   );
   return response;

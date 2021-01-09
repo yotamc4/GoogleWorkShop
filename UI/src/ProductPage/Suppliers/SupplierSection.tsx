@@ -316,10 +316,6 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
           )}
         </Stack>
       );
-    case Phase.Payment:
-      return (
-        <PaymentsTable payers={[{ name: "ofek", imageUrl: "f", paid: true }]} />
-      );
     default:
       return null;
   }
