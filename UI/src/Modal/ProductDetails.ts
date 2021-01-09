@@ -12,6 +12,7 @@ export interface BidDetails {
   phase: Phase;
   isUserInBid: boolean;
   hasVoted: boolean;
+  paymentLink: string;
 }
 
 export interface ProductDetails {

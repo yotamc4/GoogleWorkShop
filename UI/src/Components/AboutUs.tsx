@@ -22,7 +22,7 @@ export const AboutUs: React.FunctionComponent = () => {
           We are not a shopping site. We are something new and different.
         </Text>
       </StackItem>
-      <Stack tokens={genericGapStackTokensString("1rem")} styles={marginsStyle}>
+      <Stack tokens={genericGapStackTokensString("1rem")}>
         <Text block variant={"xLarge"} styles={getStylesColour("#1469d9")}>
           What is UniBuy?
         </Text>
@@ -53,7 +53,7 @@ export const AboutUs: React.FunctionComponent = () => {
           In short, we are a new and convenient way for you to wholesale.
         </Text>
       </Stack>
-      <Stack tokens={genericGapStackTokensString("1rem")} styles={marginsStyle}>
+      <Stack tokens={genericGapStackTokensString("1rem")}>
         <Text block variant={"xLarge"} styles={getStylesColour("#1469d9")}>
           How it all works:
         </Text>

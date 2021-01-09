@@ -6,7 +6,7 @@ import ButtonAppBar from "./LoginBar";
 import { Route, Switch } from "react-router-dom";
 import { NewGroupBuyingForm } from "./NewGroupBuyingForm/NewGroupBuyingForm";
 import { ProductPage } from "./ProductPage/ProductPage";
-import { UserProfile } from "./UserProfile/UserProfile";
+import UserProfile from "./UserProfile/UserProfile";
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import { AboutUs } from "./Components/AboutUs";

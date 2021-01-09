@@ -33,10 +33,15 @@ namespace YOTY.Service.Core.Managers.Bids
 
         public async Task<Response> AddBuyer(BidBuyerJoinRequest bidBuyerJoinRequest)
         {
-            BidEntity bid = await _context.Bids.Where(b => b.Id == bidBuyerJoinRequest.BidId).Include(b => b.CurrentParticipancies).FirstOrDefaultAsync().ConfigureAwait(false);
+            BidEntity bid = await _context.Bids.Where(b => b.Id == bidBuyerJoinRequest.BidId).Include(b => b.CurrentParticipancies).Include(b => b.Product).FirstOrDefaultAsync().ConfigureAwait(false);
             if (bid == null)
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
+            }
+            if(await this.isValidJoinAsync(bid.Product, bidBuyerJoinRequest.BuyerId))
+            {
+                // new Response Error Code
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = "Buyer already participates in an active bid with this product" };
             }
             bid.CurrentParticipancies.Add(_mapper.Map<ParticipancyEntity>(bidBuyerJoinRequest)));
             bid.UnitsCounter += bidBuyerJoinRequest.NumOfUnits;
@@ -50,6 +55,15 @@ namespace YOTY.Service.Core.Managers.Bids
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
             }
             return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+        }
+
+        private async Task<bool> isValidJoinAsync(ProductEntity product, string buyerId)
+        {
+            HashSet<BidPhase> livePhases = new HashSet<BidPhase>() { BidPhase.Join, BidPhase.Vote, BidPhase.Payment };
+            var buyer = await _context.Buyers.Where(b => b.Id == buyerId).Include(b => b.CurrentParticipancies).FirstOrDefaultAsync();
+            HashSet<string> bid_ids = new HashSet<string>(buyer.CurrentParticipancies.Select(p => p.BidId).ToArray());
+            var alreadyInBidWithThisProduct = _context.Bids.Where(b => bid_ids.Contains(b.Id)).Where(b=> livePhases.Contains(b.Phase)).Include(b => b.Product).Any(b => b.Product.Id == product.Id);
+            return !alreadyInBidWithThisProduct;
         }
 
         public async Task<Response> AddSupplierProposal(SupplierProposalRequest supplierProposalRequest)
@@ -87,6 +101,12 @@ namespace YOTY.Service.Core.Managers.Bids
                 bidEntity.Product = existingProduct;
             }
 
+            if (!(await this.isValidNewBidAsync(bidEntity)))
+            {
+                // new Response Error Code
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = "Not Valid Group: This owner has an active bid of this product / There are too many groups for this product / There is an equivalent available group already" };
+            }
+
             _context.Bids.Add(bidEntity);
             try
             {
@@ -97,9 +117,22 @@ namespace YOTY.Service.Core.Managers.Bids
                 //TODO log exception and return proper error message instead
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
             }
-            BidDTO dto = _mapper.Map<BidDTO>(bidEntity);
             return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
 
+        }
+
+        private async Task<bool> isValidNewBidAsync(BidEntity bidEntity)
+        {
+            var activeBidsWithSameProduct = await _context.Bids.Include(b => b.Product).Where(b => b.Product.Id == bidEntity.Product.Id && b.Phase == BidPhase.Join).ToListAsync();
+            if (activeBidsWithSameProduct.Count() > 3)
+            {
+                return false;
+            }
+            if (activeBidsWithSameProduct.Any(b=>b.MaxPrice == bidEntity.MaxPrice || b.OwnerId == bidEntity.OwnerId))
+            {
+                return false;
+            }
+            return true;
         }
 
         public async Task<Response> DeleteBid(string bidId)
@@ -270,6 +303,23 @@ namespace YOTY.Service.Core.Managers.Bids
             }
         }
 
+        public async Task<Response<SupplierProposalDTO>> GetBidChosenProposal(string bidId)
+        {
+            try
+            {
+                var chosenProposal = await _context.Bids.Where(b => b.Id == bidId).Include(b=>b.ChosenProposal).Select(b => b.ChosenProposal).FirstOrDefaultAsync().ConfigureAwait(false);
+                if(chosenProposal == null){
+                    return new Response<SupplierProposalDTO>() { IsOperationSucceeded = false, SuccessOrFailureMessage = "error querying for proposals" };
+                }
+                return new Response<SupplierProposalDTO>() { DTOObject = _mapper.Map<SupplierProposalDTO>(chosenProposal), IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+            }
+            catch
+            {
+                return new Response<SupplierProposalDTO>() { IsOperationSucceeded = false, SuccessOrFailureMessage = "error querying for proposals" };
+            }
+        }
+
+
         public async Task<Response<List<ParticipancyDTO>>> GetBidParticipations(string bidId)
         {
             try
@@ -338,6 +388,7 @@ namespace YOTY.Service.Core.Managers.Bids
         private async Task<Response<BidsDTO>> GetDefaultHomePageBids(int page)
         {
             List<BidDTO> bids = await _context.Bids
+                .Where(bid => bid.Phase == BidPhase.Join || bid.Phase == BidPhase.Vote)
                 .OrderByDescending(bid => bid.UnitsCounter)
                 .OrderByDescending(bid => bid.PotenialSuplliersCounter)
                 .OrderBy(bid => bid.ExpirationDate)
@@ -421,6 +472,7 @@ namespace YOTY.Service.Core.Managers.Bids
         private IEnumerable<BidEntity> GetFilteredBids(BidsQueryOptions bidsFilters)
         {
             return _context.Bids
+                .Where(bid => bid.Phase == BidPhase.Join || bid.Phase == BidPhase.Vote)
                 .Include(bid => bid.Product)
                 .AsEnumerable()
                 .Where(bid => FilterByCategories(bid, bidsFilters.Category, bidsFilters.SubCategory))
