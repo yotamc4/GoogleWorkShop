@@ -59,6 +59,25 @@ export async function makeGetRequest<T>(
   return await fetch(url, options);
 }
 
+export async function makeGetRequestAsync<T>(
+  url: string,
+  getAccessTokenSilently?: (options?: any) => Promise<string>
+): Promise<Response> {
+  const options: any = {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json;",
+    },
+  };
+
+  if (getAccessTokenSilently) {
+    options.headers.Authorization = `Bearer ${await getAccessTokenSilently()}`;
+  }
+
+  return fetch(url, options);
+}
+
 export function buildUrlWithQueryParams(
   stringUrl: string,
   params: Map<string, string>

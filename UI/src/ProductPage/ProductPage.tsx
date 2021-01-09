@@ -22,6 +22,13 @@ import { JoinTheGroupButton } from "./JoinTheGroupButton";
 import configData from "../config.json";
 import { getDate } from "./utils";
 import ButtonAppBar from "../LoginBar";
+import {
+  getBidParticipations,
+  getBidParticipationsFullDetails,
+  getBidSpecific,
+  getProposals,
+} from "../Services/BidsControllerService";
+import { IParticipancyFullDetails } from "../PaymentTable/PaymentTable.interface";
 
 export const ProductPage: React.FunctionComponent = () => {
   const {
@@ -40,46 +47,70 @@ export const ProductPage: React.FunctionComponent = () => {
   const [bidDetails, setBidDetails] = useState<BidDetails | undefined>(
     undefined
   );
+  const [paymentList, setPaymentList] = useState<
+    Partial<IParticipancyFullDetails>[] | undefined
+  >(undefined);
   const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
+  const [isChosenSupplier, setIsChosenSupplier] = useState<boolean>(false);
 
   const { id } = useParams<{ id: string }>();
   React.useEffect(() => {
     const getBid = async () => {
       let role: string;
-      let config;
       if (isAuthenticated) {
-        const accessToken = await getAccessTokenSilently();
-        config = {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        };
         role = user[configData.roleIdentifier];
       } else {
         role = "Anonymous";
-        config = {
-          headers: { Authorization: `Bearer` },
-        };
       }
-      axios
-        .all([
-          axios.get(
-            `https://localhost:5001/api/v1/bids/${id}?role=${role}&id=${user?.sub}`,
-            config
-          ),
-          axios.get(`https://localhost:5001/api/v1/bids/${id}/proposals`),
-        ])
-        .then(
-          axios.spread(
-            (bidDetailsResponse, supplierProposalRequestListResponse) => {
-              setBidDetails(bidDetailsResponse.data as BidDetails);
+      const [
+        bidDetailsResponse,
+        supplierProposalRequestListResponse,
+      ] = await Promise.all([
+        getBidSpecific(
+          `/${id}?role=${role}&id=${user?.sub}`,
+          isAuthenticated,
+          getAccessTokenSilently
+        ),
+        getProposals(
+          `/${id}/proposals`,
+          isAuthenticated,
+          getAccessTokenSilently
+        ),
+      ]);
+      const bidDetailsResponseJson: BidDetails = await bidDetailsResponse.json();
+      const supplierProposalRequestListResponseJson: ISupplierProposalRequest[] = await supplierProposalRequestListResponse.json();
 
-              setnumberOfParticipants(bidDetailsResponse.data.unitsCounter);
-              setsupplierProposalRequestList(
-                supplierProposalRequestListResponse.data as ISupplierProposalRequest[]
-              );
-              setIsDataLoaded(true);
-            }
-          )
+      setBidDetails(bidDetailsResponseJson);
+      setnumberOfParticipants(bidDetailsResponseJson.unitsCounter);
+      setsupplierProposalRequestList(supplierProposalRequestListResponseJson);
+
+      if (
+        bidDetailsResponseJson.phase === Phase.Payment &&
+        bidDetailsResponseJson.isUserInBid &&
+        user[configData.roleIdentifier] === "Supplier"
+      ) {
+        const response = await getBidParticipations(
+          `/${id}/participantsFullDetails`,
+          isAuthenticated,
+          getAccessTokenSilently
         );
+        const bidParticipationsListJson: Partial<
+          IParticipancyFullDetails
+        >[] = await response.json();
+        setPaymentList(bidParticipationsListJson);
+        setIsChosenSupplier(true);
+      } else if (bidDetailsResponseJson.phase === Phase.Payment) {
+        const response = await getBidParticipationsFullDetails(
+          `/${id}/participants`,
+          isAuthenticated,
+          getAccessTokenSilently
+        );
+        const bidParticipationsListJson: Partial<
+          IParticipancyFullDetails
+        >[] = await response.json();
+        setPaymentList(bidParticipationsListJson);
+      }
+      setIsDataLoaded(true);
     };
     if (!isLoading) {
       getBid();
@@ -152,24 +183,24 @@ export const ProductPage: React.FunctionComponent = () => {
               changeNumberOfParticipants={changeNumberOfParticipants}
             />
           ) : (
-            <Text styles={Styles.newBuyersCantJoinTheGroup}>
-              New Buyers can't Join the group, The Expiration date set by the
-              group's creator has reached.
-            </Text>
+            bidDetails?.phase == Phase.Vote && (
+              <Text styles={Styles.newBuyersCantJoinTheGroup}>
+                New Buyers can't Join the group, The Expiration date set by the
+                group's creator has reached.
+              </Text>
+            )
           )}
           <Separator />
         </Stack>
       </Stack>
       <Stack horizontalAlign="center">
         <Separator />
-        {false ? (
+        {bidDetails?.phase == Phase.Payment ? (
           <PaymentsTable
-            payers={[
-              MockBuyers.Adi,
-              MockBuyers.Guy,
-              MockBuyers.Or,
-              MockBuyers.Yam,
-            ]}
+            isChosenSupplier={isChosenSupplier}
+            participancyList={
+              paymentList as Partial<IParticipancyFullDetails>[]
+            }
           />
         ) : (
           <SuppliersSection
