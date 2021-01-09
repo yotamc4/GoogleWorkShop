@@ -1,14 +1,15 @@
 import React from "react"; // importing FunctionComponent
 import {
   Stack,
-  SearchBox,
   DefaultButton,
   IImageProps,
   ImageFit,
   Image,
   Link,
+  TooltipHost,
 } from "@fluentui/react";
 import { useHistory } from "react-router";
+import { useAuth0 } from "@auth0/auth0-react";
 
 import * as AutocompleteControllerService from "../Services/AutocompleteControllerService";
 import { AutoComplete } from "../Components/AutoComplete";
@@ -21,6 +22,7 @@ import {
   verticalGapStackTokens,
 } from "./HomeStyles";
 import ButtonAppBar from "../LoginBar";
+import configData from "../config.json";
 
 const imagePropsSubLogo: IImageProps = {
   src: "/Images/subLogo2.PNG",
@@ -28,12 +30,15 @@ const imagePropsSubLogo: IImageProps = {
 };
 
 export const Home: React.FunctionComponent = () => {
-  const history = useHistory();
   const [autoCompleteValues, setAutoCompleteValues] = React.useState<string[]>(
     []
   );
 
-  React.useState(() => {
+  const [isSupplier, SetIsSupplier] = React.useState<boolean | undefined>();
+  const history = useHistory();
+  const { user, isLoading, isAuthenticated } = useAuth0();
+
+  React.useEffect(() => {
     async function getAutoCompleteValues() {
       setAutoCompleteValues(
         await AutocompleteControllerService.getAutoCompleteValues()
@@ -41,7 +46,13 @@ export const Home: React.FunctionComponent = () => {
     }
 
     getAutoCompleteValues();
-  });
+  }, []);
+
+  React.useEffect(() => {
+    if (user) {
+      SetIsSupplier(user[configData.roleIdentifier] === "Supplier");
+    }
+  }, [isLoading]);
 
   // The home component is also been used for the categories and subCategories view
   const isHomePage: boolean = window.location.pathname === "/";
@@ -78,18 +89,29 @@ export const Home: React.FunctionComponent = () => {
           )}
           <Stack tokens={genericGapStackTokens(20)}>
             <Stack horizontal horizontalAlign="space-between">
-              <DefaultButton
-                text={"New group-buy"}
-                primary
-                onClick={() => {
-                  history.push("/createNewGroup");
-                }}
-                iconProps={{
-                  iconName: "Add",
-                  styles: { root: { color: "darkgrey" } },
-                }}
-                styles={defaultButtonStyles}
-              ></DefaultButton>
+              {!isSupplier && (
+                <TooltipHost
+                  content={
+                    !isSupplier && !isAuthenticated
+                      ? "Only logged in users can create new group."
+                      : ""
+                  }
+                >
+                  <DefaultButton
+                    text={"New group-buy"}
+                    primary
+                    onClick={() => {
+                      history.push("/createNewGroup");
+                    }}
+                    iconProps={{
+                      iconName: "Add",
+                      styles: { root: { color: "darkgrey" } },
+                    }}
+                    styles={defaultButtonStyles}
+                    disabled={isLoading || !isAuthenticated}
+                  ></DefaultButton>
+                </TooltipHost>
+              )}
               <AutoComplete
                 autoCompleteValues={autoCompleteValues}
                 onPressEnter={onSearchBoxEnterPressed}

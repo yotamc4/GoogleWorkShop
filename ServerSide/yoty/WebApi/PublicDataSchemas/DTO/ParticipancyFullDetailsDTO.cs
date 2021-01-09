@@ -13,5 +13,8 @@
         public string BuyerPostalCode { get; set; }
 
         public string BuyerPhoneNumber { get; set; }
+
+        public string BuyerId { get; set; }
+
     }
 }
