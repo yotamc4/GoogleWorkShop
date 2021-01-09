@@ -10,8 +10,8 @@ namespace YOTY.Service.Utils.SchemasConversions.AutoMapper.Profiles
     {
         public ParticipancyProfile()
         {
-            CreateMap<ParticipancyEntity, ParticipancyDTO>(MemberList.Destination);
-            CreateMap<ParticipancyEntity, ParticipancyFullDetailsDTO>(MemberList.Destination);
+            CreateMap<ParticipancyEntity, ParticipancyDTO>(MemberList.None);
+            CreateMap<ParticipancyEntity, ParticipancyFullDetailsDTO>(MemberList.None);
             CreateMap<BidBuyerJoinRequest, ParticipancyEntity>(MemberList.Source);
         }
     }

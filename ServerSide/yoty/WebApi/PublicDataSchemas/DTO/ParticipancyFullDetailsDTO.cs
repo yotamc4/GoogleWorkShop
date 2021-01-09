@@ -1,4 +1,6 @@
-﻿namespace YOTY.Service.WebApi.PublicDataSchemas
+﻿using System;
+
+namespace YOTY.Service.WebApi.PublicDataSchemas
 {
     public class ParticipancyFullDetailsDTO : BaseDTO
     {
@@ -16,5 +18,6 @@
 
         public string BuyerId { get; set; }
 
+        public Uri ProfilePicture { get; set; }
     }
 }
