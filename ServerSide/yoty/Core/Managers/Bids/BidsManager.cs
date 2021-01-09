@@ -555,6 +555,7 @@ namespace YOTY.Service.Core.Managers.Bids
             SupplierProposalEntity chosenProposalEntity = bid.CurrentProposals.Where(proposal => proposal.MinimumUnits <= bid.UnitsCounter && proposal.ProposedPrice <= bid.MaxPrice).Aggregate(
                 (currWinner, x) => (currWinner == null || x.Votes > currWinner.Votes ? x : currWinner));
             bid.ChosenProposal = chosenProposalEntity;
+            bid.CurrentProposals.Clear();
             try
             {
                 _context.Bids.Update(bid);
