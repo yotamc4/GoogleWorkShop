@@ -43,12 +43,8 @@ namespace YOTY.Service.Core.Managers.Bids
                 // new Response Error Code
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = "Buyer already participates in an active bid with this product" };
             }
-            bid.CurrentParticipancies.Add(new ParticipancyEntity {
-                BidId = bidBuyerJoinRequest.BidId,
-                BuyerId = bidBuyerJoinRequest.BuyerId,
-                NumOfUnits = bidBuyerJoinRequest.Items,
-            });
-            bid.UnitsCounter += bidBuyerJoinRequest.Items;
+            bid.CurrentParticipancies.Add(_mapper.Map<ParticipancyEntity>(bidBuyerJoinRequest));
+            bid.UnitsCounter += bidBuyerJoinRequest.NumOfUnits;
             try
             {
                 _context.Bids.Update(bid);

@@ -1,8 +1,10 @@
-import { Stack } from "@fluentui/react";
+import { Stack, StackItem } from "@fluentui/react";
 import * as React from "react";
 import { ProductCard } from "../../HomePage/ProductCard/ProductCard";
 import { Bid } from "../../Modal/GroupDetails";
-import { genericGapStackTokens } from "./ProductCardGridStyles";
+import {
+  genericGapStackTokens,
+} from "./ProductCardGridStyles";
 
 export const ProductCardGrid: React.FunctionComponent<ProductCardGridProps> = ({
   bids,
@@ -20,35 +22,23 @@ export const ProductCardGrid: React.FunctionComponent<ProductCardGridProps> = ({
       </Stack>
     );
   }
+
   return (
-    <Stack styles={{ root: { minWidth: "50rem" } }}>
-      <Stack
-        horizontal
-        horizontalAlign="space-between"
-        tokens={genericGapStackTokens(21)}
-      >
-        <ProductCard {...bids[0]} />
-        <ProductCard {...bids[1]} />
-        <ProductCard {...bids[2]} />
-      </Stack>
-      <Stack
-        horizontal
-        horizontalAlign="space-between"
-        tokens={genericGapStackTokens(20)}
-      >
-        <ProductCard {...bids[3]} />
-        <ProductCard {...bids[4]} />
-        <ProductCard {...bids[5]} />
-      </Stack>
-      <Stack
-        horizontal
-        horizontalAlign="space-between"
-        tokens={genericGapStackTokens(20)}
-      >
-        <ProductCard {...bids[6]} />
-        <ProductCard {...bids[7]} />
-        <ProductCard {...bids[8]} />
-      </Stack>
+    <Stack
+      horizontal
+      wrap
+      horizontalAlign={"end"}
+      tokens={genericGapStackTokens(5)}
+    >
+      <ProductCard {...bids[0]} />
+      <ProductCard {...bids[1]} />
+      <ProductCard {...bids[2]} />
+      <ProductCard {...bids[3]} />
+      <ProductCard {...bids[4]} />
+      <ProductCard {...bids[5]} />
+      <ProductCard {...bids[6]} />
+      <ProductCard {...bids[7]} />
+      <ProductCard {...bids[8]} />
     </Stack>
   );
 };

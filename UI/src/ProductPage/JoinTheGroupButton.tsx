@@ -29,7 +29,7 @@ export const JoinTheGroupButton: React.FunctionComponent<IJoinTheGroupButtonProp
 
   const onClickConsumerJoingButton = () => {
     if (isJoinTheGroupButtomClicked) {
-      const url = `/${id}/buyers/${user.sub}`;
+      const url = `/${id}/buyers`;
       deleteBuyer(url, getAccessTokenSilently);
       setIsJoinTheGroupButtomClicked(false);
       changeNumberOfParticipants(-1);

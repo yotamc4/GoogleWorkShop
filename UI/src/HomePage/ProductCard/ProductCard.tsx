@@ -11,10 +11,10 @@ import {
   divStyles,
 } from "./ProductCardStyles";
 import { Bid } from "../../Modal/GroupDetails";
+import { StackItem } from "@fluentui/react";
 
 export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
   const history = useHistory();
-  const cardTokens: ICardTokens = { childrenMargin: 7 };
   const attendantsCardSectionTokens: ICardSectionTokens = { childrenGap: 6 };
 
   if (bid.id == undefined) {
@@ -27,58 +27,62 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
   };
 
   return (
-    <Card
-      tokens={cardTokens}
-      styles={cardStyles}
-      onClick={() => {
-        history.push(`/products/${bid.id}`);
-      }}
+    <StackItem
+      grow={true}
+      styles={{ root: { flexBasis: "32%", marginBottom: "1rem" } }}
     >
-      <Circle />
-      <Card.Section fill horizontalAlign="center" horizontal>
-        <Image {...imageProps} width={"14rem"} height={"10rem"} />
-      </Card.Section>
-      <Card.Section
-        horizontalAlign="center"
-        styles={{ root: { flexBasis: "10rem" } }}
+      <Card
+        styles={cardStyles}
+        onClick={() => {
+          history.push(`/products/${bid.id}`);
+        }}
       >
-        <Text variant="large" styles={nameOfProductTextStyles}>
-          {bid.product?.name}
-        </Text>
-        <Text styles={descriptionTextStyles}>
-          {bid.product!.description.length > 199
-            ? bid.product!.description.slice(0, 200) + "..."
-            : bid.product!.description}
-        </Text>
-      </Card.Section>
-      <Card.Section horizontalAlign="center">
-        <Text variant="mediumPlus" styles={priceTextStyles}>
-          Max Acceptable Price: {bid.maxPrice}₪
-        </Text>
-        {bid.expirationDate && (
-          <Text variant="small" styles={descriptionTextStyles}>
-            Expiration Date: {bid.expirationDate.getUTCMonth() + 1}/
-            {bid.expirationDate.getUTCDate() + 1}/
-            {bid.expirationDate.getUTCFullYear()}
+        <Circle />
+        <Card.Section fill horizontalAlign="center" horizontal>
+          <Image {...imageProps} width={"14rem"} height={"10rem"} />
+        </Card.Section>
+        <Card.Section
+          horizontalAlign="center"
+          styles={{ root: { flexBasis: "14rem" } }}
+        >
+          <Text variant="large" styles={nameOfProductTextStyles}>
+            {bid.product?.name}
           </Text>
-        )}
-      </Card.Section>
-      <Card.Section
-        horizontalAlign="center"
-        horizontal
-        tokens={attendantsCardSectionTokens}
-      >
-        <Text variant="small" styles={amoutTextStyles}>
-          {bid.potenialSuplliersCounter} Suppliers proposals
-        </Text>
-        <Text variant="small" styles={amoutTextStyles}>
-          |
-        </Text>
-        <Text variant="small" styles={amoutTextStyles}>
-          {bid.unitsCounter} Requested items
-        </Text>
-      </Card.Section>
-    </Card>
+          <Text styles={descriptionTextStyles}>
+            {bid.product!.description.length > 199
+              ? bid.product!.description.slice(0, 200) + "..."
+              : bid.product!.description}
+          </Text>
+        </Card.Section>
+        <Card.Section horizontalAlign="center">
+          <Text variant="mediumPlus" styles={priceTextStyles}>
+            Max Acceptable Price: {bid.maxPrice}₪
+          </Text>
+          {bid.expirationDate && (
+            <Text variant="small" styles={descriptionTextStyles}>
+              Expiration Date: {bid.expirationDate.getUTCMonth() + 1}/
+              {bid.expirationDate.getUTCDate() + 1}/
+              {bid.expirationDate.getUTCFullYear()}
+            </Text>
+          )}
+        </Card.Section>
+        <Card.Section
+          horizontalAlign="center"
+          horizontal
+          tokens={attendantsCardSectionTokens}
+        >
+          <Text variant="small" styles={amoutTextStyles}>
+            {bid.potenialSuplliersCounter} Suppliers proposals
+          </Text>
+          <Text variant="small" styles={amoutTextStyles}>
+            |
+          </Text>
+          <Text variant="small" styles={amoutTextStyles}>
+            {bid.unitsCounter} Requested items
+          </Text>
+        </Card.Section>
+      </Card>
+    </StackItem>
   );
 };
 

@@ -219,7 +219,7 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
   };
 
   const deletePropposalFromSupplierList = React.useCallback(() => {
-    const url = `/${id}/proposals/${user.sub}`;
+    const url = `/${id}/proposals`;
     deleteSupplierProposal(url, getAccessTokenSilently);
     const newListItems = listItems?.filter(
       (proposal) => proposal.supplierId != user.sub
@@ -315,10 +315,6 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
             />
           )}
         </Stack>
-      );
-    case Phase.Payment:
-      return (
-        <PaymentsTable payers={[{ name: "ofek", imageUrl: "f", paid: true }]} />
       );
     default:
       return null;
