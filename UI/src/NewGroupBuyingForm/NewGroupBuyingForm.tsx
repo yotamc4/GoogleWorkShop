@@ -257,7 +257,7 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           <Stack horizontal tokens={FormsStyles.verticalGapStackTokens}>
             {requestInProcess && <Spinner />}
             <PrimaryButton
-              text="Send"
+              text="Create"
               onClick={() => {
                 onSubmitForm();
               }}

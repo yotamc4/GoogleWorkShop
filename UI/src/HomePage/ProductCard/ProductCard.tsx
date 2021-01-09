@@ -8,12 +8,29 @@ import {
   descriptionTextStyles,
   nameOfProductTextStyles,
   priceTextStyles,
-  divStyles,
+  circleStyle,
 } from "./ProductCardStyles";
 import { Bid } from "../../Modal/GroupDetails";
-import { StackItem } from "@fluentui/react";
+import { Stack, StackItem } from "@fluentui/react";
 
 export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
+  const [isNewSuggestion, setIsNewSuggestion] = React.useState<boolean>(
+    bid.id !== undefined && isNewBid(bid.creationDate)
+  );
+
+  function isNewBid(creationDate: Date): boolean {
+    return (
+      // Bid's creation date plus 2 days
+      !(
+        new Date(
+          bid.creationDate.getFullYear(),
+          bid.creationDate.getMonth(),
+          bid.creationDate.getDate() + 2
+        ) < new Date()
+      )
+    );
+  }
+
   const history = useHistory();
   const attendantsCardSectionTokens: ICardSectionTokens = { childrenGap: 6 };
 
@@ -37,13 +54,15 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
           history.push(`/products/${bid.id}`);
         }}
       >
-        <Circle />
-        <Card.Section fill horizontalAlign="center" horizontal>
-          <Image {...imageProps} width={"14rem"} height={"10rem"} />
-        </Card.Section>
+        <Stack>
+          {isNewSuggestion && <NewTagCircle />}
+          <StackItem align="center">
+            <Image {...imageProps} width={"14rem"} height={"10rem"} />
+          </StackItem>
+        </Stack>
         <Card.Section
           horizontalAlign="center"
-          styles={{ root: { flexBasis: "14rem" } }}
+          styles={{ root: { padding: "0.5rem" } }}
         >
           <Text variant="large" styles={nameOfProductTextStyles}>
             {bid.product?.name}
@@ -59,17 +78,25 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
             Max Acceptable Price: {bid.maxPrice}₪
           </Text>
           {bid.expirationDate && (
-            <Text variant="small" styles={descriptionTextStyles}>
+            <Text
+              variant="small"
+              styles={{
+                root: {
+                  color: "#666666",
+                },
+              }}
+            >
               Expiration Date: {bid.expirationDate.getUTCMonth() + 1}/
               {bid.expirationDate.getUTCDate() + 1}/
               {bid.expirationDate.getUTCFullYear()}
             </Text>
           )}
         </Card.Section>
-        <Card.Section
-          horizontalAlign="center"
+        <Stack
+          horizontalAlign="space-between"
           horizontal
-          tokens={attendantsCardSectionTokens}
+          styles={{ root: { padding: "0.5rem" } }}
+          wrap
         >
           <Text variant="small" styles={amoutTextStyles}>
             {bid.potenialSuplliersCounter} Suppliers proposals
@@ -80,12 +107,12 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
           <Text variant="small" styles={amoutTextStyles}>
             {bid.unitsCounter} Requested items
           </Text>
-        </Card.Section>
+        </Stack>
       </Card>
     </StackItem>
   );
 };
 
-const Circle: React.FunctionComponent = () => {
-  return <div style={divStyles}>New</div>;
+const NewTagCircle: React.FunctionComponent = () => {
+  return <div style={circleStyle}>New</div>;
 };
