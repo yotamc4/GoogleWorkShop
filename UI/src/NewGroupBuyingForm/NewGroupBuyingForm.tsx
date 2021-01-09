@@ -56,7 +56,8 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
       ownerId: "1",
       category: "",
       subCategory: "",
-      expirationDate: new Date(),
+      // Tomorrow Date
+      expirationDate: new Date(new Date().setDate(new Date().getDate() + 1)),
       maxPrice: 0,
       product: undefined,
     }
@@ -218,12 +219,10 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           firstDayOfWeek={DayOfWeek.Sunday}
           strings={DayPickerStrings}
           placeholder="Select a date"
-          calendarProps={{
-            strings: DayPickerStrings,
-            minDate: new Date(2020, 12, 12, 0, 0, 0, 0),
-          }}
           styles={{ root: { width: FormsStyles.inputWidth } }}
           isRequired
+          // Tomorrow Date
+          minDate={new Date(new Date().setDate(new Date().getDate() + 1))}
         />
         <TextField
           id="description"
@@ -253,13 +252,9 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           />
         )}
         <Separator styles={{ root: { width: FormsStyles.inputWidth } }} />
-        <Stack
-          horizontal
-          tokens={FormsStyles.horizontalGapStackTokens}
-          styles={{ root: { margin: "auto" } }}
-        >
+        <Stack horizontal horizontalAlign={"space-between"}>
           <DefaultButton text="Cancel" href={"/"} />
-          <Stack horizontal tokens={{ childrenGap: "1rem" }}>
+          <Stack horizontal tokens={FormsStyles.verticalGapStackTokens}>
             {requestInProcess && <Spinner />}
             <PrimaryButton
               text="Send"

@@ -7,6 +7,19 @@ import { genericGapStackTokens } from "./ProductCardGridStyles";
 export const ProductCardGrid: React.FunctionComponent<ProductCardGridProps> = ({
   bids,
 }) => {
+  if (bids.length === 0) {
+    return (
+      <Stack
+        verticalAlign="center"
+        horizontalAlign="center"
+        styles={{
+          root: { position: "relative", top: "11rem", left: "17rem" },
+        }}
+      >
+        No Groups have found.
+      </Stack>
+    );
+  }
   return (
     <Stack styles={{ root: { minWidth: "50rem" } }}>
       <Stack

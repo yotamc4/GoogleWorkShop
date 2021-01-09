@@ -38,7 +38,7 @@ namespace YOTY.Service.Core.Managers.Bids
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
             }
-            if(await this.isValidJoinAsync(bid.Product, bidBuyerJoinRequest.BuyerId))
+            if(!await this.isValidJoinAsync(bid.Product, bidBuyerJoinRequest.BuyerId))
             {
                 // new Response Error Code
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = "Buyer already participates in an active bid with this product" };
@@ -104,11 +104,13 @@ namespace YOTY.Service.Core.Managers.Bids
             {
                 bidEntity.Product = existingProduct;
             }
-            if (await this.isValidNewBidAsync(bidEntity))
+
+            if (!(await this.isValidNewBidAsync(bidEntity)))
             {
                 // new Response Error Code
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = "Not Valid Group: This owner has an active bid of this product / There are too many groups for this product / There is an equivalent available group already" };
             }
+
             _context.Bids.Add(bidEntity);
             try
             {
@@ -390,7 +392,7 @@ namespace YOTY.Service.Core.Managers.Bids
         private async Task<Response<BidsDTO>> GetDefaultHomePageBids(int page)
         {
             List<BidDTO> bids = await _context.Bids
-                .Where(bid => bid.Phase == BidPhase.Join && bid.Phase == BidPhase.Vote)
+                .Where(bid => bid.Phase == BidPhase.Join || bid.Phase == BidPhase.Vote)
                 .OrderByDescending(bid => bid.UnitsCounter)
                 .OrderByDescending(bid => bid.PotenialSuplliersCounter)
                 .OrderBy(bid => bid.ExpirationDate)
@@ -474,7 +476,7 @@ namespace YOTY.Service.Core.Managers.Bids
         private IEnumerable<BidEntity> GetFilteredBids(BidsQueryOptions bidsFilters)
         {
             return _context.Bids
-                .Where(bid => bid.Phase == BidPhase.Join && bid.Phase == BidPhase.Vote)
+                .Where(bid => bid.Phase == BidPhase.Join || bid.Phase == BidPhase.Vote)
                 .Include(bid => bid.Product)
                 .AsEnumerable()
                 .Where(bid => FilterByCategories(bid, bidsFilters.Category, bidsFilters.SubCategory))
@@ -553,6 +555,7 @@ namespace YOTY.Service.Core.Managers.Bids
             SupplierProposalEntity chosenProposalEntity = bid.CurrentProposals.Where(proposal => proposal.MinimumUnits <= bid.UnitsCounter && proposal.ProposedPrice <= bid.MaxPrice).Aggregate(
                 (currWinner, x) => (currWinner == null || x.Votes > currWinner.Votes ? x : currWinner));
             bid.ChosenProposal = chosenProposalEntity;
+            bid.CurrentProposals.Clear();
             try
             {
                 _context.Bids.Update(bid);
