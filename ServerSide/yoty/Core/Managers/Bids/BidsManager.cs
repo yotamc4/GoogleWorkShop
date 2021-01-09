@@ -543,7 +543,7 @@ namespace YOTY.Service.Core.Managers.Bids
 
         public async Task<Response> GetProposalWithMaxVotes(string bidId)
         {
-            BidEntity bid = await _context.Bids.Where(bid => bid.Id == bidId).Include(bid => bid.CurrentProposals).ThenInclude(p => p.Supplier).FirstOrDefaultAsync().ConfigureAwait(false);
+            BidEntity bid = await _context.Bids.Where(bid => bid.Id == bidId).Include(bid => bid.CurrentProposals).FirstOrDefaultAsync().ConfigureAwait(false);
             if (bid == null)
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
