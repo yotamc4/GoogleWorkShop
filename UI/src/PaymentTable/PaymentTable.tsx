@@ -7,6 +7,8 @@ import {
   FontIcon,
   IColumn,
   IIconProps,
+  ImageFit,
+  ImageIcon,
   mergeStyles,
   mergeStyleSets,
   Persona,
@@ -152,7 +154,11 @@ export const PaymentsTable: React.FunctionComponent<IPaymentsTableProps> = ({
       isPadded: true,
       onRender: (bidParticipant: Partial<IParticipancyFullDetails>) => {
         return (
-          <Persona text={bidParticipant.buyerName} size={PersonaSize.size32} />
+          <Persona
+            imageUrl={bidParticipant.profilePicture}
+            text={bidParticipant.buyerName}
+            size={PersonaSize.size40}
+          />
         );
       },
     },
@@ -197,17 +203,19 @@ export const PaymentsTable: React.FunctionComponent<IPaymentsTableProps> = ({
 
   return (
     <Stack horizontalAlign={"center"}>
-      <PrimaryButton
-        text={"Pay with Payapl"}
-        iconProps={payIcon}
-        href={"https://www.paypal.com"}
-        styles={{
-          root: { width: "24rem", height: "3.5rem", fontSize: "1.5 rem" },
-        }}
-      />
-      <Label styles={{ root: { fontSize: 30, color: "#605e5c" } }}>
-        Current payments status:
-      </Label>
+      <Stack horizontal tokens={{ childrenGap: "2rem" }}>
+        <Label>Pay with paypal:</Label>
+        <DefaultButton href="http://bing.com">
+          <ImageIcon
+            imageProps={{
+              src: "https://i.ibb.co/r3SDcfy/paypal.png",
+              imageFit: ImageFit.none,
+              maximizeFrame: true,
+              style: { width: "64px", height: "64px" },
+            }}
+          />
+        </DefaultButton>
+      </Stack>
       <DetailsList
         items={paymentParticipancyList}
         columns={

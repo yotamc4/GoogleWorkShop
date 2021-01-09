@@ -1,6 +1,8 @@
 import React, { useCallback, useMemo, useState } from "react";
 import axios from "axios";
 import * as Styles from "./ProductPageStyles";
+import Dialog from "@material-ui/core/Dialog";
+import DialogContent from "@material-ui/core/DialogContent";
 import * as MockBuyers from "../Modal/MockBuyers";
 import {
   FontIcon,
@@ -29,6 +31,7 @@ import {
   getProposals,
 } from "../Services/BidsControllerService";
 import { IParticipancyFullDetails } from "../PaymentTable/PaymentTable.interface";
+import { JoinTheGroupForm } from "./JoinTheGroupForm";
 
 export const ProductPage: React.FunctionComponent = () => {
   const {
@@ -52,7 +55,19 @@ export const ProductPage: React.FunctionComponent = () => {
   >(undefined);
   const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
   const [isChosenSupplier, setIsChosenSupplier] = useState<boolean>(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const [
+    isJoinTheGroupButtomClicked,
+    setIsJoinTheGroupButtomClicked,
+  ] = useState<boolean>(bidDetails?.isUserInBid as boolean);
+
+  const [open, setOpen] = React.useState(false);
   const { id } = useParams<{ id: string }>();
   React.useEffect(() => {
     const getBid = async () => {
@@ -174,14 +189,34 @@ export const ProductPage: React.FunctionComponent = () => {
               className={Styles.classNames.greenYellow}
             />
             <Text styles={Styles.amoutTextStyles}>
-              {numberOfParticipants} people have joined to the group
+              {numberOfParticipants} Requested items
             </Text>
           </Stack>
           {bidDetails?.phase === Phase.Join ? (
-            <JoinTheGroupButton
-              isUserInBid={bidDetails.isUserInBid}
-              changeNumberOfParticipants={changeNumberOfParticipants}
-            />
+            <>
+              <JoinTheGroupButton
+                handleClickOpen={handleClickOpen}
+                changeNumberOfParticipants={changeNumberOfParticipants}
+                setIsJoinTheGroupButtomClicked={setIsJoinTheGroupButtomClicked}
+                isJoinTheGroupButtomClicked={isJoinTheGroupButtomClicked}
+              />
+              <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+              >
+                <DialogContent>
+                  <JoinTheGroupForm
+                    handleClose={handleClose}
+                    changeNumberOfParticipants={changeNumberOfParticipants}
+                    setIsJoinTheGroupButtomClicked={
+                      setIsJoinTheGroupButtomClicked
+                    }
+                  />
+                </DialogContent>
+              </Dialog>
+            </>
           ) : (
             bidDetails?.phase == Phase.Vote && (
               <Text styles={Styles.newBuyersCantJoinTheGroup}>
