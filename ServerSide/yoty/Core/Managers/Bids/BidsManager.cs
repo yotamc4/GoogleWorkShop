@@ -324,7 +324,13 @@ namespace YOTY.Service.Core.Managers.Bids
         {
             try
             {
-                List<ParticipancyDTO> participancies = await _context.Set<ParticipancyEntity>().Where(p => p.BidId == bidId).Select(p => _mapper.Map<ParticipancyDTO>(p)).ToListAsync().ConfigureAwait(false);
+                List<ParticipancyDTO> participancies = await _context.Set<ParticipancyEntity>().Where(p => p.BidId == bidId).Include(p=>p.Buyer)
+                    .Select(p => new ParticipancyDTO() {
+                        BuyerName = p.BuyerName,
+                        HasPaid = p.HasPaid,
+                        NumOfUnits = p.NumOfUnits,
+                        ProfilePicture = p.Buyer.ProfilePicture
+                    }).ToListAsync().ConfigureAwait(false);
                 return new Response<List<ParticipancyDTO>>() { DTOObject = participancies, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
             }
             catch
@@ -337,7 +343,17 @@ namespace YOTY.Service.Core.Managers.Bids
         {
             try
             {
-                List<ParticipancyFullDetailsDTO> participancies = await _context.Set<ParticipancyEntity>().Where(p => p.BidId == bidId).Select(p => _mapper.Map<ParticipancyFullDetailsDTO>(p)).ToListAsync().ConfigureAwait(false);
+                List<ParticipancyFullDetailsDTO> participancies = await _context.Set<ParticipancyEntity>().Where(p => p.BidId == bidId).Include(p => p.Buyer)
+                    .Select(p => new ParticipancyFullDetailsDTO() { 
+                        BuyerName = p.BuyerName,
+                        BuyerId = p.BuyerId,
+                        BuyerAddress = p.BuyerAddress,
+                        BuyerPhoneNumber = p.BuyerPhoneNumber,
+                        BuyerPostalCode = p.BuyerPostalCode,
+                        HasPaid = p.HasPaid,
+                        NumOfUnits = p.NumOfUnits,
+                        ProfilePicture = p.Buyer.ProfilePicture,
+                    }).ToListAsync().ConfigureAwait(false);
                 return new Response<List<ParticipancyFullDetailsDTO>>() { DTOObject = participancies, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
             }
             catch
