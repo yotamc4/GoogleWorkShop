@@ -22,7 +22,7 @@ namespace YOTY.Service.Core.Managers.Notifications
         private const string TimeToPaySubject = "Time To Pay - UniBuy";
         private const string MissingPaymentsCancellationBody = "We are sorry to inform you that the group-buy has been canceled,  <br />as not all participants completed payment in the given time frame.";
         private const string MissingPaymentsCancellationSubject = "Deal Cancellation - UniBuy";
-        private const string SupplierNotFoundCancellationBody = "We are sorry to inform you that no supplier has made a proposal to a group-buy you are participating in. <br />Better luck next time.";
+        private const string SupplierNotFoundCancellationBody = "We are sorry to inform you that no supplier has made a relevant proposal to the group-buy you have joined. <br />Better luck next time.";
         private const string SupplierNotFoundCancellationSubject = "Supplier Not Found - UniBuy";
         private const string GroupCompletionBody = "The group-buy you participated in has come to completion <br /><br />We hope you had a satisfying experience, always at your service.";
         private const string GroupCompletionSubject = "Group-Buy Completed - UniBuy";
@@ -154,9 +154,9 @@ namespace YOTY.Service.Core.Managers.Notifications
             IEnumerable<KeyValuePair<string, string>> emailNamePairs;
 
             try
-            { 
-            var supplier = _context.Bids.Where(bid => bid.Id == bidId).Include(bid => bid.ChosenProposal).ThenInclude(p => p.Supplier).Select(bid => bid.ChosenProposal.Supplier);
-            emailNamePairs = await supplier.Select(s => new KeyValuePair<string, string>(s.Email, s.Name)).ToListAsync().ConfigureAwait(false);
+            {
+                var supplier = await _context.Bids.Where(bid => bid.Id == bidId).Include(bid => bid.ChosenProposal).ThenInclude(p => p.Supplier).Select(bid => bid.ChosenProposal.Supplier).FirstOrDefaultAsync().ConfigureAwait(false);
+                emailNamePairs = new List<KeyValuePair<string, string>>() { new KeyValuePair<string, string>(supplier.Email, supplier.Name) };
             }
             catch (Exception ex)
             {

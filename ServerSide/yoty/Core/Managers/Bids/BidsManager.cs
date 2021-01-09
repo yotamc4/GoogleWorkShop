@@ -543,7 +543,7 @@ namespace YOTY.Service.Core.Managers.Bids
 
         public async Task<Response> GetProposalWithMaxVotes(string bidId)
         {
-            BidEntity bid = await _context.Bids.Where(bid => bid.Id == bidId).Include(bid => bid.CurrentProposals).FirstOrDefaultAsync().ConfigureAwait(false);
+            BidEntity bid = await _context.Bids.Where(bid => bid.Id == bidId).Include(bid => bid.CurrentProposals).ThenInclude(p => p.Supplier).FirstOrDefaultAsync().ConfigureAwait(false);
             if (bid == null)
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
@@ -551,7 +551,7 @@ namespace YOTY.Service.Core.Managers.Bids
             SupplierProposalEntity chosenProposalEntity = bid.CurrentProposals.Where(proposal => proposal.MinimumUnits <= bid.UnitsCounter && proposal.ProposedPrice <= bid.MaxPrice).Aggregate(
                 (currWinner, x) => (currWinner == null || x.Votes > currWinner.Votes ? x : currWinner));
             bid.ChosenProposal = chosenProposalEntity;
-            bid.CurrentProposals.Clear();
+            bid.PotenialSuplliersCounter = 1;
             try
             {
                 _context.Bids.Update(bid);
@@ -660,10 +660,12 @@ namespace YOTY.Service.Core.Managers.Bids
             try
             {
                 bid_ent.CurrentProposals = bid_ent.CurrentProposals.Where(proposal => proposal.MinimumUnits <= bid_ent.UnitsCounter && proposal.ProposedPrice <= bid_ent.MaxPrice).ToList();
-                if (bid_ent.CurrentProposals.Count() == 1)
+                bid_ent.PotenialSuplliersCounter = bid_ent.CurrentProposals.Count();
+                if (bid_ent.PotenialSuplliersCounter == 1)
                 {
                     bid_ent.ChosenProposal = bid_ent.CurrentProposals.First();
                 }
+
                 _context.Bids.Update(bid_ent);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
             }
