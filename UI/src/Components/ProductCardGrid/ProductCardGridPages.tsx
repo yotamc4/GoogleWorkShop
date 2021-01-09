@@ -52,15 +52,21 @@ export const ProductCardGridPages: React.FunctionComponent<ProductCardGridPagesP
       {currentBids ? (
         <ProductCardGrid {...{ bids: currentBids }} />
       ) : (
-        <Spinner />
+        <Spinner
+          styles={{
+            root: { position: "relative", top: "11rem", left: "17rem" },
+          }}
+        />
       )}
-      <Pagination
-        count={numberOfPages}
-        page={currentPageNumber}
-        onChange={(event, page) => {
-          setCurrentPageNumber(page);
-        }}
-      />
+      {currentBids && currentBids.length !== 0 && (
+        <Pagination
+          count={numberOfPages}
+          page={currentPageNumber}
+          onChange={(event, page) => {
+            setCurrentPageNumber(page);
+          }}
+        />
+      )}
     </Stack>
   );
 };
