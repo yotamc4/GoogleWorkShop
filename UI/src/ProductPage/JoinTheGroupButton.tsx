@@ -9,23 +9,20 @@ import { addBuyer, deleteBuyer } from "../Services/BidsControllerService";
 import configData from "../config.json";
 
 interface IJoinTheGroupButtonProps {
-  isUserInBid: boolean;
   changeNumberOfParticipants: (addedNumber: number) => void;
+  handleClickOpen: () => void;
+  setIsJoinTheGroupButtomClicked: React.Dispatch<React.SetStateAction<boolean>>;
+  isJoinTheGroupButtomClicked: boolean;
 }
 
 export const JoinTheGroupButton: React.FunctionComponent<IJoinTheGroupButtonProps> = ({
-  isUserInBid,
   changeNumberOfParticipants,
+  handleClickOpen,
+  setIsJoinTheGroupButtomClicked,
+  isJoinTheGroupButtomClicked,
 }) => {
   const { id } = useParams<{ id: string }>();
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
-  const [
-    isJoinTheGroupButtomClicked,
-    setIsJoinTheGroupButtomClicked,
-  ] = useState<boolean>(isUserInBid);
-  const [isErrorMessageShowed, setIsErrorMessageShowed] = useState<boolean>(
-    false
-  );
 
   const onClickConsumerJoingButton = () => {
     if (isJoinTheGroupButtomClicked) {
@@ -34,15 +31,7 @@ export const JoinTheGroupButton: React.FunctionComponent<IJoinTheGroupButtonProp
       setIsJoinTheGroupButtomClicked(false);
       changeNumberOfParticipants(-1);
     } else {
-      const bidBuyerJoinRequest: BidBuyerJoinRequest = {
-        buyerId: user.sub,
-        bidId: id,
-        items: 1,
-      };
-      const url = `/${id}/buyers`;
-      addBuyer(bidBuyerJoinRequest, url, getAccessTokenSilently);
-      setIsJoinTheGroupButtomClicked(true);
-      changeNumberOfParticipants(1);
+      handleClickOpen();
     }
   };
 
@@ -66,28 +55,15 @@ export const JoinTheGroupButton: React.FunctionComponent<IJoinTheGroupButtonProp
       />
     )
   ) : (
-    <>
-      <DefaultButton
-        text="Join the group"
-        primary
-        styles={{
-          root: { borderRadius: 25, height: "4rem" },
-          textContainer: { padding: "1rem", fontSize: "1.5rem" },
-        }}
-        height={"4rem"}
-        onClick={() => {
-          setIsErrorMessageShowed(true);
-        }}
-      />
-      {isErrorMessageShowed ? (
-        <Label
-          styles={{ root: { color: "red", padding: "0", marginLeft: "2rem" } }}
-        >
-          Only logged in users can join the group{" "}
-        </Label>
-      ) : (
-        <></>
-      )}
-    </>
+    <DefaultButton
+      text="Join the group"
+      primary
+      styles={{
+        root: { borderRadius: 25, height: "4rem" },
+        textContainer: { padding: "1rem", fontSize: "1.5rem" },
+      }}
+      height={"4rem"}
+      disabled={true}
+    />
   );
 };

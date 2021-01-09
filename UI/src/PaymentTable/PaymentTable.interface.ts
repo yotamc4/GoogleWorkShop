@@ -1,4 +1,5 @@
 export interface IParticipancyFullDetails {
+  profilePicture:string;
   buyerId: string;
   buyerName: string;
   numOfUnits: number;

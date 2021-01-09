@@ -1,5 +1,5 @@
 import { Bid, NewBidRequest } from "../Modal/GroupDetails";
-import { BidBuyerJoinRequest } from "../Modal/ProductDetails";
+import { BidBuyerJoinRequest, BidBuyerJoinRequest2 } from "../Modal/ProductDetails";
 import { IMarkPaidRequest } from "../PaymentTable/PaymentTable.interface";
 import { ISupplierProposalRequest } from "../ProductPage/Suppliers/SupplierSection.interface";
 import { IVotingRequest } from "../ProductPage/Suppliers/SupplierSurvey.interface";
@@ -136,7 +136,7 @@ export function getBidParticipationsFullDetails(
 }
 
 export function addBuyer(
-  bidBuyerJoinRequest: BidBuyerJoinRequest,
+  bidBuyerJoinRequest: BidBuyerJoinRequest2,
   url: string,
   getAccessTokenSilently?: (options?: any) => Promise<string>
 ) {

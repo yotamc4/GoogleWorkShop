@@ -12,7 +12,7 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
         [JsonProperty("bidId")]
         public string BidId { get; set; }
 
-        [JsonProperty("items")]
+        [JsonProperty("numOfUnits")]
         public int NumOfUnits { get; set; }
 
         [JsonProperty("buyerName")]

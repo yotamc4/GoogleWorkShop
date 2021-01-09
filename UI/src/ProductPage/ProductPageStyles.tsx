@@ -54,6 +54,7 @@ export const priceTextStyles: ITextStyles = {
   root: {
     color: theme.palette.red,
     fontWeight: FontWeights.semibold,
+    paddingRight: "8rem",
   },
 };
 
