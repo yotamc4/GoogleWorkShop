@@ -7,6 +7,7 @@ import {
   Image,
   Link,
   TooltipHost,
+  StackItem,
 } from "@fluentui/react";
 import { useHistory } from "react-router";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -119,7 +120,9 @@ export const Home: React.FunctionComponent = () => {
             </Stack>
             <Stack horizontal>
               <NavigationPane />
-              <ProductCardGridPages />
+              <StackItem grow>
+                <ProductCardGridPages />
+              </StackItem>
             </Stack>
           </Stack>
         </Stack>
