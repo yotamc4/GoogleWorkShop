@@ -3,7 +3,6 @@ import axios from "axios";
 import * as Styles from "./ProductPageStyles";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
-import * as MockBuyers from "../Modal/MockBuyers";
 import {
   FontIcon,
   Image,
@@ -14,7 +13,7 @@ import {
   Text,
 } from "@fluentui/react";
 import { SuppliersSection } from "./Suppliers/SupplierSection";
-import { BidDetails, Phase } from "../Modal/ProductDetails";
+import { BidDetails, Phase, PhasesName } from "../Modal/ProductDetails";
 import { useParams } from "react-router-dom";
 import { PaymentsTable } from "../PaymentTable/PaymentTable";
 import { ISupplierProposalRequest } from "./Suppliers/SupplierSection.interface";
@@ -32,6 +31,7 @@ import {
 } from "../Services/BidsControllerService";
 import { IParticipancyFullDetails } from "../PaymentTable/PaymentTable.interface";
 import { JoinTheGroupForm } from "./JoinTheGroupForm";
+import FlipCountdown from "@rumess/react-flip-countdown";
 
 export const ProductPage: React.FunctionComponent = () => {
   const {
@@ -169,6 +169,19 @@ export const ProductPage: React.FunctionComponent = () => {
             {bidDetails?.product.name}
           </Text>
           <ShareProductBar />
+          {bidDetails?.phase === Phase.Join && (
+            <Stack styles={{ root: { marginRight: "10rem" } }}>
+              <FlipCountdown
+                theme="light"
+                size="small"
+                hideYear
+                hideMonth
+                endAt={new Date(bidDetails?.expirationDate).setHours(
+                  new Date(bidDetails?.expirationDate).getHours() + 2
+                )} // year/month/day
+              />
+            </Stack>
+          )}
           <Separator />
           <Text styles={Styles.priceTextStyles}>
             Maximum Acceptable Price: {bidDetails?.maxPrice}₪
