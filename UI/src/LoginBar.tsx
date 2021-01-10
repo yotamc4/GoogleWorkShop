@@ -54,14 +54,14 @@ export default function ButtonAppBar() {
 
   return (
     <Stack>
-      <StackItem styles={StackItemStyles} align={"center"}>
+      <Stack horizontalAlign={"center"} verticalAlign={"center"}>
         <Image
           {...imagePropsLogo}
           width={200}
           height={140}
           onClick={changeHistory}
         />
-      </StackItem>
+      </Stack>
       <Stack>
         <Separator theme={theme} styles={{ content: { width: "75rem" } }} />
         {isAuthenticated ? (
