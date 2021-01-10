@@ -176,9 +176,7 @@ export const ProductPage: React.FunctionComponent = () => {
                 size="small"
                 hideYear
                 hideMonth
-                endAt={new Date(bidDetails?.expirationDate).setHours(
-                  new Date(bidDetails?.expirationDate).getHours() + 2
-                )} // year/month/day
+                endAt={new Date(bidDetails?.expirationDate)} // year/month/day
               />
             </Stack>
           )}
