@@ -64,7 +64,7 @@ export const GroupsList: React.FunctionComponent<{
     },
     {
       key: "column2",
-      name: "Expiration Date",
+      name: "Last Day To Join",
       minWidth: 120,
       maxWidth: 130,
       isSorted: true,

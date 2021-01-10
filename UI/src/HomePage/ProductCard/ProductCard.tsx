@@ -94,7 +94,7 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
                 },
               }}
             >
-              Expiration Date: {bid.expirationDate.getUTCMonth() + 1}/
+              Last Day To Join: {bid.expirationDate.getUTCMonth() + 1}/
               {bid.expirationDate.getUTCDate() + 1}/
               {bid.expirationDate.getUTCFullYear()}
             </Text>

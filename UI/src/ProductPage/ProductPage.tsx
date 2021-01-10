@@ -185,7 +185,7 @@ export const ProductPage: React.FunctionComponent = () => {
             Maximum Acceptable Price: {bidDetails?.maxPrice}₪
           </Text>
           <Text styles={Styles.subHeaderStyle}>
-            Group's expiration date: {getDate(bidDetails?.expirationDate)}
+            Last Day To Join: {getDate(bidDetails?.expirationDate)}
           </Text>
           <Text styles={Styles.subHeaderStyle} variant="large">
             Description
@@ -226,8 +226,7 @@ export const ProductPage: React.FunctionComponent = () => {
           ) : (
             bidDetails?.phase == Phase.Vote && (
               <Text styles={Styles.newBuyersCantJoinTheGroup}>
-                New Buyers can't Join the group, The Expiration date set by the
-                group's creator has reached.
+                This group is closed for joining.
               </Text>
             )
           )}
