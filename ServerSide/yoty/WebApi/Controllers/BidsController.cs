@@ -81,6 +81,7 @@ namespace YOTY.Service.WebApi.Controllers
             return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);            
         }
 
+        /*
         [HttpGet]
         [Route("{bidId}/buyers")]
         [AllowAnonymous]
@@ -94,6 +95,7 @@ namespace YOTY.Service.WebApi.Controllers
             // at the moment
             return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
         }
+        */
 
         [HttpGet]
         [Route("{bidId}/proposals")]
@@ -123,6 +125,7 @@ namespace YOTY.Service.WebApi.Controllers
             return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
         }
 
+        /*
         [HttpGet]
         [Route("{bidId}/orderDetails")]
         [Authorize(Policy = PolicyNames.SupplierPolicy)]
@@ -142,6 +145,7 @@ namespace YOTY.Service.WebApi.Controllers
             // at the moment
             return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
         }
+        */
 
         [HttpGet]
         [Route("{bidId}/participants")]
@@ -225,6 +229,7 @@ namespace YOTY.Service.WebApi.Controllers
         }
 
         // consider to movee it to buyer controller
+        /*
         [HttpPut]
         [Authorize(Policy = PolicyNames.BuyerPolicy)]
         public async Task<ActionResult<BidDTO>> EditBid(EditBidRequest editBidRequest)
@@ -263,6 +268,7 @@ namespace YOTY.Service.WebApi.Controllers
             }
             return this.StatusCode(StatusCodes.Status304NotModified, response.SuccessOrFailureMessage);
         }
+        */
 
         [HttpDelete]
         [Route("{bidId}/buyers")]
@@ -343,6 +349,7 @@ namespace YOTY.Service.WebApi.Controllers
             return this.StatusCode(StatusCodes.Status405MethodNotAllowed, response.SuccessOrFailureMessage);
         }
 
+        /*
         [HttpPost]
         [Route("{bidId}/cancel")]
         [Authorize(Policy = PolicyNames.SupplierPolicy)]
@@ -410,5 +417,6 @@ namespace YOTY.Service.WebApi.Controllers
         {
             return "Hi";
         }
+        */
     }
 }

@@ -66,6 +66,7 @@ namespace YOTY.Service.WebApi.Controllers
             return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
         }
 
+        /*
         [HttpPost]
         [Route("details")]
         [Authorize(Policy = PolicyNames.SupplierPolicy)]
@@ -83,5 +84,6 @@ namespace YOTY.Service.WebApi.Controllers
             // at the moment
             return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
         }
+        */
     }
 }
