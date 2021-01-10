@@ -68,6 +68,8 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
     SetAllRequiredFieldsAreFulfilled,
   ] = React.useState<boolean>(false);
 
+  const [inputsAreValid, setInputsAreValid] = React.useState<boolean>(true);
+
   const [requestInProcess, setRequestInProcess] = React.useState<boolean>(
     false
   );
@@ -117,6 +119,7 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
   const onSubmitForm = async (): Promise<void> => {
     try {
       setRequestInProcess(true);
+      bidRequest.expirationDate.setHours(0, 0, 0, 0);
       await submitNewGroupForm(bidRequest, getAccessTokenSilently);
       urlHistory.push(`/`);
     } catch {
@@ -158,6 +161,15 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           onChange={(event, newValue) => {
             onTextFieldChange(setProductDetails, event, newValue);
           }}
+          onGetErrorMessage={(value) => {
+            if (value.length > 70) {
+              setInputsAreValid(false);
+              return "Product's name can not be longer than 70 chars";
+            } else {
+              setInputsAreValid(true);
+              return "";
+            }
+          }}
           required
         />
         <Dropdown
@@ -198,11 +210,15 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
             onTextFieldChange(setBidRequest, event, newValue)
           }
           label="Maximum price"
-          onGetErrorMessage={(value) =>
-            value === "" || value.match(/^[0-9]+$/) != null
-              ? ""
-              : "Only numbers allowed"
-          }
+          onGetErrorMessage={(value) => {
+            if (value && value.match(/^[0-9]+$/) === null) {
+              setInputsAreValid(false);
+              return "Only numbers allowed";
+            } else {
+              setInputsAreValid(true);
+              return "";
+            }
+          }}
           styles={{ root: { width: FormsStyles.inputWidth } }}
           suffix="₪"
           required
@@ -233,6 +249,15 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           multiline
           autoAdjustHeight
           styles={{ root: { width: FormsStyles.inputWidth } }}
+          onGetErrorMessage={(value) => {
+            if (value.length > 1000) {
+              setInputsAreValid(false);
+              return "Description can not be longer than 1000 chars";
+            } else {
+              setInputsAreValid(true);
+              return "";
+            }
+          }}
           required
         />
         <TextField
@@ -261,7 +286,7 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
               onClick={() => {
                 onSubmitForm();
               }}
-              disabled={!allRequiredFieldsAreFulfilled}
+              disabled={!allRequiredFieldsAreFulfilled || !inputsAreValid}
             />
           </Stack>
         </Stack>
