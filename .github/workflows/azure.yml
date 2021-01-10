@@ -40,6 +40,7 @@ jobs:
       run: |
         # Build and test the project, then
         # deploy to Azure Web App.
+        CI=false 
         yarn install
         yarn run build --if-present
         yarn run test --if-present
