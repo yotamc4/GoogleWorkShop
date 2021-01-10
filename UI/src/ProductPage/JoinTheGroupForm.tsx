@@ -2,8 +2,12 @@ import * as React from "react";
 import { Stack } from "office-ui-fabric-react";
 import {
   DefaultButton,
+  MessageBar,
+  MessageBarType,
   PrimaryButton,
   Separator,
+  Spinner,
+  SpinnerSize,
   Text,
   TextField,
 } from "@fluentui/react";
@@ -20,6 +24,7 @@ import {
   BidBuyerJoinRequest,
   BidBuyerJoinRequest2,
 } from "../Modal/ProductDetails";
+import { horizontalGapStackToken } from "../FormStyles/FormsStyles";
 
 export interface IJoinTheGroupFormProps {
   handleClose: () => void;
@@ -32,8 +37,10 @@ export const JoinTheGroupForm: React.FunctionComponent<IJoinTheGroupFormProps> =
   changeNumberOfParticipants,
   setIsJoinTheGroupButtonClicked: setIsJoinTheGroupButtonClicked,
 }) => {
+  const [isDataLoaded, setIsDataLoaded] = React.useState<boolean>(false);
   const { user, getAccessTokenSilently } = useAuth0();
   const { id } = useParams<{ id: string }>();
+  const [errorMessage, setErrorMessage] = React.useState<string>();
   const [inputsAreValid, setInputsAreValid] = React.useState<boolean>(true);
   const [formInputs, setFormInputs] = React.useReducer<
     (
@@ -56,18 +63,27 @@ export const JoinTheGroupForm: React.FunctionComponent<IJoinTheGroupFormProps> =
     }
   );
 
-  const onClickSend = () => {
-    const bidBuyerJoinRequest: BidBuyerJoinRequest2 = {
-      buyerId: user.sub,
-      bidId: id,
-      buyerName: user.name,
-      ...formInputs,
-    };
-    const url = `/${id}/buyers`;
-    addBuyer(bidBuyerJoinRequest, url, getAccessTokenSilently);
-    setIsJoinTheGroupButtonClicked(true);
-    handleClose();
-    changeNumberOfParticipants(1);
+  const onClickSend = async () => {
+    setIsDataLoaded(true);
+    try {
+      const bidBuyerJoinRequest: BidBuyerJoinRequest2 = {
+        buyerId: user.sub,
+        bidId: id,
+        buyerName: user.name,
+        ...formInputs,
+      };
+      const url = `/${id}/buyers`;
+      await addBuyer(bidBuyerJoinRequest, url, getAccessTokenSilently);
+      setIsJoinTheGroupButtonClicked(true);
+      handleClose();
+      changeNumberOfParticipants(1);
+    } catch {
+      setIsJoinTheGroupButtonClicked(false);
+      setErrorMessage(
+        "An error occurred while trying to join the group. Please try again later."
+      );
+    }
+    setIsDataLoaded(false);
   };
 
   const onTextFieldChange = (
@@ -105,11 +121,19 @@ export const JoinTheGroupForm: React.FunctionComponent<IJoinTheGroupFormProps> =
       >
         Join the group
       </Text>
+      <Separator styles={{ root: { width: "100%" } }} />
+      {errorMessage && (
+        <MessageBar
+          messageBarType={MessageBarType.error}
+          onDismiss={() => setErrorMessage("")}
+        >
+          {errorMessage}
+        </MessageBar>
+      )}
       <Stack
         styles={{ root: { width: "80%" } }}
         tokens={FormsStyles.verticalGapStackTokens}
       >
-        <Separator styles={{ root: { width: "100%" } }} />
         <TextField
           id="numOfUnits"
           label="Units"
@@ -162,18 +186,21 @@ export const JoinTheGroupForm: React.FunctionComponent<IJoinTheGroupFormProps> =
             text="Cancel"
             allowDisabledFocus
           />
-          <PrimaryButton
-            onClick={onClickSend}
-            text="Send"
-            disabled={
-              !(
-                formInputs.numOfUnits &&
-                formInputs.buyerAddress &&
-                formInputs.buyerPhoneNumber &&
-                formInputs.buyerPostalCode
-              ) || !inputsAreValid
-            }
-          />
+          <Stack horizontal tokens={horizontalGapStackToken}>
+            {isDataLoaded && <Spinner size={SpinnerSize.small} />}
+            <PrimaryButton
+              onClick={onClickSend}
+              text="Send"
+              disabled={
+                !(
+                  formInputs.numOfUnits &&
+                  formInputs.buyerAddress &&
+                  formInputs.buyerPhoneNumber &&
+                  formInputs.buyerPostalCode
+                ) || !inputsAreValid
+              }
+            />
+          </Stack>
         </Stack>
       </Stack>
     </Stack>
