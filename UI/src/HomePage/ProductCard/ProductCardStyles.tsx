@@ -29,6 +29,7 @@ export const amoutTextStyles: ITextStyles = {
 
 export const nameOfProductTextStyles: ITextStyles = {
   root: {
+    minHeight: "3rem",
     color: "#333333",
     fontWeight: FontWeights.semibold,
   },
@@ -36,6 +37,7 @@ export const nameOfProductTextStyles: ITextStyles = {
 
 export const priceTextStyles: ITextStyles = {
   root: {
+    minHeight: "3rem",
     color: theme.palette.red,
     fontWeight: FontWeights.semibold,
   },
@@ -44,7 +46,7 @@ export const priceTextStyles: ITextStyles = {
 export const descriptionTextStyles: ITextStyles = {
   root: {
     color: "#666666",
-    minHeight: "7rem",
+    minHeight: "9rem",
   },
 };
 
