@@ -15,6 +15,8 @@ import {
   PersonaSize,
   PrimaryButton,
   SelectionMode,
+  Spinner,
+  SpinnerSize,
   Text,
 } from "@fluentui/react";
 import { Buyer } from "../Modal/Buyers";
@@ -25,6 +27,7 @@ import {
 import { useParams } from "react-router";
 import { useAuth0 } from "@auth0/auth0-react";
 import { markPayment } from "../Services/BidsControllerService";
+import { horizontalGapStackToken } from "../FormStyles/FormsStyles";
 
 const iconClass = mergeStyles({
   height: 30,
@@ -50,12 +53,17 @@ export const PaymentsTable: React.FunctionComponent<IPaymentsTableProps> = ({
   isChosenSupplier,
   participancyList,
 }) => {
+  const [
+    isEditPaymentStatusButtonClicked,
+    setIsEditPaymentStatusButtonClicked,
+  ] = React.useState<boolean>(false);
   const { id } = useParams<{ id: string }>();
   const { getAccessTokenSilently } = useAuth0();
   const [paymentParticipancyList, setPaymentParticipancyList] = React.useState<
     Partial<IParticipancyFullDetails>[]
   >(participancyList);
   const onClickEditPaymentStatusButton = (buyerId: string) => {
+    setIsEditPaymentStatusButtonClicked(true);
     const newPaymentParticipancyList = paymentParticipancyList.map(
       (participancyFullDetails) => {
         if (participancyFullDetails.buyerId === buyerId) {
@@ -67,12 +75,14 @@ export const PaymentsTable: React.FunctionComponent<IPaymentsTableProps> = ({
           };
           markPayment(markPaidRequest, url, getAccessTokenSilently);
           participancyFullDetails.hasPaid = !participancyFullDetails.hasPaid;
+
           return participancyFullDetails;
         } else {
           return participancyFullDetails;
         }
       }
     );
+    setIsEditPaymentStatusButtonClicked(false);
     setPaymentParticipancyList(newPaymentParticipancyList);
   };
   const fullDetailsColumns: IColumn[] = [
@@ -126,12 +136,17 @@ export const PaymentsTable: React.FunctionComponent<IPaymentsTableProps> = ({
       data: "string",
       onRender: (bidParticipant: Partial<IParticipancyFullDetails>) => {
         return (
-          <DefaultButton
-            onClick={() =>
-              onClickEditPaymentStatusButton(bidParticipant.buyerId as string)
-            }
-            text={bidParticipant.hasPaid ? "Canceled" : "Recieved"}
-          ></DefaultButton>
+          <Stack horizontal tokens={horizontalGapStackToken}>
+            <DefaultButton
+              onClick={() =>
+                onClickEditPaymentStatusButton(bidParticipant.buyerId as string)
+              }
+              text={bidParticipant.hasPaid ? "Canceled" : "Recieved"}
+            ></DefaultButton>
+            {isEditPaymentStatusButtonClicked && (
+              <Spinner size={SpinnerSize.small} />
+            )}
+          </Stack>
         );
       },
       isPadded: true,
