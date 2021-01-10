@@ -2,8 +2,12 @@ import * as React from "react";
 import { Stack } from "office-ui-fabric-react";
 import {
   DefaultButton,
+  MessageBar,
+  MessageBarType,
   PrimaryButton,
   Separator,
+  Spinner,
+  SpinnerSize,
   Text,
   TextField,
 } from "@fluentui/react";
@@ -14,11 +18,14 @@ import { useParams } from "react-router";
 import { ISupplierProposalRequest } from "./SupplierSection.interface";
 import { useAuth0 } from "@auth0/auth0-react";
 import { addSupplierProposal } from "../../Services/BidsControllerService";
+import { horizontalGapStackToken } from "../../FormStyles/FormsStyles";
 
 export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalFormProps> = ({
   addPropposalToSupplierList,
   handleClose,
 }) => {
+  const [isDataLoaded, setIsDataLoaded] = React.useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = React.useState<string>();
   const { user, getAccessTokenSilently } = useAuth0();
   const { id } = useParams<{ id: string }>();
   const [formInputs, setFormInputs] = React.useReducer<
@@ -50,30 +57,37 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
   };
 
   //TODO: fix when the input isn't correct (wrong value or hasn't set)
-  const onClickSend = () => {
-    const url = `/${id}/proposals`;
-    const date = new Date();
-    if (!(!formInputs.proposedPrice && !formInputs.minimumUnits)) {
-      addPropposalToSupplierList({
-        publishedTime: String(date),
-        bidId: id,
-        supplierId: user.sub,
-        supplierName: user.name,
-        ...formInputs,
-      });
-
-      addSupplierProposal(
-        {
-          publishedTime: date,
+  const onClickSend = async () => {
+    setIsDataLoaded(true);
+    try {
+      const url = `/${id}/proposals`;
+      const date = new Date();
+      if (!(!formInputs.proposedPrice && !formInputs.minimumUnits)) {
+        await addSupplierProposal(
+          {
+            publishedTime: date,
+            bidId: id,
+            supplierId: user.sub,
+            supplierName: user.name,
+            ...formInputs,
+          },
+          url,
+          getAccessTokenSilently
+        );
+        addPropposalToSupplierList({
+          publishedTime: String(date),
           bidId: id,
           supplierId: user.sub,
           supplierName: user.name,
           ...formInputs,
-        },
-        url,
-        getAccessTokenSilently
+        });
+      }
+    } catch {
+      setErrorMessage(
+        "An error occurred while trying to add new proposal. Please try again later."
       );
     }
+    setIsDataLoaded(false);
   };
 
   const onTextFieldChange = (
@@ -104,6 +118,14 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
       >
         New Supplier proposal for a product
       </Text>
+      {errorMessage && (
+        <MessageBar
+          messageBarType={MessageBarType.error}
+          onDismiss={() => setErrorMessage("")}
+        >
+          {errorMessage}
+        </MessageBar>
+      )}
       <Stack
         styles={{ root: { width: "80%" } }}
         tokens={FormsStyles.verticalGapStackTokens}
@@ -154,7 +176,14 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
             text="Cancel"
             allowDisabledFocus
           />
-          <PrimaryButton onClick={onClickSend} text="Send" allowDisabledFocus />
+          <Stack horizontal tokens={horizontalGapStackToken}>
+            {isDataLoaded && <Spinner size={SpinnerSize.small} />}
+            <PrimaryButton
+              onClick={onClickSend}
+              text="Send"
+              allowDisabledFocus
+            />
+          </Stack>
         </Stack>
       </Stack>
     </Stack>

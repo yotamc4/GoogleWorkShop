@@ -759,6 +759,7 @@ namespace YOTY.Service.Core.Managers.Bids
         {
             //TODO is this the time we want? (or global).
             bidEntity.CreationDate = DateTime.Now;
+            bidEntity.ExpirationDate = bidEntity.ExpirationDate.Date.AddHours(23).AddMinutes(59);
             bidEntity.Id = Guid.NewGuid().ToString();
             bidEntity.UnitsCounter = 0;
             bidEntity.PotenialSuplliersCounter = 0;

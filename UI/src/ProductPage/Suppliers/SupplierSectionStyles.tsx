@@ -21,7 +21,9 @@ export const addIcon: IIconProps = { iconName: "Add" };
 
 export const deleteIcon: IIconProps = { iconName: "Delete" };
 
-export const stackStyles: Partial<IStackStyles> = { root: { width: "68rem" } };
+export const stackStyles: Partial<IStackStyles> = {
+  root: { width: "68rem", paddingBottom: "4rem" },
+};
 
 export const detailsListStyles: Partial<IDetailsColumnStyles> = {
   root: { textAlign: "right" },

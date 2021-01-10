@@ -2,7 +2,14 @@ import * as React from "react";
 import { DetailsList, IColumn } from "office-ui-fabric-react/lib/DetailsList";
 import { Stack, Text } from "office-ui-fabric-react";
 import { ActionButton } from "office-ui-fabric-react";
-import { SelectionMode, ProgressIndicator } from "@fluentui/react";
+import {
+  SelectionMode,
+  ProgressIndicator,
+  Spinner,
+  SpinnerSize,
+  MessageBar,
+  MessageBarType,
+} from "@fluentui/react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import { SupplierProposalForm } from "./SupplierProposalForm";
@@ -21,6 +28,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { deleteSupplierProposal } from "../../Services/BidsControllerService";
 import configData from "../../config.json";
 import { textStyles } from "./SupplierSurveyStyles";
+import { horizontalGapStackToken } from "../../FormStyles/FormsStyles";
 
 export interface ISuppliersListState {
   items: ISupplierProposalRequest[];
@@ -95,6 +103,10 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
   isUserInBid,
   hasVoted,
 }) => {
+  const [isDeleteButtonClicked, setIsDeleteButtonClicked] = React.useState<
+    boolean
+  >(false);
+  const [errorMessage, setErrorMessage] = React.useState<string>();
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
   const { id } = useParams<{ id: string }>();
   const [open, setOpen] = React.useState(false);
@@ -218,14 +230,22 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
     setIsAddPropposalToSupplierListClicked(true);
   };
 
-  const deletePropposalFromSupplierList = React.useCallback(() => {
-    const url = `/${id}/proposals`;
-    deleteSupplierProposal(url, getAccessTokenSilently);
-    const newListItems = listItems?.filter(
-      (proposal) => proposal.supplierId != user.sub
-    );
-    setListItems(newListItems);
-    setIsAddPropposalToSupplierListClicked(false);
+  const deletePropposalFromSupplierList = React.useCallback(async () => {
+    setIsDeleteButtonClicked(true);
+    try {
+      const url = `/${id}/proposals`;
+      await deleteSupplierProposal(url, getAccessTokenSilently);
+      const newListItems = listItems?.filter(
+        (proposal) => proposal.supplierId != user.sub
+      );
+      setListItems(newListItems);
+      setIsAddPropposalToSupplierListClicked(false);
+    } catch {
+      setErrorMessage(
+        "An error occurred while trying to delete your proposal. Please try again later."
+      );
+    }
+    setIsDeleteButtonClicked(false);
   }, [listItems, user, getAccessTokenSilently]);
 
   switch (bidPhase) {
@@ -233,7 +253,7 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
       return (
         <Stack styles={stackStyles}>
           {isAuthenticated && user[configData.roleIdentifier] === "Supplier" ? (
-            <Stack horizontal>
+            <Stack horizontal tokens={horizontalGapStackToken}>
               <ActionButton
                 iconProps={
                   isAddPropposalToSupplierListClicked ? deleteIcon : addIcon
@@ -252,6 +272,16 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
                     : handleClickOpen
                 }
               ></ActionButton>
+              {isDeleteButtonClicked && <Spinner size={SpinnerSize.small} />}
+              {errorMessage && (
+                <MessageBar
+                  styles={{ root: { width: "", height: "2rem" } }}
+                  messageBarType={MessageBarType.error}
+                  onDismiss={() => setErrorMessage("")}
+                >
+                  {errorMessage}
+                </MessageBar>
+              )}
             </Stack>
           ) : (
             <></>
@@ -284,7 +314,7 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
       );
     case Phase.Vote:
       return (
-        <Stack>
+        <Stack styles={{ root: { paddingBottom: "4rem" } }}>
           {isUserInBid && user[configData.roleIdentifier] === "Consumer" ? (
             <SuppliersSurvey
               supliersNames={listItems?.map((supplierProposal) => {

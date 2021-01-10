@@ -32,6 +32,7 @@ import {
 import { IParticipancyFullDetails } from "../PaymentTable/PaymentTable.interface";
 import { JoinTheGroupForm } from "./JoinTheGroupForm";
 import FlipCountdown from "@rumess/react-flip-countdown";
+import { CompletedGroups } from "./CompletedGroups";
 
 export const ProductPage: React.FunctionComponent = () => {
   const {
@@ -143,6 +144,11 @@ export const ProductPage: React.FunctionComponent = () => {
     <Stack horizontalAlign={"center"}>
       <Spinner size={SpinnerSize.large} />
     </Stack>
+  ) : (bidDetails?.phase as Phase) > Phase.Payment ? (
+    <Stack horizontalAlign={"center"}>
+      <ButtonAppBar />
+      <CompletedGroups phase={bidDetails?.phase as Phase} />
+    </Stack>
   ) : (
     <Stack horizontalAlign={"center"}>
       <ButtonAppBar />
@@ -185,7 +191,7 @@ export const ProductPage: React.FunctionComponent = () => {
             Maximum Acceptable Price: {bidDetails?.maxPrice}₪
           </Text>
           <Text styles={Styles.subHeaderStyle}>
-            Group's expiration date: {getDate(bidDetails?.expirationDate)}
+            Last Day To Join: {getDate(bidDetails?.expirationDate)}
           </Text>
           <Text styles={Styles.subHeaderStyle} variant="large">
             Description
@@ -226,8 +232,7 @@ export const ProductPage: React.FunctionComponent = () => {
           ) : (
             bidDetails?.phase == Phase.Vote && (
               <Text styles={Styles.newBuyersCantJoinTheGroup}>
-                New Buyers can't Join the group, The Expiration date set by the
-                group's creator has reached.
+                This group is closed for joining.
               </Text>
             )
           )}
