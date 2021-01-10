@@ -200,17 +200,12 @@ export const ProductPage: React.FunctionComponent = () => {
                 setIsJoinTheGroupButtomClicked={setIsJoinTheGroupButtomClicked}
                 isJoinTheGroupButtomClicked={isJoinTheGroupButtomClicked}
               />
-              <Dialog
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-              >
-                <DialogContent>
+              <Dialog open={open} onClose={handleClose}>
+                <DialogContent style={{ minWidth: "30rem" }}>
                   <JoinTheGroupForm
                     handleClose={handleClose}
                     changeNumberOfParticipants={changeNumberOfParticipants}
-                    setIsJoinTheGroupButtomClicked={
+                    setIsJoinTheGroupButtonClicked={
                       setIsJoinTheGroupButtomClicked
                     }
                   />
