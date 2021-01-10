@@ -18,7 +18,7 @@ export const ShareProductBar: React.FunctionComponent = () => {
   const quote: string = "Take a look on this cool group-buying group at UniBuy";
   return (
     <Stack horizontal tokens={{ childrenGap: "0.5rem" }}>
-      <FacebookShareButton url={"www.amazon.co.il"} quote={quote}>
+      <FacebookShareButton url={productUrl} quote={quote}>
         <FacebookIcon size={32} round={true} />
       </FacebookShareButton>
       <WhatsappShareButton url={productUrl} title={quote}>

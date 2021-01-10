@@ -20,7 +20,6 @@ export const defaultButtonStyles: IButtonStyles = {
   root: {
     borderRadius: 25,
     height: "2.5rem",
-    marginRight: "15rem",
     minWidth: "12rem",
   },
   textContainer: {
