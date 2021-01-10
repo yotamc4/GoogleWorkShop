@@ -9,13 +9,7 @@ export const ProductCardGrid: React.FunctionComponent<ProductCardGridProps> = ({
 }) => {
   if (bids.length === 0) {
     return (
-      <Stack
-        verticalAlign="center"
-        horizontalAlign="center"
-        styles={{
-          root: { position: "relative", top: "11rem", left: "17rem" },
-        }}
-      >
+      <Stack verticalAlign="center" horizontalAlign="center">
         No Groups have found.
       </Stack>
     );
