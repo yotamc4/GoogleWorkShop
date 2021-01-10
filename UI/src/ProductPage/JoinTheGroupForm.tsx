@@ -81,11 +81,14 @@ export const JoinTheGroupForm: React.FunctionComponent<IJoinTheGroupFormProps> =
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ): void => {
-    if ((event.target as HTMLInputElement).id === "numOfUnits") {
+    if ((event.target as HTMLInputElement).id !== "buyerAddress") {
       setFormInputs({
         [(event.target as HTMLInputElement).id]: Number(newValue),
       });
-    } else if (!isNaN(Number(newValue))) {
+    } else if (
+      (event.target as HTMLInputElement).id === "buyerAddress" &&
+      isNaN(+Number(newValue))
+    ) {
       setFormInputs({
         [(event.target as HTMLInputElement).id]: newValue,
       });
