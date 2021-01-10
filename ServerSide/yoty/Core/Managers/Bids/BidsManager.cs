@@ -567,7 +567,7 @@ namespace YOTY.Service.Core.Managers.Bids
             SupplierProposalEntity chosenProposalEntity = bid.CurrentProposals.Where(proposal => proposal.MinimumUnits <= bid.UnitsCounter && proposal.ProposedPrice <= bid.MaxPrice).Aggregate(
                 (currWinner, x) => (currWinner == null || x.Votes > currWinner.Votes ? x : currWinner));
             bid.ChosenProposal = chosenProposalEntity;
-            bid.CurrentProposals.Clear();
+            bid.PotenialSuplliersCounter = 1;
             try
             {
                 _context.Bids.Update(bid);
@@ -605,7 +605,7 @@ namespace YOTY.Service.Core.Managers.Bids
 
         public async Task<Response<BidPhase>> TryUpdatePhase(string bidId)
         {
-            BidEntity bid_ent = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.CurrentProposals).FirstOrDefaultAsync().ConfigureAwait(false);
+            BidEntity bid_ent = await _context.Bids.Where(b => b.Id == bidId).Include(b => b.CurrentProposals).Include(b => b.CurrentParticipancies).FirstOrDefaultAsync().ConfigureAwait(false);
 
             if (bid_ent == null)
             {
@@ -640,6 +640,19 @@ namespace YOTY.Service.Core.Managers.Bids
                         newPhase = BidPhase.Payment;
                     }
                     break;
+                case BidPhase.Payment:
+                    if (bid_ent.ExpirationDate.AddDays(5) <= DateTime.Now)
+                    {
+                        if (bid_ent.CurrentParticipancies.Any(p => p.HasPaid == false))
+                        {
+                            newPhase = BidPhase.CancelledNotEnoughBuyersPayed;
+                        }
+                        else
+                        {
+                            newPhase = BidPhase.Completed;
+                        }
+                    }
+                    break;
                 // All others should update synchronously (with events)
                 default:
                     break;
@@ -663,10 +676,12 @@ namespace YOTY.Service.Core.Managers.Bids
             try
             {
                 bid_ent.CurrentProposals = bid_ent.CurrentProposals.Where(proposal => proposal.MinimumUnits <= bid_ent.UnitsCounter && proposal.ProposedPrice <= bid_ent.MaxPrice).ToList();
-                if (bid_ent.CurrentProposals.Count() == 1)
+                bid_ent.PotenialSuplliersCounter = bid_ent.CurrentProposals.Count();
+                if (bid_ent.PotenialSuplliersCounter == 1)
                 {
                     bid_ent.ChosenProposal = bid_ent.CurrentProposals.First();
                 }
+
                 _context.Bids.Update(bid_ent);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
             }
@@ -677,14 +692,14 @@ namespace YOTY.Service.Core.Managers.Bids
             return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
         }
 
-        public async Task<Response> CancelBid(CancellationRequest cancellationRequest)
+        public async Task<Response> CancelBid(string bidId)
         {
-            return await this.ModifyBidPhase(cancellationRequest.BidId, BidPhase.CancelledNotEnoughBuyersPayed).ConfigureAwait(false);
+            return await this.ModifyBidPhase(bidId, BidPhase.CancelledNotEnoughBuyersPayed).ConfigureAwait(false);
         }
 
-        public async Task<Response> CompleteBid(CompletionRequest completionRequest)
+        public async Task<Response> CompleteBid(string bidId)
         {
-            return await this.ModifyBidPhase(completionRequest.BidId, BidPhase.Completed).ConfigureAwait(false);
+            return await this.ModifyBidPhase(bidId, BidPhase.Completed).ConfigureAwait(false);
         }
 
         private async Task<Response> ModifyBidPhase(string bidId, BidPhase newPhase)
