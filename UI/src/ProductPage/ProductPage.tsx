@@ -1,7 +1,8 @@
 import React, { useCallback, useMemo, useState } from "react";
 import axios from "axios";
 import * as Styles from "./ProductPageStyles";
-import * as MockBuyers from "../Modal/MockBuyers";
+import Dialog from "@material-ui/core/Dialog";
+import DialogContent from "@material-ui/core/DialogContent";
 import {
   FontIcon,
   Image,
@@ -12,7 +13,7 @@ import {
   Text,
 } from "@fluentui/react";
 import { SuppliersSection } from "./Suppliers/SupplierSection";
-import { BidDetails, Phase } from "../Modal/ProductDetails";
+import { BidDetails, Phase, PhasesName } from "../Modal/ProductDetails";
 import { useParams } from "react-router-dom";
 import { PaymentsTable } from "../PaymentTable/PaymentTable";
 import { ISupplierProposalRequest } from "./Suppliers/SupplierSection.interface";
@@ -22,6 +23,15 @@ import { JoinTheGroupButton } from "./JoinTheGroupButton";
 import configData from "../config.json";
 import { getDate } from "./utils";
 import ButtonAppBar from "../LoginBar";
+import {
+  getBidParticipations,
+  getBidParticipationsFullDetails,
+  getBidSpecific,
+  getProposals,
+} from "../Services/BidsControllerService";
+import { IParticipancyFullDetails } from "../PaymentTable/PaymentTable.interface";
+import { JoinTheGroupForm } from "./JoinTheGroupForm";
+import FlipCountdown from "@rumess/react-flip-countdown";
 
 export const ProductPage: React.FunctionComponent = () => {
   const {
@@ -40,46 +50,82 @@ export const ProductPage: React.FunctionComponent = () => {
   const [bidDetails, setBidDetails] = useState<BidDetails | undefined>(
     undefined
   );
+  const [paymentList, setPaymentList] = useState<
+    Partial<IParticipancyFullDetails>[] | undefined
+  >(undefined);
   const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
+  const [isChosenSupplier, setIsChosenSupplier] = useState<boolean>(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const [
+    isJoinTheGroupButtomClicked,
+    setIsJoinTheGroupButtomClicked,
+  ] = useState<boolean>(bidDetails?.isUserInBid as boolean);
+
+  const [open, setOpen] = React.useState(false);
   const { id } = useParams<{ id: string }>();
   React.useEffect(() => {
     const getBid = async () => {
       let role: string;
-      let config;
       if (isAuthenticated) {
-        const accessToken = await getAccessTokenSilently();
-        config = {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        };
         role = user[configData.roleIdentifier];
       } else {
         role = "Anonymous";
-        config = {
-          headers: { Authorization: `Bearer` },
-        };
       }
-      axios
-        .all([
-          axios.get(
-            `https://localhost:5001/api/v1/bids/${id}?role=${role}&id=${user?.sub}`,
-            config
-          ),
-          axios.get(`https://localhost:5001/api/v1/bids/${id}/proposals`),
-        ])
-        .then(
-          axios.spread(
-            (bidDetailsResponse, supplierProposalRequestListResponse) => {
-              setBidDetails(bidDetailsResponse.data as BidDetails);
+      const [
+        bidDetailsResponse,
+        supplierProposalRequestListResponse,
+      ] = await Promise.all([
+        getBidSpecific(
+          `/${id}?role=${role}&id=${user?.sub}`,
+          isAuthenticated,
+          getAccessTokenSilently
+        ),
+        getProposals(
+          `/${id}/proposals`,
+          isAuthenticated,
+          getAccessTokenSilently
+        ),
+      ]);
+      const bidDetailsResponseJson: BidDetails = await bidDetailsResponse.json();
+      const supplierProposalRequestListResponseJson: ISupplierProposalRequest[] = await supplierProposalRequestListResponse.json();
 
-              setnumberOfParticipants(bidDetailsResponse.data.unitsCounter);
-              setsupplierProposalRequestList(
-                supplierProposalRequestListResponse.data as ISupplierProposalRequest[]
-              );
-              setIsDataLoaded(true);
-            }
-          )
+      setBidDetails(bidDetailsResponseJson);
+      setnumberOfParticipants(bidDetailsResponseJson.unitsCounter);
+      setsupplierProposalRequestList(supplierProposalRequestListResponseJson);
+
+      if (
+        bidDetailsResponseJson.phase === Phase.Payment &&
+        bidDetailsResponseJson.isUserInBid &&
+        user[configData.roleIdentifier] === "Supplier"
+      ) {
+        const response = await getBidParticipations(
+          `/${id}/participantsFullDetails`,
+          isAuthenticated,
+          getAccessTokenSilently
         );
+        const bidParticipationsListJson: Partial<
+          IParticipancyFullDetails
+        >[] = await response.json();
+        setPaymentList(bidParticipationsListJson);
+        setIsChosenSupplier(true);
+      } else if (bidDetailsResponseJson.phase === Phase.Payment) {
+        const response = await getBidParticipationsFullDetails(
+          `/${id}/participants`,
+          isAuthenticated,
+          getAccessTokenSilently
+        );
+        const bidParticipationsListJson: Partial<
+          IParticipancyFullDetails
+        >[] = await response.json();
+        setPaymentList(bidParticipationsListJson);
+      }
+      setIsDataLoaded(true);
     };
     if (!isLoading) {
       getBid();
@@ -123,6 +169,17 @@ export const ProductPage: React.FunctionComponent = () => {
             {bidDetails?.product.name}
           </Text>
           <ShareProductBar />
+          {bidDetails?.phase === Phase.Join && (
+            <Stack styles={{ root: { marginRight: "10rem" } }}>
+              <FlipCountdown
+                theme="light"
+                size="small"
+                hideYear
+                hideMonth
+                endAt={new Date(bidDetails?.expirationDate)} // year/month/day
+              />
+            </Stack>
+          )}
           <Separator />
           <Text styles={Styles.priceTextStyles}>
             Maximum Acceptable Price: {bidDetails?.maxPrice}₪
@@ -143,33 +200,48 @@ export const ProductPage: React.FunctionComponent = () => {
               className={Styles.classNames.greenYellow}
             />
             <Text styles={Styles.amoutTextStyles}>
-              {numberOfParticipants} people have joined to the group
+              {numberOfParticipants} Requested items
             </Text>
           </Stack>
           {bidDetails?.phase === Phase.Join ? (
-            <JoinTheGroupButton
-              isUserInBid={bidDetails.isUserInBid}
-              changeNumberOfParticipants={changeNumberOfParticipants}
-            />
+            <>
+              <JoinTheGroupButton
+                handleClickOpen={handleClickOpen}
+                changeNumberOfParticipants={changeNumberOfParticipants}
+                setIsJoinTheGroupButtomClicked={setIsJoinTheGroupButtomClicked}
+                isJoinTheGroupButtomClicked={isJoinTheGroupButtomClicked}
+              />
+              <Dialog open={open} onClose={handleClose}>
+                <DialogContent style={{ minWidth: "30rem" }}>
+                  <JoinTheGroupForm
+                    handleClose={handleClose}
+                    changeNumberOfParticipants={changeNumberOfParticipants}
+                    setIsJoinTheGroupButtonClicked={
+                      setIsJoinTheGroupButtomClicked
+                    }
+                  />
+                </DialogContent>
+              </Dialog>
+            </>
           ) : (
-            <Text styles={Styles.newBuyersCantJoinTheGroup}>
-              New Buyers can't Join the group, The Expiration date set by the
-              group's creator has reached.
-            </Text>
+            bidDetails?.phase == Phase.Vote && (
+              <Text styles={Styles.newBuyersCantJoinTheGroup}>
+                New Buyers can't Join the group, The Expiration date set by the
+                group's creator has reached.
+              </Text>
+            )
           )}
           <Separator />
         </Stack>
       </Stack>
       <Stack horizontalAlign="center">
         <Separator />
-        {false ? (
+        {bidDetails?.phase == Phase.Payment ? (
           <PaymentsTable
-            payers={[
-              MockBuyers.Adi,
-              MockBuyers.Guy,
-              MockBuyers.Or,
-              MockBuyers.Yam,
-            ]}
+            isChosenSupplier={isChosenSupplier}
+            participancyList={
+              paymentList as Partial<IParticipancyFullDetails>[]
+            }
           />
         ) : (
           <SuppliersSection

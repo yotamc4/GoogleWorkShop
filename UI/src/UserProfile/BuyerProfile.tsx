@@ -38,7 +38,7 @@ export const BuyerProfile: React.FunctionComponent = () => {
       <Pivot styles={{ root: { marginBottom: "2rem" } }}>
         <PivotItem
           headerButtonProps={{
-            text: "Groups I was sign in into",
+            text: "Groups I'm in",
             styles: buttonHeaderProps,
           }}
         >

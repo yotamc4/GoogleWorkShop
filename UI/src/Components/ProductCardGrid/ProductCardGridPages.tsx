@@ -48,25 +48,25 @@ export const ProductCardGridPages: React.FunctionComponent<ProductCardGridPagesP
   ]);
 
   return (
-    <Stack horizontalAlign={"center"} tokens={genericGapStackTokens(20)}>
+    <Stack horizontalAlign={"space-around"} tokens={genericGapStackTokens(20)}>
       {currentBids ? (
         <ProductCardGrid {...{ bids: currentBids }} />
       ) : (
-        <Spinner
-          styles={{
-            root: { position: "relative", top: "11rem", left: "17rem" },
-          }}
-        />
+        <Stack grow verticalAlign="center" horizontalAlign="center">
+          <Spinner />
+        </Stack>
       )}
-      {currentBids && currentBids.length !== 0 && (
-        <Pagination
-          count={numberOfPages}
-          page={currentPageNumber}
-          onChange={(event, page) => {
-            setCurrentPageNumber(page);
-          }}
-        />
-      )}
+      <Stack horizontalAlign={"center"}>
+        {currentBids && currentBids.length !== 0 && (
+          <Pagination
+            count={numberOfPages}
+            page={currentPageNumber}
+            onChange={(event, page) => {
+              setCurrentPageNumber(page);
+            }}
+          />
+        )}
+      </Stack>
     </Stack>
   );
 };

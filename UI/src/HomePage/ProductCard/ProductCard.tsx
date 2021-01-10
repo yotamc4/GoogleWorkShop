@@ -8,13 +8,30 @@ import {
   descriptionTextStyles,
   nameOfProductTextStyles,
   priceTextStyles,
-  divStyles,
+  circleStyle,
 } from "./ProductCardStyles";
 import { Bid } from "../../Modal/GroupDetails";
+import { Stack, StackItem } from "@fluentui/react";
 
 export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
+  const [isNewSuggestion, setIsNewSuggestion] = React.useState<boolean>(
+    bid.id !== undefined && isNewBid(bid.creationDate)
+  );
+
+  function isNewBid(creationDate: Date): boolean {
+    return (
+      // Bid's creation date plus 2 days
+      !(
+        new Date(
+          bid.creationDate.getFullYear(),
+          bid.creationDate.getMonth(),
+          bid.creationDate.getDate() + 2
+        ) < new Date()
+      )
+    );
+  }
+
   const history = useHistory();
-  const cardTokens: ICardTokens = { childrenMargin: 7 };
   const attendantsCardSectionTokens: ICardSectionTokens = { childrenGap: 6 };
 
   if (bid.id == undefined) {
@@ -27,61 +44,83 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
   };
 
   return (
-    <Card
-      tokens={cardTokens}
-      styles={cardStyles}
-      onClick={() => {
-        history.push(`/products/${bid.id}`);
+    <StackItem
+      styles={{
+        root: { flexBasis: "32%", marginBottom: "1rem" },
       }}
     >
-      <Circle />
-      <Card.Section fill horizontalAlign="center" horizontal>
-        <Image {...imageProps} width={"14rem"} height={"10rem"} />
-      </Card.Section>
-      <Card.Section
-        horizontalAlign="center"
-        styles={{ root: { flexBasis: "10rem" } }}
+      <Card
+        styles={cardStyles}
+        onClick={() => {
+          history.push(`/products/${bid.id}`);
+        }}
       >
-        <Text variant="large" styles={nameOfProductTextStyles}>
-          {bid.product?.name}
-        </Text>
-        <Text styles={descriptionTextStyles}>
-          {bid.product!.description.length > 199
-            ? bid.product!.description.slice(0, 200) + "..."
-            : bid.product!.description}
-        </Text>
-      </Card.Section>
-      <Card.Section horizontalAlign="center">
-        <Text variant="mediumPlus" styles={priceTextStyles}>
-          Max Acceptable Price: {bid.maxPrice}₪
-        </Text>
-        {bid.expirationDate && (
-          <Text variant="small" styles={descriptionTextStyles}>
-            Expiration Date: {bid.expirationDate.getUTCMonth() + 1}/
-            {bid.expirationDate.getUTCDate() + 1}/
-            {bid.expirationDate.getUTCFullYear()}
+        <Stack>
+          {isNewSuggestion && <NewTagCircle />}
+          <StackItem align="center">
+            <Image
+              {...imageProps}
+              styles={{ root: { marginTop: "1rem" } }}
+              width={"14rem"}
+              height={"10rem"}
+            />
+          </StackItem>
+        </Stack>
+        <Card.Section
+          horizontalAlign="center"
+          styles={{ root: { padding: "0.5rem" } }}
+        >
+          <Text variant="large" styles={nameOfProductTextStyles}>
+            {bid.product!.name.length > 30
+              ? bid.product!.name.slice(0, 30) + "..."
+              : bid.product!.name}
           </Text>
-        )}
-      </Card.Section>
-      <Card.Section
-        horizontalAlign="center"
-        horizontal
-        tokens={attendantsCardSectionTokens}
-      >
-        <Text variant="small" styles={amoutTextStyles}>
-          {bid.potenialSuplliersCounter} Suppliers proposals
-        </Text>
-        <Text variant="small" styles={amoutTextStyles}>
-          |
-        </Text>
-        <Text variant="small" styles={amoutTextStyles}>
-          {bid.unitsCounter} Requested items
-        </Text>
-      </Card.Section>
-    </Card>
+          <Text styles={descriptionTextStyles}>
+            {bid.product!.description.length > 199
+              ? bid.product!.description.slice(0, 200) + "..."
+              : bid.product!.description}
+          </Text>
+        </Card.Section>
+        <Card.Section horizontalAlign="center">
+          <Text variant="mediumPlus" styles={priceTextStyles}>
+            Max Acceptable Price: {bid.maxPrice}₪
+          </Text>
+          {bid.expirationDate && (
+            <Text
+              variant="small"
+              styles={{
+                root: {
+                  color: "#666666",
+                },
+              }}
+            >
+              Expiration Date: {bid.expirationDate.getUTCMonth() + 1}/
+              {bid.expirationDate.getUTCDate() + 1}/
+              {bid.expirationDate.getUTCFullYear()}
+            </Text>
+          )}
+        </Card.Section>
+        <Stack
+          horizontalAlign="space-between"
+          horizontal
+          styles={{ root: { padding: "0.5rem" } }}
+          wrap
+        >
+          <Text variant="small" styles={amoutTextStyles}>
+            {bid.potenialSuplliersCounter} Suppliers proposals
+          </Text>
+          <Text variant="small" styles={amoutTextStyles}>
+            |
+          </Text>
+          <Text variant="small" styles={amoutTextStyles}>
+            {bid.unitsCounter} Requested items
+          </Text>
+        </Stack>
+      </Card>
+    </StackItem>
   );
 };
 
-const Circle: React.FunctionComponent = () => {
-  return <div style={divStyles}>New</div>;
+const NewTagCircle: React.FunctionComponent = () => {
+  return <div style={circleStyle}>New</div>;
 };

@@ -39,6 +39,16 @@ export interface BidBuyerJoinRequest {
   items: number;
 }
 
+export interface BidBuyerJoinRequest2 {
+  buyerId: string;
+  bidId: string;
+  numOfUnits?: number;
+  buyerName: string;
+  buyerAddress?: string;
+  buyerPostalCode?: string;
+  buyerPhoneNumber?: string;
+}
+
 export enum Phase {
   Join,
   Vote,

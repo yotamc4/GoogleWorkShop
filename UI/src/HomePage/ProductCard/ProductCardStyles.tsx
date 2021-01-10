@@ -4,7 +4,7 @@ import { CSSProperties } from "react";
 
 const theme: ITheme = getTheme();
 
-export const divStyles: CSSProperties = {
+export const circleStyle: CSSProperties = {
   width: "36px",
   height: "36px",
   lineHeight: "36px",
@@ -29,6 +29,7 @@ export const amoutTextStyles: ITextStyles = {
 
 export const nameOfProductTextStyles: ITextStyles = {
   root: {
+    minHeight: "3rem",
     color: "#333333",
     fontWeight: FontWeights.semibold,
   },
@@ -36,6 +37,7 @@ export const nameOfProductTextStyles: ITextStyles = {
 
 export const priceTextStyles: ITextStyles = {
   root: {
+    minHeight: "3rem",
     color: theme.palette.red,
     fontWeight: FontWeights.semibold,
   },
@@ -44,6 +46,7 @@ export const priceTextStyles: ITextStyles = {
 export const descriptionTextStyles: ITextStyles = {
   root: {
     color: "#666666",
+    minHeight: "9rem",
   },
 };
 

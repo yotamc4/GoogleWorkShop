@@ -8,6 +8,7 @@ namespace YOTY.Service.WebApi.Controllers
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Routing;
+    using YOTY.Service.Core.Services.Scheduling;
     using YOTY.Service.Core.Managers.Bids;
     using YOTY.Service.Core.Managers.Notifications;
     using YOTY.Service.Utils;
@@ -70,6 +71,12 @@ namespace YOTY.Service.WebApi.Controllers
             else if(!role?.Equals("anonymous", System.StringComparison.OrdinalIgnoreCase) ?? false)
             {
                 return this.StatusCode(StatusCodes.Status403Forbidden);
+            }
+
+            Response updateBidResponse = await BidsUpdateJobs.TryUpdateBidPhaseAndNotify(this.bidsManager, this.notificationsManager, bidId);
+            if (!updateBidResponse.IsOperationSucceeded)
+            {
+                return this.StatusCode(StatusCodes.Status404NotFound, updateBidResponse.SuccessOrFailureMessage);
             }
 
             Response<BidDTO> response = await this.bidsManager.GetBid(bidId, userId, role).ConfigureAwait(false);
@@ -360,12 +367,12 @@ namespace YOTY.Service.WebApi.Controllers
             }
             cancellationRequest.SupplierId = this.GetRequestUserId();
 
-            Response response = await this.bidsManager.CancelBid(cancellationRequest).ConfigureAwait(false);
+            Response response = await this.bidsManager.CancelBid(cancellationRequest.BidId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
             }
-            Response notificationResponse = await this.notificationsManager.NotifyBidParticipantsSupplierCancellation(cancellationRequest.BidId).ConfigureAwait(false);
+            Response notificationResponse = await this.notificationsManager.NotifyBidAllMissingPaymentsCancellation(cancellationRequest.BidId).ConfigureAwait(false);
             if (notificationResponse.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status200OK, notificationResponse.SuccessOrFailureMessage);
@@ -390,7 +397,7 @@ namespace YOTY.Service.WebApi.Controllers
             }
             completionRequest.SupplierId = this.GetRequestUserId();
 
-            Response response = await this.bidsManager.CompleteBid(completionRequest).ConfigureAwait(false);
+            Response response = await this.bidsManager.CompleteBid(completionRequest.BidId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
