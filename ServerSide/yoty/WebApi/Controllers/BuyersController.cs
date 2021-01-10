@@ -66,6 +66,7 @@ namespace YOTY.Service.WebApi.Controllers
             return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
         }
 
+        /*
         [HttpPut]
         [Authorize(Policy = PolicyNames.BuyerPolicy)]
         public async Task<ActionResult> ModifyBuyerDetails(ModifyBuyerDetailsRequest request)
@@ -80,5 +81,6 @@ namespace YOTY.Service.WebApi.Controllers
             // at the moment
             return this.StatusCode(StatusCodes.Status404NotFound, response.SuccessOrFailureMessage);
         }
+        */
     }
 }
