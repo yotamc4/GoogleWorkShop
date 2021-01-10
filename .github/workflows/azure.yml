@@ -22,7 +22,7 @@ defaults:
     working-directory: ./UI
 
 env:
-  AZURE_WEBAPP_NAME: UniBuyGroup    # set this to your application's name
+  AZURE_WEBAPP_NAME: unibuygroup    # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: 'build'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '10.x'                # set this to the node version to use
 
@@ -42,7 +42,6 @@ jobs:
         # deploy to Azure Web App.
         CI='' yarn install
         CI='' yarn run build 
-        CI='' yarn test 
     - name: add process.json
       run: |
         echo '{ script: "serve", env: { PM2_SERVE_SPA: "true", PM2_SERVE_HOMEPAGE: "/index.html" } }' >> build/process.json
