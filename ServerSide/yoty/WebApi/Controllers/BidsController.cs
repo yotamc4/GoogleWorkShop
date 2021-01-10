@@ -360,12 +360,12 @@ namespace YOTY.Service.WebApi.Controllers
             }
             cancellationRequest.SupplierId = this.GetRequestUserId();
 
-            Response response = await this.bidsManager.CancelBid(cancellationRequest).ConfigureAwait(false);
+            Response response = await this.bidsManager.CancelBid(cancellationRequest.BidId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);
             }
-            Response notificationResponse = await this.notificationsManager.NotifyBidParticipantsSupplierCancellation(cancellationRequest.BidId).ConfigureAwait(false);
+            Response notificationResponse = await this.notificationsManager.NotifyBidAllMissingPaymentsCancellation(cancellationRequest.BidId).ConfigureAwait(false);
             if (notificationResponse.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status200OK, notificationResponse.SuccessOrFailureMessage);
@@ -390,7 +390,7 @@ namespace YOTY.Service.WebApi.Controllers
             }
             completionRequest.SupplierId = this.GetRequestUserId();
 
-            Response response = await this.bidsManager.CompleteBid(completionRequest).ConfigureAwait(false);
+            Response response = await this.bidsManager.CompleteBid(completionRequest.BidId).ConfigureAwait(false);
             if (response.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status200OK, response.SuccessOrFailureMessage);

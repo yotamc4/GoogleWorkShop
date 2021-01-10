@@ -14,7 +14,7 @@ export const AutoComplete: React.FunctionComponent<AutoCompleteProps> = (
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Search for group-buy"
+          label="Search for product"
           margin="dense"
           variant="outlined"
           InputProps={{ ...params.InputProps, type: "search" }}

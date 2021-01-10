@@ -14,9 +14,9 @@ namespace YOTY.Service.WebApi.Controllers
     public class DebugController : ControllerBase
     {
         private IBidsManager bidsManager;
-        private NotificationsManager notificationsManager;
+        private INotificationsManager notificationsManager;
 
-        public DebugController(IBidsManager bidsManager, NotificationsManager notificationsManager)
+        public DebugController(IBidsManager bidsManager, INotificationsManager notificationsManager)
         {
             this.bidsManager = bidsManager;
             this.notificationsManager = notificationsManager;
