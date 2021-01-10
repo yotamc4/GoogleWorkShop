@@ -14,23 +14,23 @@ namespace YOTY.Service.Core.Managers.Notifications
 {
     public class NotificationsManager : INotificationsManager
     {
-        private const string TimeToVoteForSuppliersToParticipantsBody = "Great news! There are more than one optional proposals for the group-buy you are participating in! <br /><br />You have 48 hours to vote for your preferred proposal, <br /><b>please visit the groups page during this time and vote.</b>";
+        private const string TimeToVoteForSuppliersToParticipantsBody = "Great news! There are multiple relevant proposals to the group-buy you are participating in! <br /><br />You have 48 hours to vote for your preferred proposal, <br /><b>Please visit the group page during this time and vote.</b>";
         private const string TimeToVoteForSuppliersToParticipantsSubject = "Time To Vote - UniBuy";
-        private const string VoteStartedToSuppliersBody = "In the next 48 hours participants will vote between proposals,<br /><br />Your proposal might be selected, stay tuned!";
+        private const string VoteStartedToSuppliersBody = "In the next 48 hours participants will vote between proposals, <br /><br />Your proposal might be selected, stay tuned!";
         private const string VoteStartedToSuppliersSubject = "Voting Started - UniBuy";
-        private const string TimeToPayBody = "A supplier proposal for the group-buy you are participating in has been chosen! <br /><br /><b>please visit the groups page during this time and complete payment.</b>";
+        private const string TimeToPayBody = "A supplier proposal for the group-buy you are participating in has been chosen! <br /><br /><b>Please visit the group's page during this time and complete payment.</b>";
         private const string TimeToPaySubject = "Time To Pay - UniBuy";
-        private const string MissingPaymentsCancellationBody = "We are sorry to inform you that the group-buy has been canceled,  <br />as not all participants completed payment in the given time frame.";
+        private const string MissingPaymentsCancellationBody = "We are sorry to inform you that the group-buy has been canceled, <br />as not all participants completed payment in the given time frame.";
         private const string MissingPaymentsCancellationSubject = "Deal Cancellation - UniBuy";
-        private const string SupplierNotFoundCancellationBody = "We are sorry to inform you that no supplier has made a relevant proposal to the group-buy you have joined. <br />Better luck next time.";
+        private const string SupplierNotFoundCancellationBody = "We are sorry to inform you that no supplier has made a relevant proposal to the group-buy you have joined. <br />Therefore it has been canceled. <br />Better luck next time.";
         private const string SupplierNotFoundCancellationSubject = "Supplier Not Found - UniBuy";
-        private const string GroupCompletionBody = "The group-buy you participated in has come to completion <br /><br />We hope you had a satisfying experience, always at your service.";
+        private const string GroupCompletionBody = "The group-buy you participated in has come to completion. <br /><br />We hope you had a satisfying experience, always at your service.";
         private const string GroupCompletionSubject = "Group-Buy Completed - UniBuy";
         private const string ProgressBarCompletionToParticipantsBody = "A group-buy you are participating in has fulfilled a new proposal requirements!";
         private const string ProgressBarCompletionToSuppliersBody = "A proposal to a group-buy you've also made a proposal to has just reached its requirements.";
         private const string ProgressBarCompletionSubject = "Group Met Proposal Terms - UniBuy";
         private const string FoundChosenSupplierToSuppliersBody = "A proposal to a group-buy you've also made a proposal to has been selected.";
-        private const string FoundChosenSupplierToChosenSuppliersBody = "Congrats! your proposal has been selected by majority of the group-buy participants,  <br />They group is now entering the payment phase.";
+        private const string FoundChosenSupplierToChosenSuppliersBody = "Congrats! your proposal has been selected by majority of the group-buy participants, <br />The group is now entering the payment phase.";
         private const string FoundChosenSupplierSubject = "Proposal Selected - UniBuy";
 
         private const string domain = "https://localhost:3000";
@@ -41,26 +41,6 @@ namespace YOTY.Service.Core.Managers.Notifications
         {
             _context = context;
             _mail = mail;
-        }
-
-        // FOR TESTING canceled 
-        public async static Task<Response> Ping(string bidId, IMailService mail, YotyContext context)
-        {
-            try
-            {
-                var bid = await context.Bids.FindAsync(bidId).ConfigureAwait(false);
-                MailRequest request = new MailRequest() {
-                    Body = personalizeBody(VoteStartedToSuppliersBody, $"Yotam Cohen {bid.Category}", "fakeBidId"),
-                    Subject = VoteStartedToSuppliersSubject,
-                    ToEmail = "yotamc4@gmail.com",
-                };
-                await mail.SendEmailAsync(request);
-            }
-            catch (Exception ex)
-            {
-                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
-            }
-            return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = "Ping Pong" };
         }
 
         public async Task<Response> NotifyBidSuppliers(string bidId, string body, string subject)
@@ -138,7 +118,7 @@ namespace YOTY.Service.Core.Managers.Notifications
         private static string personalizeBody(string body, string name, string bidId)
         {
             string bidUrl = getBidUrl(bidId);
-            return $"<b>Hello {name}</b>,<br /><br /> {body} <br />visit <a href='{bidUrl}'>the group page</a> for more info <br /><br />  Thanks <br />The UniBuy Team!";
+            return $"<b>Hello {name}</b>,<br /><br /> {body} <br />see more info in the <a href='{bidUrl}'>group's page</a>. <br /><br />Thanks, <br />The UniBuy Team!";
         }
 
         private static string getBidUrl(string bidId) {
