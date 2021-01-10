@@ -17,6 +17,10 @@
 # For more samples to get started with GitHub Action workflows to deploy to Azure, refer to https://github.com/Azure/actions-workflow-samples
 on: push
 
+defaults:
+  run:
+    working-directory: UI
+
 env:
   AZURE_WEBAPP_NAME: UniBuyGroup    # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: 'build'      # set this to the path to your web app project, defaults to the repository root
