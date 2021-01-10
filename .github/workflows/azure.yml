@@ -41,8 +41,8 @@ jobs:
         # Build and test the project, then
         # deploy to Azure Web App.
         CI='' yarn install
-        CI='' yarn run build --if-present
-        CI='' yarn run test --if-present
+        CI='' yarn run build 
+        CI='' yarn run test 
     - name: add process.json
       run: |
         echo '{ script: "serve", env: { PM2_SERVE_SPA: "true", PM2_SERVE_HOMEPAGE: "/index.html" } }' >> build/process.json
