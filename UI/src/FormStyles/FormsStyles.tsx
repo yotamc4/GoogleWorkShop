@@ -15,6 +15,10 @@ export const verticalGapStackTokens = {
   padding: 10,
 };
 
+export const horizontalGapStackToken = {
+  childrenGap: 5,
+};
+
 export const horizontalGapStackTokens = {
   childrenGap: "20rem",
   padding: 5,
