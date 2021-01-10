@@ -52,11 +52,9 @@ export const ProductCardGridPages: React.FunctionComponent<ProductCardGridPagesP
       {currentBids ? (
         <ProductCardGrid {...{ bids: currentBids }} />
       ) : (
-        <Spinner
-          styles={{
-            root: { position: "relative", top: "11rem", left: "17rem" },
-          }}
-        />
+        <Stack grow verticalAlign="center" horizontalAlign="center">
+          <Spinner />
+        </Stack>
       )}
       <Stack horizontalAlign={"center"}>
         {currentBids && currentBids.length !== 0 && (

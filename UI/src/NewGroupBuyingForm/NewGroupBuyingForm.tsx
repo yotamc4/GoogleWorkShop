@@ -119,7 +119,7 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
   const onSubmitForm = async (): Promise<void> => {
     try {
       setRequestInProcess(true);
-      bidRequest.expirationDate.setHours(0, 0, 0, 0);
+      bidRequest.expirationDate.setHours(23, 59, 0, 0);
       await submitNewGroupForm(bidRequest, getAccessTokenSilently);
       urlHistory.push(`/`);
     } catch {

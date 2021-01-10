@@ -24,16 +24,17 @@ import {
 export interface IJoinTheGroupFormProps {
   handleClose: () => void;
   changeNumberOfParticipants: (addedNumber: number) => void;
-  setIsJoinTheGroupButtomClicked: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsJoinTheGroupButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const JoinTheGroupForm: React.FunctionComponent<IJoinTheGroupFormProps> = ({
   handleClose,
   changeNumberOfParticipants,
-  setIsJoinTheGroupButtomClicked,
+  setIsJoinTheGroupButtonClicked: setIsJoinTheGroupButtonClicked,
 }) => {
   const { user, getAccessTokenSilently } = useAuth0();
   const { id } = useParams<{ id: string }>();
+  const [inputsAreValid, setInputsAreValid] = React.useState<boolean>(true);
   const [formInputs, setFormInputs] = React.useReducer<
     (
       prevState: Partial<BidBuyerJoinRequest2>,
@@ -55,14 +56,6 @@ export const JoinTheGroupForm: React.FunctionComponent<IJoinTheGroupFormProps> =
     }
   );
 
-  const onGetErrorMessage = (value: string) => {
-    if (!isNaN(Number(value))) {
-      return "";
-    }
-    return "Numbers only!";
-  };
-
-  //TODO: fix when the input isn't correct (wrong value or hasn't set)
   const onClickSend = () => {
     const bidBuyerJoinRequest: BidBuyerJoinRequest2 = {
       buyerId: user.sub,
@@ -72,7 +65,7 @@ export const JoinTheGroupForm: React.FunctionComponent<IJoinTheGroupFormProps> =
     };
     const url = `/${id}/buyers`;
     addBuyer(bidBuyerJoinRequest, url, getAccessTokenSilently);
-    setIsJoinTheGroupButtomClicked(true);
+    setIsJoinTheGroupButtonClicked(true);
     handleClose();
     changeNumberOfParticipants(1);
   };
@@ -81,17 +74,24 @@ export const JoinTheGroupForm: React.FunctionComponent<IJoinTheGroupFormProps> =
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ): void => {
-    if ((event.target as HTMLInputElement).id !== "buyerAddress") {
-      setFormInputs({
-        [(event.target as HTMLInputElement).id]: Number(newValue),
-      });
-    } else if (
-      (event.target as HTMLInputElement).id === "buyerAddress" &&
-      isNaN(+Number(newValue))
-    ) {
+    if ((event.target as HTMLInputElement).id === "buyerAddress") {
       setFormInputs({
         [(event.target as HTMLInputElement).id]: newValue,
       });
+    } else {
+      setFormInputs({
+        [(event.target as HTMLInputElement).id]: Number(newValue),
+      });
+    }
+  };
+
+  const validateInputIsNumber = (value: string): string => {
+    if (value && value.match(/^[0-9]+$/) === null) {
+      setInputsAreValid(false);
+      return "Only numbers allowed";
+    } else {
+      setInputsAreValid(true);
+      return "";
     }
   };
 
@@ -116,7 +116,7 @@ export const JoinTheGroupForm: React.FunctionComponent<IJoinTheGroupFormProps> =
           ariaLabel="Required without visible label"
           required
           onChange={onTextFieldChange}
-          onGetErrorMessage={onGetErrorMessage}
+          onGetErrorMessage={validateInputIsNumber}
           styles={{ root: { width: FormsStyles.inputWidth } }}
           defaultValue={"1"}
         />
@@ -125,6 +125,15 @@ export const JoinTheGroupForm: React.FunctionComponent<IJoinTheGroupFormProps> =
           label="Buyer address"
           ariaLabel="Required without visible label"
           required
+          onGetErrorMessage={(value) => {
+            if (value && value.match(/^[0-9]+$/) != null) {
+              setInputsAreValid(false);
+              return "Only numbers are not allowed";
+            } else {
+              setInputsAreValid(true);
+              return "";
+            }
+          }}
           onChange={onTextFieldChange}
           styles={{ root: { width: FormsStyles.inputWidth } }}
         />
@@ -133,6 +142,7 @@ export const JoinTheGroupForm: React.FunctionComponent<IJoinTheGroupFormProps> =
           label="Postal code"
           ariaLabel="Required without visible label"
           required
+          onGetErrorMessage={validateInputIsNumber}
           onChange={onTextFieldChange}
           styles={{ root: { width: FormsStyles.inputWidth } }}
         />
@@ -141,15 +151,12 @@ export const JoinTheGroupForm: React.FunctionComponent<IJoinTheGroupFormProps> =
           label="Phone number"
           ariaLabel="Required without visible label"
           required
+          onGetErrorMessage={validateInputIsNumber}
           onChange={onTextFieldChange}
           styles={{ root: { width: FormsStyles.inputWidth } }}
         />
         <Separator styles={{ root: { width: FormsStyles.inputWidth } }} />
-        <Stack
-          horizontal
-          tokens={FormsStyles.horizontalGapStackTokensForButtons}
-          styles={{ root: { margin: "auto" } }}
-        >
+        <Stack horizontal horizontalAlign={"space-between"}>
           <DefaultButton
             onClick={handleClose}
             text="Cancel"
@@ -159,14 +166,13 @@ export const JoinTheGroupForm: React.FunctionComponent<IJoinTheGroupFormProps> =
             onClick={onClickSend}
             text="Send"
             disabled={
-              formInputs.numOfUnits &&
-              formInputs.buyerAddress &&
-              formInputs.buyerPhoneNumber &&
-              formInputs.buyerPostalCode
-                ? false
-                : true
+              !(
+                formInputs.numOfUnits &&
+                formInputs.buyerAddress &&
+                formInputs.buyerPhoneNumber &&
+                formInputs.buyerPostalCode
+              ) || !inputsAreValid
             }
-            allowDisabledFocus
           />
         </Stack>
       </Stack>
