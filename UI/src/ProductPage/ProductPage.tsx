@@ -32,6 +32,7 @@ import {
 import { IParticipancyFullDetails } from "../PaymentTable/PaymentTable.interface";
 import { JoinTheGroupForm } from "./JoinTheGroupForm";
 import FlipCountdown from "@rumess/react-flip-countdown";
+import { CompletedGroups } from "./CompletedGroups";
 
 export const ProductPage: React.FunctionComponent = () => {
   const {
@@ -142,6 +143,11 @@ export const ProductPage: React.FunctionComponent = () => {
   return !isDataLoaded ? (
     <Stack horizontalAlign={"center"}>
       <Spinner size={SpinnerSize.large} />
+    </Stack>
+  ) : (bidDetails?.phase as Phase) > Phase.Payment ? (
+    <Stack horizontalAlign={"center"}>
+      <ButtonAppBar />
+      <CompletedGroups phase={bidDetails?.phase as Phase} />
     </Stack>
   ) : (
     <Stack horizontalAlign={"center"}>
