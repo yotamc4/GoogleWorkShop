@@ -8,6 +8,7 @@ namespace YOTY.Service.WebApi.Controllers
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Routing;
+    using YOTY.Service.Core.Services.Scheduling;
     using YOTY.Service.Core.Managers.Bids;
     using YOTY.Service.Core.Managers.Notifications;
     using YOTY.Service.Utils;
@@ -70,6 +71,12 @@ namespace YOTY.Service.WebApi.Controllers
             else if(!role?.Equals("anonymous", System.StringComparison.OrdinalIgnoreCase) ?? false)
             {
                 return this.StatusCode(StatusCodes.Status403Forbidden);
+            }
+
+            Response updateBidResponse = await BidsUpdateJobs.TryUpdateBidPhaseAndNotify(this.bidsManager, this.notificationsManager, bidId);
+            if (!updateBidResponse.IsOperationSucceeded)
+            {
+                return this.StatusCode(StatusCodes.Status404NotFound, updateBidResponse.SuccessOrFailureMessage);
             }
 
             Response<BidDTO> response = await this.bidsManager.GetBid(bidId, userId, role).ConfigureAwait(false);
