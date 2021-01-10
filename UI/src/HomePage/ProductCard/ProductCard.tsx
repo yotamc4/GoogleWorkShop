@@ -45,8 +45,9 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
 
   return (
     <StackItem
-      grow={true}
-      styles={{ root: { flexBasis: "32%", marginBottom: "1rem" } }}
+      styles={{
+        root: { flexBasis: "32%", marginBottom: "1rem" },
+      }}
     >
       <Card
         styles={cardStyles}
@@ -57,7 +58,12 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
         <Stack>
           {isNewSuggestion && <NewTagCircle />}
           <StackItem align="center">
-            <Image {...imageProps} width={"14rem"} height={"10rem"} />
+            <Image
+              {...imageProps}
+              styles={{ root: { marginTop: "1rem" } }}
+              width={"14rem"}
+              height={"10rem"}
+            />
           </StackItem>
         </Stack>
         <Card.Section
@@ -65,7 +71,9 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
           styles={{ root: { padding: "0.5rem" } }}
         >
           <Text variant="large" styles={nameOfProductTextStyles}>
-            {bid.product?.name}
+            {bid.product!.name.length > 30
+              ? bid.product!.name.slice(0, 30) + "..."
+              : bid.product!.name}
           </Text>
           <Text styles={descriptionTextStyles}>
             {bid.product!.description.length > 199
