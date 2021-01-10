@@ -13,12 +13,12 @@ export const AboutUs: React.FunctionComponent = () => {
     >
       <ButtonAppBar />
       <StackItem align="center">
-        <Text variant={"xxLarge"} styles={getStylesColour("#70706c")}>
+        <Text variant={"superLarge"} styles={getStylesColour("#70706c")}>
           About us
         </Text>
       </StackItem>
       <StackItem align="center">
-        <Text styles={getStylesColour("#70706c")}>
+        <Text block variant={"xxLarge"} styles={getStylesColour("#70706c")}>
           We are not a shopping site. We are something new and different.
         </Text>
       </StackItem>
@@ -58,15 +58,14 @@ export const AboutUs: React.FunctionComponent = () => {
           How it all works:
         </Text>
         <Text block>
-          Consumers can join existing group-buys and create new ones from
-          scratch. A group-buy is characterized by a requested product, an
-          expiration date and a maximal price. Suppliers can make proposals for
-          the various groups (if they can provide the requested product for
-          at-most the group’s maximal price), an offer is characterized by a
-          price and minimal quantity of units.
+          Consumers can join existing group-buys and create new ones from scratch. 
+          A group-buy is characterized by a requested product and a maximal price. 
+          Suppliers can make proposals for the various groups (if they can provide 
+          the requested product for at-most the group’s maximal price), 
+          an offer is characterized by a price and a minimal quantity of units.
         </Text>
         <Text block variant={"large"} styles={getStylesColour("#70706c")}>
-          When the group's expiration date arrives:
+          When the group's last day to join ends:
         </Text>
         <Text block styles={extraMarginsStyle}>
           <li>
@@ -79,7 +78,7 @@ export const AboutUs: React.FunctionComponent = () => {
           <li>
             If there are several relevant proposals for the group, a survey is
             conducted between the group members for 48 hours, at the end of this
-            time window one proposal is selected (by a majority of votes) and
+            time frame one proposal is selected (by a majority of votes) and
             the group is transferred to the payment stage.
           </li>
         </Text>
@@ -93,10 +92,16 @@ export const AboutUs: React.FunctionComponent = () => {
           </Link>{" "}
           link and the group members pay using PayPal, this assures security in
           payments and provides a dispute system for consumers. When the group
-          is at the payment stage, the group’s page a table indicating the
-          payment status of each participant. After all participants have paid
-          the supplier ships the product to them and closes the group with
-          completion of the deal.
+          is at the payment stage, the group’s page indicates the payment status 
+          of each participant. If not all participancts complete payment within
+          5 days, the deal is cancelled. Otherwise the deal is completed.
+        </Text>
+        <Text block variant={"large"} styles={getStylesColour("#70706c")}>
+          Privacy:
+        </Text>
+        <Text block>
+          Consumers personal details (such as address, phone number etc) are 
+          only visable to chosen suppliers of the group-buys they participate in.
         </Text>
       </Stack>
     </Stack>
