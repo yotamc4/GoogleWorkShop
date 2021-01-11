@@ -33,5 +33,7 @@ namespace YOTY.Service.WebApi.PublicDataSchemas
         public bool IsUserInBid { get; set; }
 
         public bool HasVoted { get; set; }
+
+        public int NumOfUnitsParticipant { get; set; }
     }
 }
