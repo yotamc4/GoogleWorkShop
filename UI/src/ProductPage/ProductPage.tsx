@@ -178,7 +178,7 @@ export const ProductPage: React.FunctionComponent = () => {
           </Text>
           <ShareProductBar />
           {bidDetails?.phase === Phase.Join && (
-            <Stack styles={{ root: { marginRight: "10rem" } }}>
+            <Stack styles={{ root: { alignSelf: "start" } }}>
               <FlipCountdown
                 theme="light"
                 size="small"
