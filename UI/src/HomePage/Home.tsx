@@ -89,7 +89,7 @@ export const Home: React.FunctionComponent = () => {
             </Link>
           )}
           <Stack tokens={genericGapStackTokens(20)}>
-            <Stack wrap horizontal horizontalAlign="space-between">
+            <Stack horizontal horizontalAlign="space-between">
               {!isSupplier && (
                 <TooltipHost
                   content={
@@ -118,7 +118,7 @@ export const Home: React.FunctionComponent = () => {
                 onPressEnter={onSearchBoxEnterPressed}
               />
             </Stack>
-            <Stack horizontal wrap>
+            <Stack horizontal>
               <NavigationPane />
               <StackItem grow>
                 <ProductCardGridPages />
