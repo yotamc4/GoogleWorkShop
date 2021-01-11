@@ -55,6 +55,7 @@ export const ProductPage: React.FunctionComponent = () => {
     Partial<IParticipancyFullDetails>[] | undefined
   >(undefined);
   const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
+  const [isPhaseUpdated, setIsPhaseUpdated] = useState<boolean>(false);
   const [isChosenSupplier, setIsChosenSupplier] = useState<boolean>(false);
   const handleClickOpen = () => {
     setOpen(true);
@@ -131,7 +132,7 @@ export const ProductPage: React.FunctionComponent = () => {
     if (!isLoading) {
       getBid();
     }
-  }, [isAuthenticated, isLoading]);
+  }, [isAuthenticated, isLoading, isPhaseUpdated]);
 
   const changeNumberOfParticipants = React.useCallback(
     (addedNumber: number) => {
@@ -184,7 +185,11 @@ export const ProductPage: React.FunctionComponent = () => {
                 hideYear
                 hideMonth
                 endAt={new Date(bidDetails?.expirationDate)} // year/month/day
-              />
+              >
+                <ChangePhaseToVote
+                  setIsPhaseUpdated={setIsPhaseUpdated}
+                ></ChangePhaseToVote>
+              </FlipCountdown>
             </Stack>
           )}
           <Separator />
@@ -261,4 +266,15 @@ export const ProductPage: React.FunctionComponent = () => {
       </Stack>
     </Stack>
   );
+};
+
+interface IChangePhaseToVoteProps {
+  setIsPhaseUpdated: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const ChangePhaseToVote: React.FunctionComponent<IChangePhaseToVoteProps> = ({
+  setIsPhaseUpdated,
+}) => {
+  setIsPhaseUpdated(true);
+  return <></>;
 };

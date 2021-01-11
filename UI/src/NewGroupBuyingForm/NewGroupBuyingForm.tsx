@@ -241,7 +241,7 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
             });
           }}
           value={bidRequest.expirationDate ?? undefined}
-          label="Allow joining until"
+          label="Set a last day to join"
           firstDayOfWeek={DayOfWeek.Sunday}
           strings={DayPickerStrings}
           placeholder="Select a date"
