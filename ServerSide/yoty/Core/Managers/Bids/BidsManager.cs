@@ -424,7 +424,7 @@ namespace YOTY.Service.Core.Managers.Bids
                 .ToListAsync().ConfigureAwait(false);
 
 
-            int numberOfBids = await _context.Bids.CountAsync().ConfigureAwait(false);
+            int numberOfBids = await _context.Bids.Where(bid => bid.Phase == BidPhase.Join || bid.Phase == BidPhase.Vote).CountAsync().ConfigureAwait(false);
 
 
             BidsDTO bidsDTO = new BidsDTO(

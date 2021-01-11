@@ -289,7 +289,7 @@ namespace YOTY.Service.WebApi.Controllers
 
 
         [HttpDelete]
-        [Route("{bidId}/proposals/{supplierId}")]
+        [Route("{bidId}/proposals")]
         [Authorize(Policy = PolicyNames.SupplierPolicy)]
         public async Task<ActionResult> DeleteSupplierProposal(string bidId)
         {
