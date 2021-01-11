@@ -138,40 +138,53 @@ export function getBidParticipationsFullDetails(
   }
 }
 
-export function addBuyer(
+export async function addBuyer(
   bidBuyerJoinRequest: BidBuyerJoinRequest2,
   url: string,
   getAccessTokenSilently?: (options?: any) => Promise<string>
 ) {
   const serviceUrl = BasicControllerUrl + url;
-  const response = makePostRequest(
+  const response = await makePostRequest(
     serviceUrl,
     bidBuyerJoinRequest,
     getAccessTokenSilently
   );
+  if (!response.ok) {
+    throw new Error("Error happened during the fetch POST");
+  }
   return response;
 }
 
-export function deleteBuyer(
+export async function deleteBuyer(
   url: string,
   getAccessTokenSilently?: (options?: any) => Promise<string>
 ) {
   const serviceUrl = BasicControllerUrl + url;
-  const response = makeDeleteRequest(serviceUrl, "", getAccessTokenSilently);
+  const response = await makeDeleteRequest(
+    serviceUrl,
+    "",
+    getAccessTokenSilently
+  );
+  if (!response.ok) {
+    throw new Error("Error happened during the fetch POST");
+  }
   return response;
 }
 
-export function addSupplierProposal(
+export async function addSupplierProposal(
   supplierProposalFormDetails: Partial<ISupplierProposalRequest>,
   url: string,
   getAccessTokenSilently?: (options?: any) => Promise<string>
 ) {
   const serviceUrl = BasicControllerUrl + url;
-  const response = makePostRequest(
+  const response = await makePostRequest(
     serviceUrl,
     supplierProposalFormDetails,
     getAccessTokenSilently
   );
+  if (!response.ok) {
+    throw new Error("Error happened during the fetch POST");
+  }
   return response;
 }
 
@@ -186,15 +199,25 @@ export async function markPayment(
     markPaidRequest,
     getAccessTokenSilently
   );
+  if (!response.ok) {
+    throw new Error("Error happened during the fetch POST");
+  }
   return response;
 }
 
-export function deleteSupplierProposal(
+export async function deleteSupplierProposal(
   url: string,
   getAccessTokenSilently?: (options?: any) => Promise<string>
 ) {
   const serviceUrl = BasicControllerUrl + url;
-  const response = makeDeleteRequest(serviceUrl, "", getAccessTokenSilently);
+  const response = await makeDeleteRequest(
+    serviceUrl,
+    "",
+    getAccessTokenSilently
+  );
+  if (!response.ok) {
+    throw new Error("Error happened during the fetch POST");
+  }
   return response;
 }
 
