@@ -244,11 +244,7 @@ export const ProductPage: React.FunctionComponent = () => {
               </Dialog>
             </>
           ) : (
-            bidDetails?.phase == Phase.Vote && (
-              <Text styles={Styles.newBuyersCantJoinTheGroup}>
-                This group is closed for joining.
-              </Text>
-            )
+            bidDetails?.phase == Phase.Vote && <></>
           )}
           <Separator />
         </Stack>

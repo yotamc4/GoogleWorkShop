@@ -1,7 +1,7 @@
 import { IDetailsColumnStyles } from "office-ui-fabric-react/lib/DetailsList";
 import { IIconProps } from "office-ui-fabric-react";
 import { IStackStyles, mergeStyleSets } from "@fluentui/react";
-
+import { FontWeights, ITextStyles } from "@fluentui/react";
 export const classNames = mergeStyleSets({
   fileIconCell: {
     marginLeft: "1.4rem",
@@ -27,4 +27,13 @@ export const stackStyles: Partial<IStackStyles> = {
 
 export const detailsListStyles: Partial<IDetailsColumnStyles> = {
   root: { textAlign: "right" },
+};
+
+export const voteTextForNunVotigUsers: ITextStyles = {
+  root: {
+    fontSize: "1.2rem",
+    marginTop: "1rem",
+    color: "black",
+    fontWeight: FontWeights.semibold,
+  },
 };
