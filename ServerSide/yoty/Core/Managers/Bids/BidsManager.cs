@@ -270,6 +270,7 @@ namespace YOTY.Service.Core.Managers.Bids
                 ParticipancyEntity participancy = bid.CurrentParticipancies.Where(p => p.BuyerId == userId).FirstOrDefault();
                 bidDTO.IsUserInBid = participancy != null;
                 bidDTO.HasVoted = participancy?.HasVoted ?? false;
+                bidDTO.NumOfUnitsParticipant = participancy?.NumOfUnits ?? 0;
                 return new Response<BidDTO>() { DTOObject = bidDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };               
             }
             else if (userRole.Equals("Supplier", StringComparison.OrdinalIgnoreCase))
