@@ -34,32 +34,35 @@ namespace SampleApp
             Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((context, config) =>
                 {
-                    if (!context.HostingEnvironment.IsProduction())
+                    var builtConfig = config.Build();
+                    if (Convert.ToBoolean(builtConfig["IsServiceSecretFromKeyVault"]))
                     {
-                        var builtConfig = config.Build();
-
-                        using (var store = new X509Store(StoreLocation.CurrentUser))
+                        if (!context.HostingEnvironment.IsProduction())
                         {
-                            store.Open(OpenFlags.ReadOnly);
-                            var certs = store.Certificates
-                                .Find(X509FindType.FindByThumbprint,
-                                    builtConfig["AzureADCertThumbprint"], false);
 
-                            config.AddAzureKeyVault(new Uri($"https://{builtConfig["KeyVaultName"]}.vault.azure.net/"),
-                                                    new ClientCertificateCredential(builtConfig["AzureADDirectoryId"], builtConfig["AzureADApplicationId"], certs.OfType<X509Certificate2>().Single()),
-                                                    new KeyVaultSecretManager());
+                            using (var store = new X509Store(StoreLocation.CurrentUser))
+                            {
+                                store.Open(OpenFlags.ReadOnly);
+                                var certs = store.Certificates
+                                    .Find(X509FindType.FindByThumbprint,
+                                        builtConfig["AzureADCertThumbprint"], false);
+
+                                config.AddAzureKeyVault(new Uri($"https://{builtConfig["KeyVaultName"]}.vault.azure.net/"),
+                                                        new ClientCertificateCredential(builtConfig["AzureADDirectoryId"], builtConfig["AzureADApplicationId"], certs.OfType<X509Certificate2>().Single()),
+                                                        new KeyVaultSecretManager());
 
 
-                            store.Close();
+                                store.Close();
+                            }
+                        }
+                        else
+                        {
+                            var secretClient = new SecretClient(new Uri($"https://{builtConfig["KeyVaultName"]}.vault.azure.net/"),
+                                                                     new DefaultAzureCredential());
+                            config.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
                         }
                     }
-                    else
-                    {
-                        var builtConfig = config.Build();
-                        var secretClient = new SecretClient(new Uri($"https://{builtConfig["KeyVaultName"]}.vault.azure.net/"),
-                                                                 new DefaultAzureCredential());
-                        config.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
-                    }
+
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

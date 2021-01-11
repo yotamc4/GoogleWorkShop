@@ -26,6 +26,7 @@ namespace yoty
         private readonly IWebHostEnvironment HostingEnvironment;
         public IConfiguration Configuration { get; }
 
+
         public Startup(IConfiguration configuration, IWebHostEnvironment hostingEnvironment)
         {
             Configuration = configuration;
@@ -37,8 +38,14 @@ namespace yoty
         public void ConfigureServices(IServiceCollection services)
         {
             var isProd = HostingEnvironment.IsProduction();
-            string connectionString = Configuration["UniBuyDBConnectionString"];//Configuration.GetConnectionString("localDB");
-            string mailPassword = Configuration["UniBuyMailPassword"];
+            bool isSecretFromKeyVault = Convert.ToBoolean(Configuration["IsServiceSecretFromKeyVault"]);
+            bool isLocalDb = Convert.ToBoolean(Configuration["IsLocalDb"]);
+
+            string connectionString = isSecretFromKeyVault ?
+                Configuration["UniBuyDBConnectionString"] : 
+                isLocalDb ?
+                Configuration["localDBConnectionString"] : Configuration["ProductionDBSecretConnectionString"];//Configuration.GetConnectionString("localDB");        
+            string mailPassword = isSecretFromKeyVault ?  Configuration["UniBuyMailPassword"] : Configuration["EmailPasswordForLocalRun"];
 
             services
                 .AddYotyAuthentication()
@@ -86,7 +93,7 @@ namespace yoty
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper , BidsUpdateJobs bids)
         {
-            RecurringJob.AddOrUpdate("UpdateBidsDaily", () => bids.UpdateBidsPhaseDaily(), Cron.MinuteInterval(3), TimeZoneInfo.Local);
+            RecurringJob.AddOrUpdate("UpdateBidsDaily", () => bids.UpdateBidsPhaseDaily(), Cron.MinuteInterval(5), TimeZoneInfo.Local);
 
             if (env.IsDevelopment())
             {
