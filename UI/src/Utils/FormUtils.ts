@@ -7,3 +7,11 @@ export function stringNotContainsOnlyNumbers(
     return false;
   }
 }
+
+export const validateInputIsNumber = (value: string): string => {
+  if (stringNotContainsOnlyNumbers(value)) {
+    return "Only numbers allowed";
+  } else {
+    return "";
+  }
+};
