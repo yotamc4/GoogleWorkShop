@@ -36,14 +36,16 @@ namespace yoty
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var isProd = HostingEnvironment.IsProduction();
+            string connectionString = Configuration["UniBuyDBConnectionString"];//Configuration.GetConnectionString("localDB");
+            string mailPassword = Configuration["UniBuyMailPassword"];
+
             services
                 .AddYotyAuthentication()
                 .AddYotyAuthorization();
 
-            string connectionString = HostingEnvironment.IsProduction() ?
-                Configuration.GetConnectionString("productionDB") :
-                Configuration.GetConnectionString("productionDB");
-                //Configuration.GetConnectionString("localDB");
+
+
 
             services.AddCors(option => option.AddDefaultPolicy(
                 builder => {
@@ -52,12 +54,18 @@ namespace yoty
                     builder.AllowAnyMethod();
                     })
             );
+            services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
+
             services.AddAutoMapper(typeof(Startup));
             services.AddControllers().AddNewtonsoftJson();
             services.AddCorrelationIdOptions();
             services.AddManagers();
             services.AddDbContext<YotyContext>(options => options.UseSqlServer(connectionString));
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
+            services.AddOptions<MailSecrets>().Configure(mailSecrets => {
+                mailSecrets.Password = mailPassword;
+                mailSecrets.ConnectionString = connectionString;
+            });
             services.AddTransient<IMailService, MailService>();
             services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
@@ -70,15 +78,16 @@ namespace yoty
                     UseRecommendedIsolationLevel = true,
                     DisableGlobalLocks = true
                 }));
-
             JobStorage.Current = new SqlServerStorage(connectionString);
+            services.AddScoped<BidsUpdateJobs>();
             // take this line out of comment when DB exists!
-            // RecurringJob.AddOrUpdate("UpdateBidsDaily",() => BidsUpdateJobs.UpdateBidsPhaseDaily(), Cron.Daily, TimeZoneInfo.Local);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper , BidsUpdateJobs bids)
         {
+            RecurringJob.AddOrUpdate("UpdateBidsDaily", () => bids.UpdateBidsPhaseDaily(), Cron.MinuteInterval(3), TimeZoneInfo.Local);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -2,10 +2,14 @@
 
 namespace YOTY.Service.WebApi.Controllers
 {
+    using System;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Options;
     using YOTY.Service.Core.Managers.Bids;
     using YOTY.Service.Core.Managers.Notifications;
+    using YOTY.Service.Core.Services.Mail;
     using YOTY.Service.Core.Services.Scheduling;
     using YOTY.Service.WebApi.PublicDataSchemas;
 
@@ -14,18 +18,29 @@ namespace YOTY.Service.WebApi.Controllers
     public class DebugController : ControllerBase
     {
         private IBidsManager bidsManager;
-        private INotificationsManager notificationsManager;
+        private IServiceScopeFactory ScopeFactory;
+        private MailSettings MailSettings;
+        private MailSecrets MailSecrets;
+        private BidsUpdateJobs BidsUpdateJobs;
 
-        public DebugController(IBidsManager bidsManager, INotificationsManager notificationsManager)
+        public DebugController(IServiceScopeFactory scopeFactory, IBidsManager bidsManager, IOptions<MailSettings> mailSettings, IOptions<MailSecrets> mailSecrets, BidsUpdateJobs bidsUpdateJobs)
         {
             this.bidsManager = bidsManager;
-            this.notificationsManager = notificationsManager;
+            this.ScopeFactory = scopeFactory;
+            MailSettings = mailSettings.Value;
+            MailSecrets = mailSecrets.Value;
+
         }
         [HttpGet]
         [Route("{bidId}/RunBidUpdateJob")]
         public async Task<Response> UpdateBidJob(string bidId)
         {
-            return await BidsUpdateJobs.TryUpdateBidPhaseAndNotify(this.bidsManager, this.notificationsManager, bidId);
+            IMailService mail = new MailService(MailSettings, MailSecrets);
+
+            using (var scope = ScopeFactory.CreateScope())
+            {
+                return  await BidsUpdateJobs.TryUpdateBidPhaseAndNotify(scope, mail, bidId).ConfigureAwait(false);
+            }
         }
 
         [HttpGet]

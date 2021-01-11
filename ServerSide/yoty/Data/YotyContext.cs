@@ -9,18 +9,22 @@ namespace YOTY.Service.Data
         public DbSet<SupplierEntity> Suppliers { get; set; }
         public DbSet<BidEntity> Bids { get; set; }
 
+        private string connectionStringOnConfiguring;
+
+        public YotyContext()
+        {
+        }
+
         public YotyContext(DbContextOptions<YotyContext> options)
         : base(options)
         {
         }
-        public YotyContext()
-        {
-        }
+
         /*
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(
-                "Server=tcp:yotydb.database.windows.net,1433;Initial Catalog=YOTY.Service_db;Persist Security Info=False;User ID=tzachioy@gmail.com@yotydb;Password=Kamaodjan13?;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+            optionsBuilder.UseSqlServer(connectionStringOnConfiguring/*
+                "Server=tcp:yotydb.database.windows.net,1433;Initial Catalog=UniBuyDB;Persist Security Info=False;User ID=tzachioy@gmail.com@yotydb;Password=Kamaodjan13?;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
         }
         */
         protected override void OnModelCreating(ModelBuilder modelBuilder)

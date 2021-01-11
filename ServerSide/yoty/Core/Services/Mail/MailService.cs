@@ -12,14 +12,18 @@ namespace YOTY.Service.Core.Services.Mail
     public class MailService : IMailService
     {
         private readonly MailSettings _mailSettings;
-        public MailService(IOptions<MailSettings> mailSettings)
+        private readonly MailSecrets _mailSecrets;
+
+        public MailService(IOptions<MailSettings> mailSettings, IOptions<MailSecrets> mailSecrets)
         {
             _mailSettings = mailSettings.Value;
+            _mailSecrets = mailSecrets.Value;
         }
 
-        public MailService(MailSettings mailSettings)
+        public MailService(MailSettings mailSettings, MailSecrets mailSecrets)
         {
             _mailSettings = mailSettings;
+            _mailSecrets = mailSecrets;
         }
 
         public async Task SendEmailAsync(MailRequest mailRequest)
@@ -49,7 +53,7 @@ namespace YOTY.Service.Core.Services.Mail
             email.Body = builder.ToMessageBody();
             using var smtp = new SmtpClient();
             smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
-            smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
+            smtp.Authenticate(_mailSettings.Mail, _mailSecrets.Password);
             await smtp.SendAsync(email);
             smtp.Disconnect(true);
         }

@@ -72,13 +72,13 @@ namespace YOTY.Service.WebApi.Controllers
             {
                 return this.StatusCode(StatusCodes.Status403Forbidden);
             }
-
+            /*
             Response updateBidResponse = await BidsUpdateJobs.TryUpdateBidPhaseAndNotify(this.bidsManager, this.notificationsManager, bidId);
             if (!updateBidResponse.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status404NotFound, updateBidResponse.SuccessOrFailureMessage);
             }
-
+            */
             Response<BidDTO> response = await this.bidsManager.GetBid(bidId, userId, role).ConfigureAwait(false);
             if (response.IsOperationSucceeded )
             {
@@ -289,7 +289,7 @@ namespace YOTY.Service.WebApi.Controllers
 
 
         [HttpDelete]
-        [Route("{bidId}/proposals/{supplierId}")]
+        [Route("{bidId}/proposals")]
         [Authorize(Policy = PolicyNames.SupplierPolicy)]
         public async Task<ActionResult> DeleteSupplierProposal(string bidId)
         {
