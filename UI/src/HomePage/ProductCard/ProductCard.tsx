@@ -14,18 +14,19 @@ import { Bid } from "../../Modal/GroupDetails";
 import { Stack, StackItem } from "@fluentui/react";
 
 export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
-  const [isNewSuggestion, setIsNewSuggestion] = React.useState<boolean>(
-    bid.id !== undefined && isNewBid(bid.creationDate)
-  );
-
   function isNewBid(creationDate: Date): boolean {
+    const newD: Date = new Date(
+      creationDate.getFullYear(),
+      creationDate.getMonth(),
+      creationDate.getDate() + 2
+    );
     return (
       // Bid's creation date plus 2 days
       !(
         new Date(
-          bid.creationDate.getFullYear(),
-          bid.creationDate.getMonth(),
-          bid.creationDate.getDate() + 2
+          creationDate.getFullYear(),
+          creationDate.getMonth(),
+          creationDate.getDate() + 2
         ) < new Date()
       )
     );
@@ -56,7 +57,9 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
         }}
       >
         <Stack>
-          {isNewSuggestion && <NewTagCircle />}
+          {bid.id !== undefined && isNewBid(bid.creationDate) && (
+            <NewTagCircle />
+          )}
           <StackItem align="center">
             <Image
               {...imageProps}
