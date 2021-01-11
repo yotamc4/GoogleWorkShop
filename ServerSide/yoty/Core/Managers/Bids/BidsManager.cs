@@ -270,6 +270,7 @@ namespace YOTY.Service.Core.Managers.Bids
                 ParticipancyEntity participancy = bid.CurrentParticipancies.Where(p => p.BuyerId == userId).FirstOrDefault();
                 bidDTO.IsUserInBid = participancy != null;
                 bidDTO.HasVoted = participancy?.HasVoted ?? false;
+                bidDTO.NumOfUnitsParticipant = participancy?.NumOfUnits ?? 0;
                 return new Response<BidDTO>() { DTOObject = bidDTO, IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };               
             }
             else if (userRole.Equals("Supplier", StringComparison.OrdinalIgnoreCase))
@@ -424,7 +425,7 @@ namespace YOTY.Service.Core.Managers.Bids
                 .ToListAsync().ConfigureAwait(false);
 
 
-            int numberOfBids = await _context.Bids.CountAsync().ConfigureAwait(false);
+            int numberOfBids = await _context.Bids.Where(bid => bid.Phase == BidPhase.Join || bid.Phase == BidPhase.Vote).CountAsync().ConfigureAwait(false);
 
 
             BidsDTO bidsDTO = new BidsDTO(

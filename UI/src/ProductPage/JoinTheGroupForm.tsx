@@ -23,12 +23,14 @@ export interface IJoinTheGroupFormProps {
   handleClose: () => void;
   changeNumberOfParticipants: (addedNumber: number) => void;
   setIsJoinTheGroupButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
+  setNumOfUnitsParticipant:React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const JoinTheGroupForm: React.FunctionComponent<IJoinTheGroupFormProps> = ({
   handleClose,
   changeNumberOfParticipants,
   setIsJoinTheGroupButtonClicked: setIsJoinTheGroupButtonClicked,
+  setNumOfUnitsParticipant
 }) => {
   const [isDataLoaded, setIsDataLoaded] = React.useState<boolean>(false);
   const { user, getAccessTokenSilently } = useAuth0();
@@ -69,7 +71,8 @@ export const JoinTheGroupForm: React.FunctionComponent<IJoinTheGroupFormProps> =
       await addBuyer(bidBuyerJoinRequest, url, getAccessTokenSilently);
       setIsJoinTheGroupButtonClicked(true);
       handleClose();
-      changeNumberOfParticipants(1);
+      changeNumberOfParticipants(formInputs.numOfUnits as number);
+      setNumOfUnitsParticipant(formInputs.numOfUnits as number);
     } catch {
       setIsJoinTheGroupButtonClicked(false);
       setErrorMessage(

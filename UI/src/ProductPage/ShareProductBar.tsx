@@ -15,7 +15,7 @@ import { Stack } from "@fluentui/react";
 
 export const ShareProductBar: React.FunctionComponent = () => {
   const productUrl: string = window.location.href;
-  const quote: string = "Take a look at this group-buy on UniBuy";
+  const quote: string = "Consider join this great group-buy on UniBuy";
   return (
     <Stack horizontal tokens={{ childrenGap: "0.5rem" }}>
       <FacebookShareButton url={productUrl} quote={quote}>

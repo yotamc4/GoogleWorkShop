@@ -1,6 +1,6 @@
 import * as React from "react";
 import { DetailsList, IColumn } from "office-ui-fabric-react/lib/DetailsList";
-import { Stack, Text } from "office-ui-fabric-react";
+import { Stack, Stylesheet, Text } from "office-ui-fabric-react";
 import { ActionButton } from "office-ui-fabric-react";
 import {
   SelectionMode,
@@ -14,7 +14,12 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import { SupplierProposalForm } from "./SupplierProposalForm";
 import { SuppliersSurvey } from "./SupplierSurvey";
-import { addIcon, classNames, stackStyles } from "./SupplierSectionStyles";
+import {
+  addIcon,
+  classNames,
+  stackStyles,
+  voteTextForNunVotigUsers,
+} from "./SupplierSectionStyles";
 import {
   ISupplierProposalRequest,
   ISuppliersSectionProps,
@@ -29,6 +34,7 @@ import { deleteSupplierProposal } from "../../Services/BidsControllerService";
 import configData from "../../config.json";
 import { textStyles } from "./SupplierSurveyStyles";
 import { horizontalGapStackToken } from "../../FormStyles/FormsStyles";
+import HowToVoteIcon from "@material-ui/icons/HowToVote";
 
 export interface ISuppliersListState {
   items: ISupplierProposalRequest[];
@@ -326,15 +332,24 @@ export const SuppliersSection: React.FunctionComponent<ISuppliersSectionProps> =
               hasVoted={hasVoted}
             />
           ) : (
-            <Stack horizontal horizontalAlign="center">
+            <Stack
+              horizontal
+              horizontalAlign="center"
+              tokens={horizontalGapStackToken}
+            >
               <Text
                 block={true}
                 className="Bold"
-                styles={textStyles}
+                styles={voteTextForNunVotigUsers}
                 variant="xLargePlus"
               >
                 The group is in voting phase
               </Text>
+              <HowToVoteIcon
+                color="primary"
+                fontSize="large"
+                style={{ marginTop: "0.45rem" }}
+              />
             </Stack>
           )}
           {(listItems?.length as number) > 0 && (

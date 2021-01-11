@@ -19,7 +19,7 @@ If there are no relevant proposals to the group, the group closes.
 If there is only one relevant proposal, it is automatically selected, and the group is transferred to the payment stage.
 If there are several relevant proposals for the group, a survey is conducted between the group members for 48 hours, at the end of this time frame one proposal is selected (by a majority of votes) and the group is transferred to the payment stage.
 
-### Payment:
+## Payment:
 
 The selected proposal’s supplier provides a PayPal.Me link and the group members pay using PayPal, this assures security in payments and provides a dispute system for consumers. When the group is at the payment stage, the group’s page indicates the payment status of each participant. If not all participancts complete payment within 5 days, the deal is cancelled. Otherwise the deal is completed.
 

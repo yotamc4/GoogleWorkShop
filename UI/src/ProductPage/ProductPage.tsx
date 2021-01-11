@@ -44,6 +44,9 @@ export const ProductPage: React.FunctionComponent = () => {
   const [numberOfParticipants, setnumberOfParticipants] = React.useState<
     number
   >(0);
+  const [numOfUnitsParticipant, setNumOfUnitsParticipant] = React.useState<
+    number
+  >(0);
   const [
     supplierProposalRequestList,
     setsupplierProposalRequestList,
@@ -98,7 +101,9 @@ export const ProductPage: React.FunctionComponent = () => {
       const supplierProposalRequestListResponseJson: ISupplierProposalRequest[] = await supplierProposalRequestListResponse.json();
 
       setBidDetails(bidDetailsResponseJson);
+      setIsJoinTheGroupButtomClicked(bidDetailsResponseJson.isUserInBid);
       setnumberOfParticipants(bidDetailsResponseJson.unitsCounter);
+      setNumOfUnitsParticipant(bidDetailsResponseJson.numOfUnitsParticipant);
       setsupplierProposalRequestList(supplierProposalRequestListResponseJson);
 
       if (
@@ -178,7 +183,7 @@ export const ProductPage: React.FunctionComponent = () => {
           </Text>
           <ShareProductBar />
           {bidDetails?.phase === Phase.Join && (
-            <Stack styles={{ root: { marginRight: "10rem" } }}>
+            <Stack styles={{ root: { alignSelf: "start" } }}>
               <FlipCountdown
                 theme="light"
                 size="small"
@@ -222,6 +227,8 @@ export const ProductPage: React.FunctionComponent = () => {
                 changeNumberOfParticipants={changeNumberOfParticipants}
                 setIsJoinTheGroupButtomClicked={setIsJoinTheGroupButtomClicked}
                 isJoinTheGroupButtomClicked={isJoinTheGroupButtomClicked}
+                numOfUnitsParticipant={numOfUnitsParticipant}
+                setNumOfUnitsParticipant={setNumOfUnitsParticipant}
               />
               <Dialog open={open} onClose={handleClose}>
                 <DialogContent style={{ minWidth: "30rem" }}>
@@ -231,16 +238,13 @@ export const ProductPage: React.FunctionComponent = () => {
                     setIsJoinTheGroupButtonClicked={
                       setIsJoinTheGroupButtomClicked
                     }
+                    setNumOfUnitsParticipant={setNumOfUnitsParticipant}
                   />
                 </DialogContent>
               </Dialog>
             </>
           ) : (
-            bidDetails?.phase == Phase.Vote && (
-              <Text styles={Styles.newBuyersCantJoinTheGroup}>
-                This group is closed for joining.
-              </Text>
-            )
+            bidDetails?.phase == Phase.Vote && <></>
           )}
           <Separator />
         </Stack>

@@ -6,6 +6,7 @@
     "@auth0/auth0-react": "^1.2.0",
     "@fluentui/react": "^7.150.0",
     "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@rumess/react-flip-countdown": "^1.1.1",
     "@testing-library/jest-dom": "^5.11.5",
@@ -36,7 +37,7 @@
   "scripts": {
     "start:dev": "node ./tools/cli/create-local-env.js test&&set HTTPS=true&&react-scripts start",
     "start:prod": "node ./tools/cli/create-local-env.js prod&&set HTTPS=true&&react-scripts start",
-    "start": "set HTTPS=true&&react-scripts start",
+    "start": "node ./tools/cli/create-local-env.js test&&set HTTPS=true&&react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --watchAll=false ",
     "eject": "react-scripts eject"
