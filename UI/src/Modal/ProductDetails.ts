@@ -13,6 +13,7 @@ export interface BidDetails {
   isUserInBid: boolean;
   hasVoted: boolean;
   paymentLink: string;
+  numOfUnitsParticipant: number;
 }
 
 export interface ProductDetails {
