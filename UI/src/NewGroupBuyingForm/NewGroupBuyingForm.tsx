@@ -260,9 +260,9 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           autoAdjustHeight
           styles={{ root: { width: FormsStyles.inputWidth } }}
           onGetErrorMessage={(value) => {
-            if (value.length > 1000) {
+            if (value.length > 6000) {
               setInputsAreValid(false);
-              return "Description can not be longer than 1000 chars";
+              return "Description can not be longer than 6000 chars";
             } else {
               setInputsAreValid(true);
               return "";
