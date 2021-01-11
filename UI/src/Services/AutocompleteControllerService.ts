@@ -14,4 +14,4 @@ export async function getAutoCompleteValues(): Promise<string[]> {
   }
 }
 
-const BasicControllerUrl: string = "https://localhost:5001/api/v1/Autocomplete";
+const BasicControllerUrl: string = `${process.env.REACT_APP_URL}/Autocomplete`;

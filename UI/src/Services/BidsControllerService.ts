@@ -212,7 +212,7 @@ export function voteForSupplier(
   return response;
 }
 
-const BasicControllerUrl: string = "https://localhost:5001/api/v1/Bids";
+const BasicControllerUrl: string = `${process.env.REACT_APP_URL}/Bids`;
 
 export interface GetBidsResponse {
   pageSize: number;
