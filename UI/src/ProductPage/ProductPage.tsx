@@ -142,6 +142,7 @@ export const ProductPage: React.FunctionComponent = () => {
 
   return !isDataLoaded ? (
     <Stack horizontalAlign={"center"}>
+      <ButtonAppBar />
       <Spinner size={SpinnerSize.large} />
     </Stack>
   ) : (bidDetails?.phase as Phase) > Phase.Payment ? (

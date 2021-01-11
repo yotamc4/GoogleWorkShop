@@ -37,7 +37,7 @@ function App() {
           if (user["https://UniBuyClient.workshop.com/role"] === "Consumer") {
             axios
               .post(
-                `https://localhost:5001/api/v1/buyers`,
+                `${process.env.REACT_APP_URL}/buyers`,
                 newUserRequest,
                 config
               )
@@ -50,7 +50,7 @@ function App() {
           } else {
             axios
               .post(
-                `https://localhost:5001/api/v1/Suppliers`,
+                `${process.env.REACT_APP_URL}/Suppliers`,
                 newUserRequest,
                 config
               )

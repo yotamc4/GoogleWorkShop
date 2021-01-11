@@ -62,5 +62,4 @@ export async function GetGroupsSupplierIsParticipant(
   }
 }
 
-const BasicControllerUrl: string =
-  "https://localhost:5001/api/v1/Suppliers/bids";
+const BasicControllerUrl: string = `${process.env.REACT_APP_URL}/Suppliers/bids`;
