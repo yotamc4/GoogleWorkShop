@@ -73,12 +73,6 @@ namespace YOTY.Service.WebApi.Controllers
                 return this.StatusCode(StatusCodes.Status403Forbidden);
             }
 
-            Response updateBidResponse = await BidsUpdateJobs.TryUpdateBidPhaseAndNotify(this.bidsManager, this.notificationsManager, bidId);
-            if (!updateBidResponse.IsOperationSucceeded)
-            {
-                return this.StatusCode(StatusCodes.Status404NotFound, updateBidResponse.SuccessOrFailureMessage);
-            }
-
             Response<BidDTO> response = await this.bidsManager.GetBid(bidId, userId, role).ConfigureAwait(false);
             if (response.IsOperationSucceeded )
             {
@@ -228,7 +222,7 @@ namespace YOTY.Service.WebApi.Controllers
             {
                 return this.StatusCode(StatusCodes.Status201Created, response.SuccessOrFailureMessage);
             }
-            return this.StatusCode(StatusCodes.Status304NotModified, response.SuccessOrFailureMessage);
+            return this.StatusCode(StatusCodes.Status400BadRequest, response.SuccessOrFailureMessage);
         }
 
         // consider to movee it to buyer controller

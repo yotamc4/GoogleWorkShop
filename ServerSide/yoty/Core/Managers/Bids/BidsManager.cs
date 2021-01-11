@@ -73,7 +73,11 @@ namespace YOTY.Service.Core.Managers.Bids
             {
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = BidNotFoundFailString };
             }
-            // TODO? validate supplier
+            if (!this.isValidProposalAsync(bid, supplierProposalRequest))
+            {
+                // new Response Error Code
+                return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = "Buyer already participates in an active bid with this product" };
+            }
             SupplierProposalEntity new_proposal_ent = _mapper.Map<SupplierProposalEntity>(supplierProposalRequest);
             bid.CurrentProposals.Add(new_proposal_ent);
             bid.PotenialSuplliersCounter += 1;
@@ -88,6 +92,11 @@ namespace YOTY.Service.Core.Managers.Bids
                 return new Response() { IsOperationSucceeded = false, SuccessOrFailureMessage = ex.Message };
             }
             return new Response() { IsOperationSucceeded = true, SuccessOrFailureMessage = this.getSuccessMessage() };
+        }
+
+        private bool isValidProposalAsync(BidEntity bid, SupplierProposalRequest supplierProposalRequest)
+        {
+            return bid.MaxPrice >= supplierProposalRequest.ProposedPrice;
         }
 
         public async Task<Response> CreateNewBid(NewBidRequest bidRequest)
@@ -759,7 +768,7 @@ namespace YOTY.Service.Core.Managers.Bids
         {
             //TODO is this the time we want? (or global).
             bidEntity.CreationDate = DateTime.Now;
-            bidEntity.ExpirationDate = bidEntity.ExpirationDate.Date.AddHours(23).AddMinutes(59);
+            bidEntity.ExpirationDate = bidEntity.ExpirationDate.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
             bidEntity.Id = Guid.NewGuid().ToString();
             bidEntity.UnitsCounter = 0;
             bidEntity.PotenialSuplliersCounter = 0;
