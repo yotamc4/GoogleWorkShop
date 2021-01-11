@@ -60,13 +60,8 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
           {bid.id !== undefined && isNewBid(bid.creationDate) && (
             <NewTagCircle />
           )}
-          <StackItem align="center">
-            <Image
-              {...imageProps}
-              styles={{ root: { marginTop: "1rem" } }}
-              width={"14rem"}
-              height={"10rem"}
-            />
+          <StackItem align="center" styles={{ root: { marginTop: "1rem" } }}>
+            <Image {...imageProps} width={"14rem"} height={"10rem"} />
           </StackItem>
         </Stack>
         <Card.Section

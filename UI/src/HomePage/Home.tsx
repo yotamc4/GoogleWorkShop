@@ -89,7 +89,11 @@ export const Home: React.FunctionComponent = () => {
             </Link>
           )}
           <Stack tokens={genericGapStackTokens(20)}>
-            <Stack horizontal horizontalAlign="space-between">
+            <Stack
+              horizontal
+              horizontalAlign="space-between"
+              verticalAlign="center"
+            >
               {!isSupplier && (
                 <TooltipHost
                   content={

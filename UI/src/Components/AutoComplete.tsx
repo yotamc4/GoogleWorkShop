@@ -15,7 +15,6 @@ export const AutoComplete: React.FunctionComponent<AutoCompleteProps> = (
         <TextField
           {...params}
           label="Search for product"
-          margin="dense"
           variant="outlined"
           InputProps={{ ...params.InputProps, type: "search" }}
           fullWidth
