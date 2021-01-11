@@ -222,7 +222,7 @@ namespace YOTY.Service.WebApi.Controllers
             {
                 return this.StatusCode(StatusCodes.Status201Created, response.SuccessOrFailureMessage);
             }
-            return this.StatusCode(StatusCodes.Status400BadRequest, response.SuccessOrFailureMessage);
+            return this.StatusCode(StatusCodes.Status304NotModified, response.SuccessOrFailureMessage);
         }
 
         // consider to movee it to buyer controller
