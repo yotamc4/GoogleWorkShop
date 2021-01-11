@@ -21,14 +21,18 @@ interface IJoinTheGroupButtonProps {
   changeNumberOfParticipants: (addedNumber: number) => void;
   handleClickOpen: () => void;
   setIsJoinTheGroupButtomClicked: React.Dispatch<React.SetStateAction<boolean>>;
+  setNumOfUnitsParticipant: React.Dispatch<React.SetStateAction<number>>;
   isJoinTheGroupButtomClicked: boolean;
+  numOfUnitsParticipant: number;
 }
 
 export const JoinTheGroupButton: React.FunctionComponent<IJoinTheGroupButtonProps> = ({
   changeNumberOfParticipants,
   handleClickOpen,
   setIsJoinTheGroupButtomClicked,
+  setNumOfUnitsParticipant,
   isJoinTheGroupButtomClicked,
+  numOfUnitsParticipant,
 }) => {
   const [errorMessage, setErrorMessage] = React.useState<string>();
   const [isDeleteButtonClicked, setIsDeleteButtonClicked] = React.useState<
@@ -44,7 +48,8 @@ export const JoinTheGroupButton: React.FunctionComponent<IJoinTheGroupButtonProp
         const url = `/${id}/buyers`;
         await deleteBuyer(url, getAccessTokenSilently);
         setIsJoinTheGroupButtomClicked(false);
-        changeNumberOfParticipants(-1);
+        changeNumberOfParticipants(-numOfUnitsParticipant);
+        setNumOfUnitsParticipant(0);
       } catch {
         setErrorMessage(
           "An error occurred while trying to delete your participation."
@@ -70,7 +75,7 @@ export const JoinTheGroupButton: React.FunctionComponent<IJoinTheGroupButtonProp
             }
             primary
             styles={{
-              root: { borderRadius: 25, height: "4rem" },
+              root: { borderRadius: 25, height: "4rem", width: "20.8rem" },
               textContainer: { padding: "1rem", fontSize: "1.5rem" },
             }}
             height={"4rem"}
@@ -95,7 +100,7 @@ export const JoinTheGroupButton: React.FunctionComponent<IJoinTheGroupButtonProp
       text="Join the group"
       primary
       styles={{
-        root: { borderRadius: 25, height: "4rem" },
+        root: { borderRadius: 25, height: "4rem", width: "20.8rem" },
         textContainer: { padding: "1rem", fontSize: "1.5rem" },
       }}
       height={"4rem"}
