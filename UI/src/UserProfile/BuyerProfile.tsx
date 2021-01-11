@@ -18,14 +18,19 @@ export const BuyerProfile: React.FunctionComponent = () => {
   const { getAccessTokenSilently } = useAuth0();
 
   async function updateCurrentGroups() {
-    let [groupsCreatedByTheUser, groupsUserMemberIn] = await Promise.all([
-      BuyersControllerServices.GetBidsCreatedByBuyer(getAccessTokenSilently),
-      BuyersControllerServices.GetGroupsBuyerIsParticipant(
-        getAccessTokenSilently
-      ),
-    ]);
-    setGroupsCreatedByTheUser(groupsCreatedByTheUser.bidsPage);
-    setGroupsUserMemberIn(groupsUserMemberIn.bidsPage);
+    try {
+      let [groupsCreatedByTheUser, groupsUserMemberIn] = await Promise.all([
+        BuyersControllerServices.GetBidsCreatedByBuyer(getAccessTokenSilently),
+        BuyersControllerServices.GetGroupsBuyerIsParticipant(
+          getAccessTokenSilently
+        ),
+      ]);
+      setGroupsCreatedByTheUser(groupsCreatedByTheUser.bidsPage);
+      setGroupsUserMemberIn(groupsUserMemberIn.bidsPage);
+    } catch {
+      setGroupsCreatedByTheUser([]);
+      setGroupsUserMemberIn([]);
+    }
   }
 
   React.useEffect(() => {

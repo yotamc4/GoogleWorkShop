@@ -64,4 +64,4 @@ export async function GetGroupsBuyerIsParticipant(
   }
 }
 
-const BasicControllerUrl: string = "https://localhost:5001/api/v1/Buyers";
+const BasicControllerUrl: string = `${process.env.REACT_APP_URL}/Buyers`;

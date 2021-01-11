@@ -11,14 +11,13 @@ import {
   Text,
   TextField,
 } from "@fluentui/react";
-import axios, { AxiosRequestConfig } from "axios";
+import * as FormsUtils from "../../Utils/FormUtils";
 import * as FormsStyles from "../../FormStyles/FormsStyles";
 import { ISupplierProposalFormProps } from "./SupplierProposalForm.interface";
 import { useParams } from "react-router";
 import { ISupplierProposalRequest } from "./SupplierSection.interface";
 import { useAuth0 } from "@auth0/auth0-react";
 import { addSupplierProposal } from "../../Services/BidsControllerService";
-import { horizontalGapStackToken } from "../../FormStyles/FormsStyles";
 
 export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalFormProps> = ({
   addPropposalToSupplierList,
@@ -101,7 +100,11 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
       setFormInputs({
         [(event.target as HTMLInputElement).id]: newValue,
       });
-    } else if (!isNaN(Number(newValue))) {
+    } else {
+      if (FormsUtils.stringNotContainsOnlyNumbers(newValue)) {
+        newValue = "";
+      }
+
       setFormInputs({
         [(event.target as HTMLInputElement).id]: Number(newValue),
       });
@@ -137,7 +140,7 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
           ariaLabel="Required without visible label"
           required
           onChange={onTextFieldChange}
-          onGetErrorMessage={onGetErrorMessage}
+          onGetErrorMessage={FormsUtils.validateInputIsNumber}
           styles={{ root: { width: FormsStyles.inputWidth } }}
         />
         <TextField
@@ -146,7 +149,7 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
           ariaLabel="Required without visible label"
           required
           onChange={onTextFieldChange}
-          onGetErrorMessage={onGetErrorMessage}
+          onGetErrorMessage={FormsUtils.validateInputIsNumber}
           styles={{ root: { width: FormsStyles.inputWidth } }}
         />
         <TextField
@@ -176,12 +179,20 @@ export const SupplierProposalForm: React.FunctionComponent<ISupplierProposalForm
             text="Cancel"
             allowDisabledFocus
           />
-          <Stack horizontal tokens={horizontalGapStackToken}>
+          <Stack horizontal>
             {isDataLoaded && <Spinner size={SpinnerSize.small} />}
             <PrimaryButton
               onClick={onClickSend}
               text="Send"
               allowDisabledFocus
+              disabled={
+                !(
+                  formInputs.proposedPrice &&
+                  formInputs.minimumUnits &&
+                  formInputs.paymentLink &&
+                  formInputs.description
+                )
+              }
             />
           </Stack>
         </Stack>

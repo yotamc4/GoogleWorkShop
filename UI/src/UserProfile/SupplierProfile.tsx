@@ -18,18 +18,23 @@ export const SupplierProfile: React.FunctionComponent = () => {
   const { getAccessTokenSilently } = useAuth0();
 
   async function updateCurrentGroups() {
-    let [potentialGroupsToSupply, groupsWon] = await Promise.all([
-      SuppliersControllerService.GetGroupsSupplierIsParticipant(
-        getAccessTokenSilently
-      ),
+    try {
+      let [potentialGroupsToSupply, groupsWon] = await Promise.all([
+        SuppliersControllerService.GetGroupsSupplierIsParticipant(
+          getAccessTokenSilently
+        ),
 
-      SuppliersControllerService.GetGroupsSupplierHasWon(
-        getAccessTokenSilently
-      ),
-    ]);
+        SuppliersControllerService.GetGroupsSupplierHasWon(
+          getAccessTokenSilently
+        ),
+      ]);
 
-    setGroupsWon(groupsWon.bidsPage);
-    setPotentialGroupsToSupply(potentialGroupsToSupply.bidsPage);
+      setGroupsWon(groupsWon.bidsPage);
+      setPotentialGroupsToSupply(potentialGroupsToSupply.bidsPage);
+    } catch {
+      setGroupsWon([]);
+      setPotentialGroupsToSupply([]);
+    }
   }
 
   React.useEffect(() => {

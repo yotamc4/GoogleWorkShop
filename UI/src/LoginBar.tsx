@@ -56,6 +56,7 @@ export default function ButtonAppBar() {
     <Stack>
       <Stack horizontalAlign={"center"} verticalAlign={"center"}>
         <Image
+          styles={{ image: { cursor: "pointer" } }}
           {...imagePropsLogo}
           width={200}
           height={140}

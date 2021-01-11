@@ -34,9 +34,11 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
+    "start:dev": "node ./tools/cli/create-local-env.js test&&set HTTPS=true&&react-scripts start",
+    "start:prod": "node ./tools/cli/create-local-env.js prod&&set HTTPS=true&&react-scripts start",
     "start": "set HTTPS=true&&react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --watchAll=false ",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
