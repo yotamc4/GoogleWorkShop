@@ -23,6 +23,7 @@ import { submitNewGroupForm } from "../Services/BidsControllerService";
 import { useHistory } from "react-router";
 import ButtonAppBar from "../LoginBar";
 import { useAuth0 } from "@auth0/auth0-react";
+import { stringNotContainsOnlyNumbers } from "../Utils/FormUtils";
 
 export const NewGroupBuyingForm: React.FunctionComponent = () => {
   const [productDetails, setProductDetails] = React.useReducer<
@@ -103,8 +104,13 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
     setStateFunction: Function,
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string,
-    convertToNumber?: boolean
+    convertToNumber?: boolean,
+    lengthLimit?: number
   ): void => {
+    if (lengthLimit && newValue && newValue?.length > lengthLimit) {
+      newValue = "";
+    }
+
     const updatedValue: string | number | undefined = convertToNumber
       ? Number(newValue)
       : newValue;
@@ -139,7 +145,7 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
         styles={FormsStyles.headerStyle}
         variant="xLargePlus"
       >
-        New suggestion for Group buying
+        Create new group-buy
       </Text>
       <Stack
         styles={{ root: { width: "40%" } }}
@@ -159,7 +165,7 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           label="Product's name"
           styles={{ root: { width: FormsStyles.inputWidth } }}
           onChange={(event, newValue) => {
-            onTextFieldChange(setProductDetails, event, newValue);
+            onTextFieldChange(setProductDetails, event, newValue, false, 70);
           }}
           onGetErrorMessage={(value) => {
             if (value.length > 70) {
@@ -206,12 +212,16 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
         ></Dropdown>
         <TextField
           id="maxPrice"
-          onChange={(event, newValue) =>
-            onTextFieldChange(setBidRequest, event, newValue)
-          }
+          onChange={(event, newValue) => {
+            if (stringNotContainsOnlyNumbers(newValue)) {
+              newValue = "";
+            }
+
+            onTextFieldChange(setBidRequest, event, newValue);
+          }}
           label="Maximum price"
           onGetErrorMessage={(value) => {
-            if (value && value.match(/^[0-9]+$/) === null) {
+            if (stringNotContainsOnlyNumbers(value)) {
               setInputsAreValid(false);
               return "Only numbers allowed";
             } else {
@@ -243,7 +253,7 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
         <TextField
           id="description"
           onChange={(event, newValue) => {
-            onTextFieldChange(setProductDetails, event, newValue);
+            onTextFieldChange(setProductDetails, event, newValue, false, 1000);
           }}
           label="Description"
           multiline
