@@ -112,7 +112,7 @@ export const ProductPage: React.FunctionComponent = () => {
         bidDetailsResponseJson.isUserInBid &&
         user[configData.roleIdentifier] === "Supplier"
       ) {
-        const response = await getBidParticipations(
+        const response = await getBidParticipationsFullDetails(
           `/${id}/participantsFullDetails`,
           isAuthenticated,
           getAccessTokenSilently
@@ -123,7 +123,7 @@ export const ProductPage: React.FunctionComponent = () => {
         setPaymentList(bidParticipationsListJson);
         setIsChosenSupplier(true);
       } else if (bidDetailsResponseJson.phase === Phase.Payment) {
-        const response = await getBidParticipationsFullDetails(
+        const response = await getBidParticipations(
           `/${id}/participants`,
           isAuthenticated,
           getAccessTokenSilently
@@ -172,7 +172,7 @@ export const ProductPage: React.FunctionComponent = () => {
           src={bidDetails?.product.image}
           height="30rem"
           width="30rem"
-          imageFit = {ImageFit.contain}
+          imageFit={ImageFit.contain}
         ></Image>
         <Stack
           tokens={{
