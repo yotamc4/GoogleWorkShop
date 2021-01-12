@@ -79,3 +79,8 @@ CategoriesMap.set("Smart Home, Security & Wi-Fi", [
     "Home Security & Monitoring",
     "Wi-Fi & Networking",
 ]);
+
+CategoriesMap.set("Travel", [
+    "Flights",
+    "Vacations Deals",
+]);
