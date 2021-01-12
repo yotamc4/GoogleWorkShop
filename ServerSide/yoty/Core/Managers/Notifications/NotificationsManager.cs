@@ -122,7 +122,7 @@ namespace YOTY.Service.Core.Managers.Notifications
         }
 
         private static string getBidUrl(string bidId) {
-            return $"{domain}/groups/{bidId}";
+            return $"{domain}/products/{bidId}";
         }
 
         public async Task<Response> NotifyBidChosenSupplier(string bidId)

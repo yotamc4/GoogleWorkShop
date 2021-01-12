@@ -20,6 +20,7 @@ namespace YOTY.Service.WebApi.Controllers
         {
             this._context = context;
         }
+
         [HttpGet]
         [Route("Products")]
         public async Task<object> GetrecordAsync()
@@ -27,7 +28,11 @@ namespace YOTY.Service.WebApi.Controllers
             List<string> data;
             try
             {
-                data = await _context.Set<ProductEntity>().Select(product => product.Name).ToListAsync();
+                data = await _context
+                    .Set<ProductEntity>()
+                    .Select(product => product.Name)
+                    .OrderBy(name => name)                  
+                    .ToListAsync();
             }
             catch
             {
