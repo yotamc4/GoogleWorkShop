@@ -47,16 +47,13 @@ namespace YOTY.Service.Core.Services.Scheduling
             using (var scope = ScopeFactory.CreateScope())
             {
                 YotyContext context  = scope.ServiceProvider.GetRequiredService<YotyContext>();
-                HashSet<BidPhase> notRelevantBidPhases = new HashSet<BidPhase> {
-                    BidPhase.CancelledSupplierNotFound,
-                    BidPhase. CancelledNotEnoughBuyersPayed,
-                    BidPhase.Completed
-                };
                 try
                 {
 
                     var ids = context.Bids
-                        .Where(bid => !notRelevantBidPhases.Contains(bid.Phase) && bid.ExpirationDate < DateTime.Now)
+                        // צחי האופטימיזציה הזאת שלך לא נתמכת ע"י הקונטקס בנתיים אז זה תמיד החזיר רשימה ריקה
+                        // זיינת אותי
+                        // .Where(bid => bid.Phase<BidPhase.CancelledSupplierNotFound && bid.ExpirationDate < DateTime.Now)
                         .Select(bid => bid.Id)
                         .ToList();
 
