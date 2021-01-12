@@ -41,11 +41,20 @@ namespace yoty
             bool isSecretFromKeyVault = Convert.ToBoolean(Configuration["IsServiceSecretFromKeyVault"]);
             bool isLocalDb = Convert.ToBoolean(Configuration["IsLocalDb"]);
 
-            string connectionString = isSecretFromKeyVault ?
-                Configuration["UniBuyDBConnectionString"] : 
-                isLocalDb ?
-                Configuration["LocalDBConnectionString"] : Configuration["ProductionDBSecretConnectionString"];//Configuration.GetConnectionString("localDB");        
-            string mailPassword = isSecretFromKeyVault ?  Configuration["UniBuyMailPassword"] : Configuration["EmailPasswordForLocalRun"];
+            string connectionString;
+            string mailPassword;
+            if (isSecretFromKeyVault)
+            {
+                connectionString = Configuration["UniBuyDBConnectionString"];
+                mailPassword = Configuration["UniBuyMailPassword"];
+            }
+            else
+            {
+                mailPassword = Configuration["EmailPasswordForLocalRun"];
+                connectionString = isLocalDb ? 
+                    Configuration["LocalDBConnectionString"] 
+                    : Configuration["ProductionDBSecretConnectionString"];
+            }
 
             services
                 .AddYotyAuthentication()
