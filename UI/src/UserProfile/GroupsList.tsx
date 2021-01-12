@@ -6,10 +6,10 @@ import {
   DetailsList,
   DetailsListLayoutMode,
   IColumn,
-  Link,
   SelectionMode,
   Stack,
 } from "@fluentui/react";
+import { Link } from "react-router-dom";
 import { Bid } from "../Modal/GroupDetails";
 import { PhasesName } from "../Modal/ProductDetails";
 
@@ -56,9 +56,7 @@ export const GroupsList: React.FunctionComponent<{
       maxWidth: 150,
       data: "string",
       onRender: (group: Bid) => {
-        return (
-          <Link href={`/products/${group.id}`}>{group.product!.name}</Link>
-        );
+        return <Link to={`/products/${group.id}`}>{group.product!.name}</Link>;
       },
       isResizable: true,
     },
