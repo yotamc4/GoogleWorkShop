@@ -85,13 +85,13 @@ export const Home: React.FunctionComponent = () => {
         <Stack tokens={verticalGapStackTokens}>
           {isHomePage && (
             <Link href={"/about_us"}>
-              <Image {...imagePropsSubLogo} height="13rem" />
+              <Image {...imagePropsSubLogo} height="20rem" />
             </Link>
           )}
           <Stack tokens={genericGapStackTokens(20)}>
             <Stack
               horizontal
-              horizontalAlign="space-between"
+              horizontalAlign={isSupplier ? "end" : "space-between"}
               verticalAlign="center"
             >
               {!isSupplier && (
@@ -122,7 +122,7 @@ export const Home: React.FunctionComponent = () => {
                 onPressEnter={onSearchBoxEnterPressed}
               />
             </Stack>
-            <Stack horizontal>
+            <Stack horizontal horizontalAlign={"space-between"}>
               <NavigationPane />
               <StackItem grow>
                 <ProductCardGridPages />

@@ -47,10 +47,15 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
   return (
     <StackItem
       styles={{
-        root: { flexBasis: "32%", marginBottom: "1rem" },
+        root: {
+          flexBasis: "32%",
+          marginBottom: "1rem",
+          boxShadow:
+            "rgba(0, 0, 0, 0.133) 0px 1.6px 3.6px 0px, rgba(0, 0, 0, 0.11) 0px 0.3px 0.9px 0px",
+        },
       }}
     >
-      <Card
+      <Stack
         styles={cardStyles}
         onClick={() => {
           history.push(`/products/${bid.id}`);
@@ -60,11 +65,16 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
           {bid.id !== undefined && isNewBid(bid.creationDate) && (
             <NewTagCircle />
           )}
-          <StackItem align="center" styles={{ root: { marginTop: "1rem" } }}>
-            <Image {...imageProps} width={"14rem"} height={"10rem"} />
+          <StackItem align="center">
+            <Image
+              {...imageProps}
+              width={"14rem"}
+              height={"10rem"}
+              styles={{ root: { marginTop: "1rem" } }}
+            />
           </StackItem>
         </Stack>
-        <Card.Section
+        <Stack
           horizontalAlign="center"
           styles={{ root: { padding: "0.5rem" } }}
         >
@@ -78,8 +88,8 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
               ? bid.product!.description.slice(0, 200) + "..."
               : bid.product!.description}
           </Text>
-        </Card.Section>
-        <Card.Section horizontalAlign="center">
+        </Stack>
+        <Stack horizontalAlign="center">
           <Text variant="mediumPlus" styles={priceTextStyles}>
             Max Acceptable Price: {bid.maxPrice}₪
           </Text>
@@ -97,9 +107,9 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
               {bid.expirationDate.getUTCFullYear()}
             </Text>
           )}
-        </Card.Section>
+        </Stack>
         <Stack
-          horizontalAlign="space-between"
+          horizontalAlign="space-around"
           horizontal
           styles={{ root: { padding: "0.5rem" } }}
           wrap
@@ -108,13 +118,10 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
             {bid.potenialSuplliersCounter} Suppliers proposals
           </Text>
           <Text variant="small" styles={amoutTextStyles}>
-            |
-          </Text>
-          <Text variant="small" styles={amoutTextStyles}>
             {bid.unitsCounter} Requested items
           </Text>
         </Stack>
-      </Card>
+      </Stack>
     </StackItem>
   );
 };
