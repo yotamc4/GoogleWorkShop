@@ -44,7 +44,7 @@ namespace yoty
             string connectionString = isSecretFromKeyVault ?
                 Configuration["UniBuyDBConnectionString"] : 
                 isLocalDb ?
-                Configuration["localDBConnectionString"] : Configuration["ProductionDBSecretConnectionString"];//Configuration.GetConnectionString("localDB");        
+                Configuration["LocalDBConnectionString"] : Configuration["ProductionDBSecretConnectionString"];//Configuration.GetConnectionString("localDB");        
             string mailPassword = isSecretFromKeyVault ?  Configuration["UniBuyMailPassword"] : Configuration["EmailPasswordForLocalRun"];
 
             services
