@@ -86,14 +86,14 @@ namespace yoty
                     DisableGlobalLocks = true
                 }));
             JobStorage.Current = new SqlServerStorage(connectionString);
-            services.AddScoped<BidsUpdateJobs>();
+            services.AddSingleton<BidsUpdateJobs>();
             // take this line out of comment when DB exists!
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper , BidsUpdateJobs bids)
         {
-            RecurringJob.AddOrUpdate("UpdateBidsDaily", () => bids.UpdateBidsPhaseDaily(), Cron.MinuteInterval(5), TimeZoneInfo.Local);
+            RecurringJob.AddOrUpdate("UpdateBidsDaily", () => bids.UpdateBidsPhaseDaily(),Cron.Hourly, TimeZoneInfo.Local);
 
             if (env.IsDevelopment())
             {

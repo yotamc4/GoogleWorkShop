@@ -48,11 +48,11 @@ export const ProductCardGridPages: React.FunctionComponent<ProductCardGridPagesP
   ]);
 
   return (
-    <Stack horizontalAlign={"space-around"} tokens={genericGapStackTokens(20)}>
+    <Stack tokens={genericGapStackTokens(20)}>
       {currentBids ? (
         <ProductCardGrid {...{ bids: currentBids }} />
       ) : (
-        <Stack grow verticalAlign="center" horizontalAlign="center">
+        <Stack grow verticalAlign="center">
           <Spinner />
         </Stack>
       )}

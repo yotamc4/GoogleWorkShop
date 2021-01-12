@@ -19,16 +19,14 @@ namespace YOTY.Service.Core.Services.Scheduling
     public class BidsUpdateJobs
     {
         
-        private  MailSettings MailSettings;
-        private  MailSecrets MailSecrets;
-        private  DbContextOptions<YotyContext> ContextOptions;
-        private  IServiceScopeFactory ScopeFactory;
+        private  static MailSettings MailSettings;
+        private  static MailSecrets MailSecrets;
+        private  static IServiceScopeFactory ScopeFactory;
 
-        public BidsUpdateJobs(IServiceScopeFactory scopeFactory, DbContextOptions<YotyContext> contextOptions, IOptions<MailSettings> mailSettings , IOptions<MailSecrets> mailSecrets)
+        public BidsUpdateJobs(IServiceScopeFactory scopeFactory, IOptions<MailSettings> mailSettings , IOptions<MailSecrets> mailSecrets)
         {
             MailSettings = mailSettings.Value;
             MailSecrets = mailSecrets.Value;
-            ContextOptions = contextOptions;
             ScopeFactory = scopeFactory;
         }
         
