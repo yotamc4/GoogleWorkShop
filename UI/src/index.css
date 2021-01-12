@@ -13,6 +13,7 @@ code {
 }
 
 html {
-  margin-left: 17%;
-  margin-right: 17%;
+  margin-left: auto;
+  margin-right: auto;
+  width: 1500px;
 }
