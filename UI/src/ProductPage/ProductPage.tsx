@@ -6,6 +6,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import {
   FontIcon,
   Image,
+  ImageFit,
   Separator,
   Spinner,
   SpinnerSize,
@@ -171,6 +172,7 @@ export const ProductPage: React.FunctionComponent = () => {
           src={bidDetails?.product.image}
           height="30rem"
           width="30rem"
+          imageFit = {ImageFit.contain}
         ></Image>
         <Stack
           tokens={{
