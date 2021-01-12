@@ -89,6 +89,7 @@ namespace YOTY.Service.WebApi.Controllers
             Response<BidDTO> response = await this.bidsManager.GetBid(bidId, userId, role).ConfigureAwait(false);
             if (response.IsOperationSucceeded )
             {
+                response.DTOObject.Id += "yotam";
                 return response.DTOObject;
             }
             // at the moment - we should change the boolean to enum such that we could differ between bad user input ( 400 ) to not found (404)  to unxepected failures ( 500) 
