@@ -20,7 +20,7 @@ export const ProductCardGrid: React.FunctionComponent<ProductCardGridProps> = ({
       horizontal
       wrap
       horizontalAlign={"start"}
-      tokens={genericGapStackTokens(10)}
+      tokens={genericGapStackTokens(5)}
     >
       <ProductCard {...bids[0]} />
       <ProductCard {...bids[1]} />
