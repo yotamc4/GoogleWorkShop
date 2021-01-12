@@ -11,11 +11,10 @@ import {
   Label,
   CommandBarButton,
   Persona,
-  Link,
 } from "@fluentui/react";
 import { useHistory } from "react-router";
-import FacebookLogin from "react-facebook-login";
-import { AuthContext } from "./Context/AuthContext";
+import { Link } from "react-router-dom";
+
 import {
   SeperatorStyles,
   StackItemStyles,
@@ -55,15 +54,15 @@ export default function ButtonAppBar() {
   return (
     <Stack>
       <Stack horizontalAlign={"center"} verticalAlign={"center"}>
-        <a href="/">
+        <Link to="/">
           <Image {...imagePropsLogo} width={200} height={140} />
-        </a>
+        </Link>
       </Stack>
       <Stack>
         <Separator theme={theme} styles={{ content: { width: "75rem" } }} />
         {isAuthenticated ? (
           <Stack horizontal horizontalAlign="space-between" styles={StacStyles}>
-            <Link href={`/user/${name.split(" ").join("_")}`}>
+            <Link to={`/user/${name.split(" ").join("_")}`}>
               <Persona imageUrl={picture} text={name} />
             </Link>
             <StackItem align={"center"}>
@@ -71,7 +70,9 @@ export default function ButtonAppBar() {
                 text="About Us"
                 disabled={false}
                 checked={false}
-                href={"/about_us"}
+                onClick={() => {
+                  history.push("/about_us");
+                }}
               />
               <LogoutButton />
             </StackItem>
@@ -84,7 +85,9 @@ export default function ButtonAppBar() {
                 text="About Us"
                 disabled={false}
                 checked={false}
-                href={"/about_us"}
+                onClick={() => {
+                  history.push("/about_us");
+                }}
               />
               <LoginButton />
             </StackItem>
