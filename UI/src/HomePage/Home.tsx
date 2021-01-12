@@ -91,7 +91,7 @@ export const Home: React.FunctionComponent = () => {
           <Stack tokens={genericGapStackTokens(20)}>
             <Stack
               horizontal
-              horizontalAlign="space-between"
+              horizontalAlign={isSupplier ? "end" : "space-between"}
               verticalAlign="center"
             >
               {!isSupplier && (
