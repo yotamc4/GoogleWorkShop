@@ -5,12 +5,12 @@ import {
   IImageProps,
   ImageFit,
   Image,
-  Link,
   TooltipHost,
   StackItem,
 } from "@fluentui/react";
 import { useHistory } from "react-router";
 import { useAuth0 } from "@auth0/auth0-react";
+import { Link } from "react-router-dom";
 
 import * as AutocompleteControllerService from "../Services/AutocompleteControllerService";
 import { AutoComplete } from "../Components/AutoComplete";
@@ -84,7 +84,7 @@ export const Home: React.FunctionComponent = () => {
         <ButtonAppBar />
         <Stack tokens={verticalGapStackTokens}>
           {isHomePage && (
-            <Link href={"/about_us"}>
+            <Link to={"/about_us"}>
               <Image {...imagePropsSubLogo} height="20rem" />
             </Link>
           )}
