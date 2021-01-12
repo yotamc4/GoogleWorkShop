@@ -1,35 +1,87 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using YOTY.Service.Core.Managers.Bids;
-using YOTY.Service.Core.Managers.Notifications;
-using YOTY.Service.Core.Services.Mail;
-using YOTY.Service.Data;
-using YOTY.Service.WebApi.PublicDataSchemas;
+﻿// Copyright (c) YOTY Corporation and contributors. All rights reserved.
 
 namespace YOTY.Service.Core.Services.Scheduling
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using AutoMapper.Configuration;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Options;
+    using YOTY.Service.Core.Managers.Bids;
+    using YOTY.Service.Core.Managers.Notifications;
+    using YOTY.Service.Core.Services.Mail;
+    using YOTY.Service.Data;
+    using YOTY.Service.WebApi.PublicDataSchemas;
+
     public class BidsUpdateJobs
     {
-        public static async Task UpdateBidsPhaseDaily()
+        
+        private  MailSettings MailSettings;
+        private  MailSecrets MailSecrets;
+        private  DbContextOptions<YotyContext> ContextOptions;
+        private  IServiceScopeFactory ScopeFactory;
+
+        public BidsUpdateJobs(IServiceScopeFactory scopeFactory, DbContextOptions<YotyContext> contextOptions, IOptions<MailSettings> mailSettings , IOptions<MailSecrets> mailSecrets)
         {
-            IMailService mail = new MailService(new MailSettings() { DisplayName = "UniBuy", Host = "smtp.gmail.com", Password = "UniBuyIsTheBest", Mail = "unibuy.notifications@gmail.com", Port = 587 });
-            YotyContext context = new YotyContext();
+            MailSettings = mailSettings.Value;
+            MailSecrets = mailSecrets.Value;
+            ContextOptions = contextOptions;
+            ScopeFactory = scopeFactory;
+        }
+        
+        
+        public async Task UpdateBidsPhaseDaily()
+        {
+            IMailService mail = new MailService(MailSettings, MailSecrets);
+
+            /*IMailService mail = new MailService(
+                new MailSettings() { DisplayName = "UniBuy", Host = "smtp.gmail.com", Mail = "unibuy.notifications@gmail.com", Port = 587 },
+                new MailSecrets() { Password = "UniBuyIsTheBest" });
+                */
+            //YotyContext context = new YotyContext();
             // don't need mapper rn
-            IBidsManager bidsManager = new BidsManager(null, context);
-            INotificationsManager notificationsManager = new NotificationsManager(context, mail);
-            var ids = context.Bids.Select(bid => bid.Id).ToList();
-            Response response;
-            foreach(var id in ids)
+
+            using (var scope = ScopeFactory.CreateScope())
             {
-                response = await TryUpdateBidPhaseAndNotify(bidsManager, notificationsManager, id);
-                Console.WriteLine($"UpdatePhase bidId:{id}, success:{response.IsOperationSucceeded}, message:{response.SuccessOrFailureMessage}");
+                YotyContext context  = scope.ServiceProvider.GetRequiredService<YotyContext>();
+                try
+                {
+
+                    var ids = context.Bids
+                        // צחי האופטימיזציה הזאת שלך לא נתמכת ע"י הקונטקס בנתיים אז זה תמיד החזיר רשימה ריקה
+                        // זיינת אותי
+                        // .Where(bid => bid.Phase<BidPhase.CancelledSupplierNotFound && bid.ExpirationDate < DateTime.Now)
+                        .Select(bid => bid.Id)
+                        .ToList();
+
+                    foreach (var id in ids)
+                    {
+                        using (var scopeForEachBid = ScopeFactory.CreateScope())
+                        {
+                            Response response = await TryUpdateBidPhaseAndNotify(scopeForEachBid, mail, id).ConfigureAwait(false);
+                            Console.WriteLine($"UpdatePhase bidId:{id}, success:{response.IsOperationSucceeded}, message:{response.SuccessOrFailureMessage}");
+                        }
+                    }
+                }
+
+                catch (Exception ex) {
+                    Console.WriteLine($"Exception was thrown where trying to attampth context.bids in {nameof(UpdateBidsPhaseDaily)}.\nexception details: {ex}");
+                }
+                // when we exit the using block,
+                // the IServiceScope will dispose itself 
+                // and dispose all of the services that it resolved.
             }
         }
 
-        public static async Task<Response> TryUpdateBidPhaseAndNotify(IBidsManager bidsManager, INotificationsManager notificationsManager, string bidId)
+        public static async Task<Response> TryUpdateBidPhaseAndNotify(IServiceScope scope , IMailService mail , string bidId)
         {
+            YotyContext context = scope.ServiceProvider.GetRequiredService<YotyContext>();
+            IBidsManager bidsManager = new BidsManager(null, context);
+            NotificationsManager notificationsManager = new NotificationsManager(context, mail);
+
             Response<BidPhase> updatePhaseResponse;
             try
             {

@@ -23,20 +23,37 @@ namespace yoty
 
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IWebHostEnvironment HostingEnvironment;
+        public IConfiguration Configuration { get; }
+
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment hostingEnvironment)
         {
             Configuration = configuration;
+            HostingEnvironment = hostingEnvironment;
         }
 
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var isProd = HostingEnvironment.IsProduction();
+            bool isSecretFromKeyVault = Convert.ToBoolean(Configuration["IsServiceSecretFromKeyVault"]);
+            bool isLocalDb = Convert.ToBoolean(Configuration["IsLocalDb"]);
+
+            string connectionString = isSecretFromKeyVault ?
+                Configuration["UniBuyDBConnectionString"] : 
+                isLocalDb ?
+                Configuration["LocalDBConnectionString"] : Configuration["ProductionDBSecretConnectionString"];//Configuration.GetConnectionString("localDB");        
+            string mailPassword = isSecretFromKeyVault ?  Configuration["UniBuyMailPassword"] : Configuration["EmailPasswordForLocalRun"];
+
             services
                 .AddYotyAuthentication()
                 .AddYotyAuthorization();
-            string connectionString = "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = YotyAppData";
+
+
+
+
             services.AddCors(option => option.AddDefaultPolicy(
                 builder => {
                     builder.AllowAnyOrigin();
@@ -44,12 +61,18 @@ namespace yoty
                     builder.AllowAnyMethod();
                     })
             );
+            services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
+
             services.AddAutoMapper(typeof(Startup));
             services.AddControllers().AddNewtonsoftJson();
             services.AddCorrelationIdOptions();
             services.AddManagers();
             services.AddDbContext<YotyContext>(options => options.UseSqlServer(connectionString));
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
+            services.AddOptions<MailSecrets>().Configure(mailSecrets => {
+                mailSecrets.Password = mailPassword;
+                mailSecrets.ConnectionString = connectionString;
+            });
             services.AddTransient<IMailService, MailService>();
             services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
@@ -62,15 +85,16 @@ namespace yoty
                     UseRecommendedIsolationLevel = true,
                     DisableGlobalLocks = true
                 }));
-
             JobStorage.Current = new SqlServerStorage(connectionString);
+            services.AddScoped<BidsUpdateJobs>();
             // take this line out of comment when DB exists!
-            // RecurringJob.AddOrUpdate("UpdateBidsDaily",() => BidsUpdateJobs.UpdateBidsPhaseDaily(), Cron.Daily, TimeZoneInfo.Local);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper , BidsUpdateJobs bids)
         {
+            RecurringJob.AddOrUpdate("UpdateBidsDaily", () => bids.UpdateBidsPhaseDaily(), Cron.MinuteInterval(5), TimeZoneInfo.Local);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -482,6 +482,7 @@ namespace YOTY.Service.Core.Managers.Bids
             return false;
         }
         
+        
         private static bool FilterByPrices(BidEntity bid, int maxPriceFilter, int minPriceFilter)
         {
             return
@@ -489,10 +490,12 @@ namespace YOTY.Service.Core.Managers.Bids
                 ||
                 minPriceFilter <= 0 || bid.MaxPrice > minPriceFilter;
         }
-
+        
         private static bool FilterByQueryString(BidEntity bid, string queryString)
         {
-            return queryString == null || bid.Product.Name.Contains(queryString, StringComparison.OrdinalIgnoreCase) || bid.Product.Description.Contains(queryString, StringComparison.OrdinalIgnoreCase);
+            return queryString == null 
+                || bid.Product.Name.Contains(queryString, StringComparison.OrdinalIgnoreCase) 
+                || bid.Product.Description.Contains(queryString, StringComparison.OrdinalIgnoreCase);
         }
 
         private IEnumerable<BidEntity> GetFilteredBids(BidsQueryOptions bidsFilters)
@@ -502,7 +505,7 @@ namespace YOTY.Service.Core.Managers.Bids
                 .Include(bid => bid.Product)
                 .AsEnumerable()
                 .Where(bid => FilterByCategories(bid, bidsFilters.Category, bidsFilters.SubCategory))
-                .Where(bid => FilterByPrices(bid, bidsFilters.MaxPrice, bidsFilters.MinPrice))
+                //.Where(bid => FilterByPrices(bid, bidsFilters.MaxPrice, bidsFilters.MinPrice))
                 .Where(bid => FilterByQueryString(bid, bidsFilters.Search));
         }
 
