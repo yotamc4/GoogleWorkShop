@@ -14,6 +14,9 @@ namespace YOTY.Service.WebApi.Controllers
     using YOTY.Service.Utils;
     using YOTY.Service.WebApi.Middlewares.Auth;
     using YOTY.Service.WebApi.PublicDataSchemas;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Options;
+    using YOTY.Service.Core.Services.Mail;
 
     // The controller has designed by the API best-practises doc here:https://hackernoon.com/restful-api-designing-guidelines-the-best-practices-60e1d954e7c9
     [ApiController]
@@ -24,12 +27,16 @@ namespace YOTY.Service.WebApi.Controllers
         private IBidsManager bidsManager;
         private INotificationsManager notificationsManager;
         private IAuthorizationService authorizationService;
+        private IServiceScopeFactory scopeFactory;
+        private IMailService mailService;
 
-        public BidsController(IBidsManager bidsManager, INotificationsManager notificationsManager, IAuthorizationService authorizationService)
+        public BidsController(IBidsManager bidsManager, INotificationsManager notificationsManager, IAuthorizationService authorizationService, IServiceScopeFactory scopeFactory, IOptions<MailSettings> mailSettings, IOptions<MailSecrets> mailSecrets)
         {
             this.bidsManager = bidsManager;
             this.notificationsManager = notificationsManager;
             this.authorizationService = authorizationService;
+            this.scopeFactory = scopeFactory;
+            this.mailService = new MailService(mailSettings.Value, mailSecrets.Value);
         }
 
         [HttpGet]
@@ -72,13 +79,13 @@ namespace YOTY.Service.WebApi.Controllers
             {
                 return this.StatusCode(StatusCodes.Status403Forbidden);
             }
-            /*
-            Response updateBidResponse = await BidsUpdateJobs.TryUpdateBidPhaseAndNotify(this.bidsManager, this.notificationsManager, bidId);
+            var scope = this.scopeFactory.CreateScope();
+            Response updateBidResponse = await BidsUpdateJobs.TryUpdateBidPhaseAndNotify(scope, this.mailService, bidId);
             if (!updateBidResponse.IsOperationSucceeded)
             {
                 return this.StatusCode(StatusCodes.Status404NotFound, updateBidResponse.SuccessOrFailureMessage);
             }
-            */
+            
             Response<BidDTO> response = await this.bidsManager.GetBid(bidId, userId, role).ConfigureAwait(false);
             if (response.IsOperationSucceeded )
             {
