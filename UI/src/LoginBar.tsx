@@ -55,13 +55,9 @@ export default function ButtonAppBar() {
   return (
     <Stack>
       <Stack horizontalAlign={"center"} verticalAlign={"center"}>
-        <Image
-          styles={{ image: { cursor: "pointer" } }}
-          {...imagePropsLogo}
-          width={200}
-          height={140}
-          onClick={changeHistory}
-        />
+        <a href="/">
+          <Image {...imagePropsLogo} width={200} height={140} />
+        </a>
       </Stack>
       <Stack>
         <Separator theme={theme} styles={{ content: { width: "75rem" } }} />

@@ -260,9 +260,9 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
           autoAdjustHeight
           styles={{ root: { width: FormsStyles.inputWidth } }}
           onGetErrorMessage={(value) => {
-            if (value.length > 1000) {
+            if (value.length > 6000) {
               setInputsAreValid(false);
-              return "Description can not be longer than 1000 chars";
+              return "Description can not be longer than 6000 chars";
             } else {
               setInputsAreValid(true);
               return "";
@@ -289,16 +289,14 @@ export const NewGroupBuyingForm: React.FunctionComponent = () => {
         <Separator styles={{ root: { width: FormsStyles.inputWidth } }} />
         <Stack horizontal horizontalAlign={"space-between"}>
           <DefaultButton text="Cancel" href={"/"} />
-          <Stack horizontal tokens={FormsStyles.verticalGapStackTokens}>
-            {requestInProcess && <Spinner />}
-            <PrimaryButton
-              text="Create"
-              onClick={() => {
-                onSubmitForm();
-              }}
-              disabled={!allRequiredFieldsAreFulfilled || !inputsAreValid}
-            />
-          </Stack>
+          {requestInProcess && <Spinner />}
+          <PrimaryButton
+            text="Create"
+            onClick={() => {
+              onSubmitForm();
+            }}
+            disabled={!allRequiredFieldsAreFulfilled || !inputsAreValid}
+          />
         </Stack>
       </Stack>
     </Stack>

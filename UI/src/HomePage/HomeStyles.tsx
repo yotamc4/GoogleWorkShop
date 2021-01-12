@@ -19,7 +19,7 @@ export const verticalGapStackTokens: IStackTokens = {
 export const defaultButtonStyles: IButtonStyles = {
   root: {
     borderRadius: 25,
-    height: "2.5rem",
+    height: "3.2rem",
     minWidth: "12rem",
   },
   textContainer: {
