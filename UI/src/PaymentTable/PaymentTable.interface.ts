@@ -14,3 +14,4 @@ export interface IMarkPaidRequest {
   hasPaid: boolean;
   bidId: string;
 }
+
