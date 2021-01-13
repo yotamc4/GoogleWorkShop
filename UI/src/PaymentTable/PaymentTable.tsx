@@ -179,8 +179,8 @@ export const PaymentsTable: React.FunctionComponent<IPaymentsTableProps> = ({
     },
     {
       key: "column2",
-      name: "Payed",
-      fieldName: "Payed",
+      name: "Paid",
+      fieldName: "Paid",
       minWidth: 70,
       maxWidth: 90,
       isResizable: true,
