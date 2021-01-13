@@ -33,7 +33,7 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
   const attendantsCardSectionTokens: ICardSectionTokens = { childrenGap: 6 };
 
   if (bid.id == undefined) {
-    return <div />;
+    return null;
   }
 
   const imageProps: IImageProps = {
