@@ -27,6 +27,6 @@ The selected proposal’s supplier provides a PayPal.Me link and the group membe
 
 Consumers personal details (such as address, phone number etc) are only visable to chosen suppliers of the group-buys they participate in.
 
-### Founders:
+## Founders:
 
 Ofek David, Yotam Cohen, Tzachi Hakmon, Yonatan Bouskila
