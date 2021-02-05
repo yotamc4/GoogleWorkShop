@@ -629,7 +629,7 @@ namespace YOTY.Service.Core.Managers.Bids
             switch (currentPhase)
             {
                 case BidPhase.Join:
-                    if (bid_ent.ExpirationDate <= DateTime.Now)
+                    if (bid_ent.ExpirationDate <= DateTime.UtcNow.AddHours(2))
                     {
                         List<SupplierProposalEntity> relevantProposals = bid_ent.CurrentProposals.Where(proposal => proposal.MinimumUnits <= bid_ent.UnitsCounter && proposal.ProposedPrice <= bid_ent.MaxPrice).ToList();
                         int numOfProposals = relevantProposals.Count();
@@ -648,13 +648,13 @@ namespace YOTY.Service.Core.Managers.Bids
                     }
                     break;
                 case BidPhase.Vote:
-                    if (bid_ent.ExpirationDate.AddHours(48) <= DateTime.Now)
+                    if (bid_ent.ExpirationDate.AddHours(48) <= DateTime.UtcNow.AddHours(2))
                     {
                         newPhase = BidPhase.Payment;
                     }
                     break;
                 case BidPhase.Payment:
-                    if (bid_ent.ExpirationDate.AddDays(5) <= DateTime.Now)
+                    if (bid_ent.ExpirationDate.AddDays(5) <= DateTime.UtcNow.AddHours(2))
                     {
                         if (bid_ent.CurrentParticipancies.Any(p => p.HasPaid == false))
                         {
@@ -771,7 +771,7 @@ namespace YOTY.Service.Core.Managers.Bids
         private static void PopulateBidEntity(BidEntity bidEntity)
         {
             //TODO is this the time we want? (or global).
-            bidEntity.CreationDate = DateTime.Now;
+            bidEntity.CreationDate = DateTime.UtcNow.AddHours(2);
             bidEntity.ExpirationDate = bidEntity.ExpirationDate.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
             bidEntity.Id = Guid.NewGuid().ToString();
             bidEntity.UnitsCounter = 0;

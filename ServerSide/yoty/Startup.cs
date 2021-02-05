@@ -93,7 +93,7 @@ namespace yoty
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper , BidsUpdateJobs bids)
         {
-            RecurringJob.AddOrUpdate("UpdateBidsDaily", () => bids.UpdateBidsPhaseDaily(),Cron.Hourly, TimeZoneInfo.Local);
+            RecurringJob.AddOrUpdate("UpdateBidsDaily", () => bids.UpdateBidsPhaseDaily(),Cron.Hourly, TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time"));
 
             if (env.IsDevelopment())
             {
