@@ -85,7 +85,7 @@ export const Home: React.FunctionComponent = () => {
         <Stack tokens={verticalGapStackTokens}>
           {isHomePage && (
             <Link to={"/about_us"}>
-              <Image {...imagePropsSubLogo} height="20rem" />
+              <Image {...imagePropsSubLogo} height="10rem" />
             </Link>
           )}
           <Stack tokens={genericGapStackTokens(20)}>
