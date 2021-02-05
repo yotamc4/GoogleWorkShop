@@ -123,7 +123,7 @@ namespace YOTY.Service.Core.Managers.Suppliers
 
         public async Task<Response<List<BidDTO>>> GetSupplierLiveBids(string supplierId)
         {
-            DateTime current_time = DateTime.Now;
+            DateTime current_time = DateTime.UtcNow.AddHours(2);
             var supplier = await _context.Suppliers.Where(s => s.Id == supplierId).Include(b => b.CurrentProposals).ThenInclude(p => p.Bid).FirstOrDefaultAsync().ConfigureAwait(false);
             if (supplier == null)
             {
@@ -135,7 +135,7 @@ namespace YOTY.Service.Core.Managers.Suppliers
 
         public async Task<Response<List<BidDTO>>> GetSupplierOldBids(string supplierId)
         {
-            DateTime current_time = DateTime.Now;
+            DateTime current_time = DateTime.UtcNow.AddHours(2);
             var supplier = await _context.Suppliers.Where(s => s.Id == supplierId).Include(b => b.CurrentProposals).ThenInclude(p => p.Bid).FirstOrDefaultAsync().ConfigureAwait(false);
             if (supplier == null)
             {

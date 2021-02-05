@@ -2,7 +2,10 @@ import { Stack, StackItem } from "@fluentui/react";
 import * as React from "react";
 import { ProductCard } from "../../HomePage/ProductCard/ProductCard";
 import { Bid } from "../../Modal/GroupDetails";
-import { genericGapStackTokens } from "./ProductCardGridStyles";
+import {
+  genericGapStackTokens,
+  genericGapStackTokensString,
+} from "./ProductCardGridStyles";
 
 export const ProductCardGrid: React.FunctionComponent<ProductCardGridProps> = ({
   bids,
@@ -16,7 +19,12 @@ export const ProductCardGrid: React.FunctionComponent<ProductCardGridProps> = ({
   }
 
   return (
-    <Stack horizontal wrap horizontalAlign={"space-between"}>
+    <Stack
+      horizontal
+      wrap
+      horizontalAlign={"start"}
+      tokens={genericGapStackTokensString("1rem")}
+    >
       <ProductCard {...bids[0]} />
       <ProductCard {...bids[1]} />
       <ProductCard {...bids[2]} />

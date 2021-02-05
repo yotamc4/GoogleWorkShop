@@ -97,7 +97,7 @@ export const PaymentsTable: React.FunctionComponent<IPaymentsTableProps> = ({
       data: "string",
       isPadded: true,
       onRender: (bidParticipant: Partial<IParticipancyFullDetails>) => {
-        return <Text>{bidParticipant.BuyerAddress}</Text>;
+        return <Text>{bidParticipant.buyerAddress}</Text>;
       },
     },
     {
@@ -109,7 +109,7 @@ export const PaymentsTable: React.FunctionComponent<IPaymentsTableProps> = ({
       isResizable: true,
       data: "string",
       onRender: (bidParticipant: Partial<IParticipancyFullDetails>) => {
-        return <Text>{bidParticipant.BuyerPostalCode}</Text>;
+        return <Text>{bidParticipant.buyerPostalCode}</Text>;
       },
       isPadded: true,
     },
@@ -122,7 +122,7 @@ export const PaymentsTable: React.FunctionComponent<IPaymentsTableProps> = ({
       isResizable: true,
       data: "string",
       onRender: (bidParticipant: Partial<IParticipancyFullDetails>) => {
-        return <Text>{bidParticipant.BuyerPhoneNumber}</Text>;
+        return <Text>{bidParticipant.buyerPhoneNumber}</Text>;
       },
       isPadded: true,
     },
@@ -179,8 +179,8 @@ export const PaymentsTable: React.FunctionComponent<IPaymentsTableProps> = ({
     },
     {
       key: "column2",
-      name: "Payed",
-      fieldName: "Payed",
+      name: "Paid",
+      fieldName: "Paid",
       minWidth: 70,
       maxWidth: 90,
       isResizable: true,
@@ -220,7 +220,7 @@ export const PaymentsTable: React.FunctionComponent<IPaymentsTableProps> = ({
     <Stack horizontalAlign={"center"}>
       <Stack horizontal tokens={{ childrenGap: "2rem" }}>
         <Label>Pay with paypal:</Label>
-        <DefaultButton href="http://bing.com">
+        <DefaultButton href="https://www.paypal.com/signin?returnUri=https%3A%2F%2Fwww.paypal.com%2Fpaypalme&state=%2Fmy%2Flanding">
           <ImageIcon
             imageProps={{
               src: "https://i.ibb.co/r3SDcfy/paypal.png",

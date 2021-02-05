@@ -4,9 +4,9 @@ export interface IParticipancyFullDetails {
   buyerName: string;
   numOfUnits: number;
   hasPaid: boolean;
-  BuyerAddress: string;
-  BuyerPostalCode: string;
-  BuyerPhoneNumber: string;
+  buyerAddress: string;
+  buyerPostalCode: string;
+  buyerPhoneNumber: string;
 }
 
 export interface IMarkPaidRequest {
@@ -14,3 +14,4 @@ export interface IMarkPaidRequest {
   hasPaid: boolean;
   bidId: string;
 }
+

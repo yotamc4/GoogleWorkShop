@@ -12,16 +12,13 @@ import {
 } from "./ProductCardStyles";
 import { Bid } from "../../Modal/GroupDetails";
 import { Stack, StackItem } from "@fluentui/react";
+import { Phase } from "../../Modal/ProductDetails";
 
 export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
   function isNewBid(creationDate: Date): boolean {
-    const newD: Date = new Date(
-      creationDate.getFullYear(),
-      creationDate.getMonth(),
-      creationDate.getDate() + 2
-    );
     return (
       // Bid's creation date plus 2 days
+      bid.phase === Phase.Join &&
       !(
         new Date(
           creationDate.getFullYear(),
@@ -36,7 +33,7 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
   const attendantsCardSectionTokens: ICardSectionTokens = { childrenGap: 6 };
 
   if (bid.id == undefined) {
-    return <div />;
+    return null;
   }
 
   const imageProps: IImageProps = {

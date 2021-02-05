@@ -51,7 +51,7 @@ namespace YOTY.Service.Core.Services.Scheduling
                     var ids = context.Bids
                         // צחי האופטימיזציה הזאת שלך לא נתמכת ע"י הקונטקס בנתיים אז זה תמיד החזיר רשימה ריקה
                         // זיינת אותי
-                        // .Where(bid => bid.Phase<BidPhase.CancelledSupplierNotFound && bid.ExpirationDate < DateTime.Now)
+                        // .Where(bid => bid.Phase<BidPhase.CancelledSupplierNotFound && bid.ExpirationDate < DateTime.UtcNow.AddHours(2))
                         .Select(bid => bid.Id)
                         .ToList();
 
