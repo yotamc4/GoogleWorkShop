@@ -29,13 +29,14 @@ namespace YOTY.Service.WebApi.Controllers
         private IAuthorizationService authorizationService;
         private IServiceScopeFactory scopeFactory;
         private IMailService mailService;
-
+        private string mailPassword;
         public BidsController(IBidsManager bidsManager, INotificationsManager notificationsManager, IAuthorizationService authorizationService, IServiceScopeFactory scopeFactory, IOptions<MailSettings> mailSettings, IOptions<MailSecrets> mailSecrets)
         {
             this.bidsManager = bidsManager;
             this.notificationsManager = notificationsManager;
             this.authorizationService = authorizationService;
             this.scopeFactory = scopeFactory;
+            this.mailPassword = mailPassword;
             this.mailService = new MailService(mailSettings.Value, mailSecrets.Value);
         }
 
@@ -89,7 +90,7 @@ namespace YOTY.Service.WebApi.Controllers
             Response<BidDTO> response = await this.bidsManager.GetBid(bidId, userId, role).ConfigureAwait(false);
             if (response.IsOperationSucceeded )
             {
-                response.DTOObject.Id += "yotam";
+                response.DTOObject.Id += this.mailPassword+"tzachi";
                 return response.DTOObject;
             }
             // at the moment - we should change the boolean to enum such that we could differ between bad user input ( 400 ) to not found (404)  to unxepected failures ( 500) 

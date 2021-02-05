@@ -33,7 +33,7 @@ namespace YOTY.Service.Core.Managers.Notifications
         private const string FoundChosenSupplierToChosenSuppliersBody = "Congrats! your proposal has been selected by majority of the group-buy participants, <br />The group is now entering the payment phase.";
         private const string FoundChosenSupplierSubject = "Proposal Selected - UniBuy";
 
-        private const string domain = "https://localhost:3000";
+        private const string domain = "https://unibuygroups.azurewebsites.net";
         private readonly YotyContext _context;
         private readonly IMailService _mail;
 
