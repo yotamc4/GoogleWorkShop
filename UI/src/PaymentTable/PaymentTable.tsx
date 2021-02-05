@@ -90,7 +90,7 @@ export const PaymentsTable: React.FunctionComponent<IPaymentsTableProps> = ({
       key: "column4",
       name: "Address",
       fieldName: "Address",
-      minWidth: 80,
+      minWidth: 170,
       maxWidth: 350,
       isRowHeader: true,
       isResizable: true,
@@ -157,7 +157,7 @@ export const PaymentsTable: React.FunctionComponent<IPaymentsTableProps> = ({
       key: "column1",
       name: "Name",
       fieldName: "Name",
-      minWidth: 210,
+      minWidth: 130,
       maxWidth: 350,
       isRowHeader: true,
       isResizable: true,
@@ -205,7 +205,7 @@ export const PaymentsTable: React.FunctionComponent<IPaymentsTableProps> = ({
       key: "column3",
       name: "Units",
       fieldName: "Units",
-      minWidth: 70,
+      minWidth: 50,
       maxWidth: 90,
       isResizable: true,
       data: "string",
@@ -240,6 +240,7 @@ export const PaymentsTable: React.FunctionComponent<IPaymentsTableProps> = ({
         setKey="none"
         layoutMode={DetailsListLayoutMode.justified}
         isHeaderVisible={true}
+        compact={true}
       />
     </Stack>
   );

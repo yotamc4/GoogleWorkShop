@@ -28,11 +28,9 @@ import { deleteIcon } from "./SupplierSectionStyles";
 import { useParams } from "react-router";
 import { Phase } from "../../Modal/ProductDetails";
 import { getDate } from "../utils";
-import { PaymentsTable } from "../../PaymentTable/PaymentTable";
 import { useAuth0 } from "@auth0/auth0-react";
 import { deleteSupplierProposal } from "../../Services/BidsControllerService";
 import configData from "../../config.json";
-import { textStyles } from "./SupplierSurveyStyles";
 import { horizontalGapStackToken } from "../../FormStyles/FormsStyles";
 import HowToVoteIcon from "@material-ui/icons/HowToVote";
 
@@ -45,7 +43,7 @@ export let _columns: IColumn[] = [];
 _columns = [
   {
     key: "column1",
-    name: "Supplier name",
+    name: "Supplier",
     fieldName: "supplierName",
     minWidth: 100,
     maxWidth: 150,
@@ -81,7 +79,7 @@ _columns = [
   },
   {
     key: "column6",
-    name: "ProgressBar",
+    name: "Progress",
     fieldName: "progressBar",
     minWidth: 150,
     maxWidth: 150,
