@@ -3,7 +3,14 @@ import * as SuppliersControllerService from "../Services/SuppliersControllerServ
 
 import { Pivot, PivotItem } from "office-ui-fabric-react/lib/Pivot";
 import { buttonHeaderProps } from "./UserProfileStyles";
-import { Spinner, Stack } from "@fluentui/react";
+import {
+  FontWeights,
+  Separator,
+  Spinner,
+  Stack,
+  StackItem,
+  Text,
+} from "@fluentui/react";
 import { GroupsList } from "./GroupsList";
 import { Bid } from "../Modal/GroupDetails";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -44,6 +51,17 @@ export const SupplierProfile: React.FunctionComponent = () => {
   return (
     <Stack horizontalAlign="center">
       <ButtonAppBar />
+      <StackItem>
+        <Separator /> <Text variant={"large"}>Account type: </Text>
+        <Text
+          variant={"large"}
+          styles={{ root: { fontWeight: FontWeights.bold } }}
+        >
+          {" "}
+          Supplier
+        </Text>
+        <Separator />
+      </StackItem>
       <Pivot styles={{ root: { marginBottom: "2rem" } }}>
         <PivotItem
           headerButtonProps={{
