@@ -80,11 +80,6 @@ export const ProductCard: React.FunctionComponent<Bid> = (bid) => {
               ? bid.product!.name.slice(0, 30) + "..."
               : bid.product!.name}
           </Text>
-          <Text styles={descriptionTextStyles}>
-            {bid.product!.description.length > 199
-              ? bid.product!.description.slice(0, 200) + "..."
-              : bid.product!.description}
-          </Text>
         </Stack>
         <Stack horizontalAlign="center">
           <Text variant="mediumPlus" styles={priceTextStyles}>
